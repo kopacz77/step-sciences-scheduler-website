@@ -1,0 +1,27 @@
+# biome.toml
+
+[tool.biome]
+# Maximum allowed line width for formatted code.
+line_width = 80
+
+# Indentation settings
+indent_style = "space"  # options: "space" or "tab"
+indent_width = 2
+
+# Preferred quote style for strings. Options: "single" or "double"
+quote_style = "double"
+
+# Enable or disable automatic formatting.
+format = true
+
+# Enable linting checks.
+lint = true
+
+# Files and directories to ignore for both formatting and linting.
+[tool.biome.ignore]
+patterns = [
+  "node_modules/**",
+  "build/**",
+  "dist/**",
+  "**/*.min.js"
+]

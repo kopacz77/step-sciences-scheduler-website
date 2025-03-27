@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# GM Oshawa Scheduler Deployment Guide
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This guide will help you deploy the GM Oshawa Scheduler (or any company-specific scheduler) to a custom domain using Firebase Hosting.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+- [Node.js](https://nodejs.org/) (v16 or later)
+- [pnpm](https://pnpm.io/installation) for package management
+- [Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli)
+- A Google Workspace account for managing custom domains
 
-### `npm start`
+## Project Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Clone the repository:
+```bash
+git clone <your-repository-url>
+cd gm-oshawa-scheduler
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Install dependencies:
+```bash
+pnpm install
+```
 
-### `npm test`
+3. Add your company configuration:
+   - Open `src/config/companyConfigs.js`
+   - Add or modify company configurations as needed
+   - Ensure you have the correct Google Calendar URL and intake form URL
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. Prepare company assets:
+   - Add company logos to the `public/logos/` directory
+   - Update favicon and manifest.json in the public directory if needed
 
-### `npm run build`
+## Testing Locally
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Start the development server:
+```bash
+pnpm dev
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Test different company configurations by using URL parameters:
+```
+http://localhost:3000/?company=gm-oshawa
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Building for Production
 
-### `npm run eject`
+1. Build the project:
+```bash
+pnpm build
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This will create a production-ready build in the `build` directory.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Firebase Deployment
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Initialize Firebase (if not already done):
+```bash
+firebase login
+firebase init
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. Select "Hosting" when prompted for features
+3. Select or create a Firebase project
+4. Specify "build" as your public directory
+5. Configure as a single-page app (yes)
+6. Set up automatic deploys (optional)
 
-## Learn More
+7. Deploy to Firebase:
+```bash
+firebase deploy
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Custom Domain Setup
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Log in to your Google Workspace Admin Console
+2. Go to Domains > Manage Domains
+3. Add your custom domain (e.g., appointments.gmoshawa.com)
+4. Verify domain ownership
+5. Configure DNS settings as instructed by Firebase Hosting
+6. Set up the necessary CNAME or A records
 
-### Code Splitting
+7. Connect your custom domain to Firebase:
+```bash
+firebase hosting:channel:deploy production
+firebase hosting:sites:add your-custom-domain
+firebase hosting:sites:update your-custom-domain
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+8. Configure custom domain in Firebase console:
+   - Go to Firebase Console > Hosting
+   - Click "Add custom domain"
+   - Follow the prompts to complete the setup
 
-### Analyzing the Bundle Size
+## Updating the Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+When you need to update the website:
 
-### Making a Progressive Web App
+1. Make your changes
+2. Test locally
+3. Build:
+```bash
+pnpm build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+4. Deploy:
+```bash
+firebase deploy
+```
 
-### Advanced Configuration
+## Maintenance
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Regularly check that the Google Calendar appointment links are working
+- Update the company configurations as needed
+- Monitor Firebase Analytics for usage patterns
 
-### Deployment
+## Troubleshooting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- If the calendar doesn't load, check the Google Calendar sharing settings
+- If the intake form link doesn't work, verify the URL in the company config
+- For deployment issues, check the Firebase deployment logs:
+```bash
+firebase deploy --debug
+```
 
-### `npm run build` fails to minify
+## Security Considerations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- The application uses localStorage to keep track of a user's progress
+- No sensitive information is stored in the browser
+- All user data collection happens in the secure intake form
