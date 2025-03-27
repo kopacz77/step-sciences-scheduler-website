@@ -121,7 +121,6 @@ export const getCompanyIdFromDomain = () => {
   
   // For GitHub Pages development or when using the main appointment domain
   if (hostname.includes('appointments.stepsciences.com') || 
-      hostname.includes('stepsciences.github.io') ||
       hostname.includes('localhost') || 
       hostname.includes('127.0.0.1')) {
     // Check if there's a company parameter in the URL
