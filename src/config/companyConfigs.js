@@ -11,7 +11,7 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Building A, Room 101 - Enter through south entrance',
-    specialInstructions: 'Please bring your GM employee ID to the appointment.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
   },
   
   'gm-cami': {
@@ -20,12 +20,12 @@ const companyConfigs = {
     primaryColor: '#000000',
     secondaryColor: '#D4AF37',
     logo: '/logos/gm-logo.png',  // Can use same logo for both GM plants
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/YOUR_CAMI_CALENDAR_ID_HERE',
+    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1Qf9K1O090x0jfhUtHXSjuqYWoMPt-qnoOprYgAFZ6t4YTono4Vu2wzhrZyCzP4VaPsQe8z7oW',
     intakeFormUrl: 'https://step-sciences-project-1.web.app/',
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
-    meetingLocation: 'Main Plant, Health Services Office',
-    specialInstructions: 'Notify your supervisor before appointment.'
+    meetingLocation: 'Unifor local 88 hall',
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
   },
   
   'stellantis-windsor': {
@@ -34,12 +34,12 @@ const companyConfigs = {
     primaryColor: '#000000',
     secondaryColor: '#D4AF37',
     logo: '/logos/stellantis-logo.png',
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/YOUR_STELLANTIS_WINDSOR_CALENDAR_ID_HERE',
+    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1kC5ubA-6Nc_ZIYopLxcxhZf27MKHL2DKtEWo12EK8jJ3Bs-mUJiDlFSNPht7VZjW0I24hyLcX',
     intakeFormUrl: 'https://step-sciences-project-1.web.app/',
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Health Services Wing, Second Floor',
-    specialInstructions: 'Please enter through the main visitor entrance.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
   },
   
   'ford-windsor': {
@@ -53,7 +53,21 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Medical Office, Building C',
-    specialInstructions: 'Visitor parking available in Lot B.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
+  },
+
+  'windsor-unifor-200/444': {
+    name: 'Unifor 200/444',
+    fullName: 'Unifor Windsor Local 200/444',
+    primaryColor: '#000000',
+    secondaryColor: '#D4AF37',
+    logo: '/logos/unifor-logo.png',
+    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2voIAfvaNtU0C0SdpmkJSv9vpM_fEjYXYab4XVbAwAiNA2J5OCRVNmHvfSIvbFSMItsNzMr8Vs',
+    intakeFormUrl: 'https://step-sciences-project-1.web.app/',
+    contactEmail: 'info@stepsciences.com',
+    showBranding: true,
+    meetingLocation: 'Basement of the Unifor Hall',
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
   },
   
   'stellantis-brampton': {
@@ -62,12 +76,12 @@ const companyConfigs = {
     primaryColor: '#000000',
     secondaryColor: '#D4AF37',
     logo: '/logos/stellantis-logo.png',
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/YOUR_STELLANTIS_BRAMPTON_CALENDAR_ID_HERE',
+    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ352MeLCrtbXyHXmoAj_vQQMaF1Kc7xnGw6ozocHElXDtmxIUVHCad0CEPuXfY9u6JzDFXDcryD',
     intakeFormUrl: 'https://step-sciences-project-1.web.app/',
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Health Services Department, Main Administration Building',
-    specialInstructions: 'Check in at security desk before proceeding to appointment.'
+    specialInstructions: 'Check in at security desk before proceeding to appointment. Please Bring Health Card and Greenshield Card to the appointment.'
   },
   
   'ford-oakville': {
@@ -81,7 +95,7 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Medical Center, First Floor',
-    specialInstructions: 'Park in visitor section and bring this confirmation to the reception desk.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
   }
 };
 
@@ -93,6 +107,7 @@ export const getCompanyIdFromDomain = () => {
   if (hostname.includes('gmcami')) return 'gm-cami';
   if (hostname.includes('stellantiswindsor')) return 'stellantis-windsor';
   if (hostname.includes('fordwindsor')) return 'ford-windsor';
+  if (hostname.includes('unifor222/444')) return 'windsor-unifor-200/444';
   if (hostname.includes('stellantisbrampton')) return 'stellantis-brampton';
   if (hostname.includes('fordoakville')) return 'ford-oakville';
   
