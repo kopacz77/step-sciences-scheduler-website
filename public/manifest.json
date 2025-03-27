@@ -1,6 +1,6 @@
 {
-  "short_name": "GM Scheduler",
-  "name": "GM Oshawa Appointment Scheduler",
+  "short_name": "Appointment Scheduler",
+  "name": "Step Sciences Appointment Scheduler",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,18 +8,13 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logos/logo192.png",
+      "src": "logos/apple-touch-icon.png",
       "type": "image/png",
       "sizes": "192x192"
-    },
-    {
-      "src": "logos/logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#D4AF37"
+  "background_color": "#f5f5f5"
 }

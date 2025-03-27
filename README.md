@@ -1,3 +1,78 @@
+# GM Oshawa Appointment Scheduler
+
+A modern, configurable appointment scheduling portal built with React 19, Material UI 7, and Biome for code quality.
+
+## Overview
+
+This project creates a user-friendly interface for booking appointments and completing intake forms in a guided, step-by-step process. It's designed for GM Oshawa but can be extended to other companies through a simple configuration system.
+
+## Key Features
+
+- **Google Calendar Integration**: Embeds appointment scheduling directly in the app
+- **Guided User Flow**: Clear step-by-step process prevents users from skipping steps
+- **Company-Specific Theming**: Dynamically applies branding based on configuration
+- **Responsive Design**: Works on desktop and mobile devices
+- **Multiple Company Support**: Can be configured for different companies via URL parameters
+- **Modern Development Setup**: Uses pnpm, React 19, and Biome for formatting/linting
+
+## Technologies
+
+- React 19
+- Material UI 7
+- Biome (for linting/formatting)
+- pnpm (package management)
+
+## Quick Start
+
+1. Install dependencies:
+```bash
+pnpm install
+```
+
+2. Start the development server:
+```bash
+pnpm start
+```
+
+3. Build for production:
+```bash
+pnpm build
+```
+
+## Configuration
+
+The app supports multiple company configurations via the `src/config/companyConfigs.js` file. Each company entry includes:
+
+- Company name and branding colors
+- Google Calendar appointment URL
+- Intake form URL
+- Contact information
+- Logo path
+
+Users can select a company via URL parameter: `?company=company-id`
+
+## Project Structure
+
+```
+src/
+├── config/
+│   └── companyConfigs.js  # Company-specific configurations
+├── App.js                 # Main application component
+└── index.js               # Entry point
+```
+
+## Browser Compatibility
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## License
+
+© 2025 Step Sciences. All rights reserved.
+
+
 # GM Oshawa Scheduler Deployment Guide
 
 This guide will help you deploy the GM Oshawa Scheduler (or any company-specific scheduler) to a custom domain using Firebase Hosting.

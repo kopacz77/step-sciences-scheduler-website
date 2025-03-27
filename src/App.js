@@ -14,10 +14,11 @@ import {
   AppBar,
   Toolbar,
   useMediaQuery,
+  Chip,
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { EventAvailable, NoteAdd, Check } from '@mui/icons-material';
-import { getCompanyConfig } from './config/companyConfigs';
+import { EventAvailable, NoteAdd, Check, LocationOn, Info } from '@mui/icons-material';
+import { getCompanyConfig, getCompanyIdFromDomain } from './config/companyConfigs';
 
 function App() {
   // Get company ID from URL parameters or use default
@@ -27,11 +28,20 @@ function App() {
   const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
-    // Parse the URL to get company ID parameter
+    // First check URL parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const companyId = urlParams.get('company') || 'gm-oshawa';
+    let companyId = urlParams.get('company');
+    
+    // If no company in URL, detect from domain
+    if (!companyId) {
+      companyId = getCompanyIdFromDomain();
+    }
+    
     const config = getCompanyConfig(companyId);
     setCompanyConfig(config);
+    
+    // Update document title with company name
+    document.title = `${config.name} Appointment Scheduling`;
     
     // Check if there's a status parameter (could be set by the calendar)
     const status = urlParams.get('status');
@@ -144,6 +154,23 @@ function App() {
             </Typography>
           </Paper>
 
+          {/* Location Information */}
+          {companyConfig.meetingLocation && (
+            <Paper variant="outlined" sx={{ p: 2, mb: 4, borderColor: 'grey.300' }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                <LocationOn color="primary" sx={{ mt: 0.5, mr: 1 }} />
+                <Box>
+                  <Typography variant="subtitle1" gutterBottom fontWeight="medium">
+                    Meeting Location
+                  </Typography>
+                  <Typography variant="body2">
+                    {companyConfig.meetingLocation}
+                  </Typography>
+                </Box>
+              </Box>
+            </Paper>
+          )}
+
           {/* Stepper */}
           <Box sx={{ mb: 4 }}>
             {isMobile ? (
@@ -219,7 +246,6 @@ function App() {
                         width="100%"
                         height="100%"
                         frameBorder="0"
-                        onLoad={handleAppointmentBooked}  // This is just a placeholder. Google Calendar doesn't actually notify the parent frame
                       />
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
@@ -232,6 +258,23 @@ function App() {
                         I've Booked My Appointment
                       </Button>
                     </Box>
+
+                    {/* Special Instructions */}
+                    {companyConfig.specialInstructions && (
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'flex-start', 
+                        mt: 3, 
+                        p: 2, 
+                        bgcolor: 'info.light', 
+                        borderRadius: 1 
+                      }}>
+                        <Info color="info" sx={{ mr: 1, mt: 0.3 }} />
+                        <Typography variant="body2" color="info.dark">
+                          <strong>Note:</strong> {companyConfig.specialInstructions}
+                        </Typography>
+                      </Box>
+                    )}
                   </>
                 )}
 
@@ -272,6 +315,36 @@ function App() {
                         You're all set! We look forward to seeing you at your scheduled time.
                       </Typography>
                     </Box>
+                    
+                    {/* Meeting Location Reminder */}
+                    {companyConfig.meetingLocation && (
+                      <Box sx={{ 
+                        mt: 3, 
+                        p: 2, 
+                        bgcolor: 'background.paper', 
+                        border: '1px solid', 
+                        borderColor: 'primary.light',
+                        borderRadius: 1
+                      }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Appointment Details:
+                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                          <LocationOn fontSize="small" sx={{ mr: 1 }} color="primary" />
+                          <Typography variant="body2">
+                            <strong>Location:</strong> {companyConfig.meetingLocation}
+                          </Typography>
+                        </Box>
+                        {companyConfig.specialInstructions && (
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Info fontSize="small" sx={{ mr: 1 }} color="primary" />
+                            <Typography variant="body2">
+                              <strong>Note:</strong> {companyConfig.specialInstructions}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    )}
                   </>
                 )}
               </CardContent>

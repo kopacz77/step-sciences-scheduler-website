@@ -21,5 +21,13 @@
         "trailingComma": "es5",
         "semicolons": "always"
       }
+    },
+    "files": {
+      "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+    },
+    "vcs": {
+      "enabled": true,
+      "clientKind": "git",
+      "useIgnoreFile": true
     }
   }
