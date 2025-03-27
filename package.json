@@ -2,7 +2,7 @@
   "name": "automotive-scheduler-website",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://stepsciences.github.io/automotive-scheduler-website",
+  "homepage": "https://kopacz77.github.io/automotive-scheduler-website",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
