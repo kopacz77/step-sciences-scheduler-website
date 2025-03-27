@@ -11,7 +11,8 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Building A, Room 101 - Enter through south entrance',
-    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
+    domain: 'gmoshawa.stepsciences.com'
   },
   
   'gm-cami': {
@@ -25,7 +26,8 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Unifor local 88 hall',
-    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
+    domain: 'gmcami.stepsciences.com'
   },
   
   'stellantis-windsor': {
@@ -39,7 +41,8 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Health Services Wing, Second Floor',
-    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
+    domain: 'stellantiswindsor.stepsciences.com'
   },
   
   'ford-windsor': {
@@ -53,10 +56,11 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Medical Office, Building C',
-    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
+    domain: 'fordwindsor.stepsciences.com'
   },
 
-  'windsor-unifor-200/444': {
+  'windsor-unifor-200-444': {
     name: 'Unifor 200/444',
     fullName: 'Unifor Windsor Local 200/444',
     primaryColor: '#000000',
@@ -67,7 +71,8 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Basement of the Unifor Hall',
-    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
+    domain: 'uniforwindsor.stepsciences.com'
   },
   
   'stellantis-brampton': {
@@ -81,7 +86,8 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Health Services Department, Main Administration Building',
-    specialInstructions: 'Check in at security desk before proceeding to appointment. Please Bring Health Card and Greenshield Card to the appointment.'
+    specialInstructions: 'Check in at security desk before proceeding to appointment. Please Bring Health Card and Greenshield Card to the appointment.',
+    domain: 'stellantisbrampton.stepsciences.com'
   },
   
   'ford-oakville': {
@@ -95,7 +101,8 @@ const companyConfigs = {
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     meetingLocation: 'Medical Center, First Floor',
-    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.'
+    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
+    domain: 'fordoakville.stepsciences.com'
   }
 };
 
@@ -103,13 +110,25 @@ const companyConfigs = {
 export const getCompanyIdFromDomain = () => {
   const hostname = window.location.hostname.toLowerCase();
   
-  if (hostname.includes('gmoshawa')) return 'gm-oshawa';
-  if (hostname.includes('gmcami')) return 'gm-cami';
-  if (hostname.includes('stellantiswindsor')) return 'stellantis-windsor';
-  if (hostname.includes('fordwindsor')) return 'ford-windsor';
-  if (hostname.includes('unifor222/444')) return 'windsor-unifor-200/444';
-  if (hostname.includes('stellantisbrampton')) return 'stellantis-brampton';
-  if (hostname.includes('fordoakville')) return 'ford-oakville';
+  // Check for specific subdomains of stepsciences.com
+  if (hostname.includes('gmoshawa.stepsciences.com')) return 'gm-oshawa';
+  if (hostname.includes('gmcami.stepsciences.com')) return 'gm-cami';
+  if (hostname.includes('stellantiswindsor.stepsciences.com')) return 'stellantis-windsor';
+  if (hostname.includes('fordwindsor.stepsciences.com')) return 'ford-windsor';
+  if (hostname.includes('uniforwindsor.stepsciences.com')) return 'windsor-unifor-200-444';
+  if (hostname.includes('stellantisbrampton.stepsciences.com')) return 'stellantis-brampton';
+  if (hostname.includes('fordoakville.stepsciences.com')) return 'ford-oakville';
+  
+  // For GitHub Pages development or when using the main appointment domain
+  if (hostname.includes('appointments.stepsciences.com') || 
+      hostname.includes('stepsciences.github.io') ||
+      hostname.includes('localhost') || 
+      hostname.includes('127.0.0.1')) {
+    // Check if there's a company parameter in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const companyParam = urlParams.get('company');
+    if (companyParam) return companyParam;
+  }
   
   // Default fallback
   return 'gm-oshawa';
