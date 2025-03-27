@@ -15,7 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "predeploy": "npm run build",
+    "predeploy": "pnpm run build",
     "deploy": "gh-pages -d build",
     "format": "biome format --write ./src",
     "lint": "biome lint ./src",
@@ -35,6 +35,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.4.1",
-    "gh-pages": "^6.1.1"
+    "gh-pages": "^6.3.0"
   }
 }
