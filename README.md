@@ -1,10 +1,11 @@
-# GM Oshawa Appointment Scheduler
+# Step Sciences Appointment Scheduler Portal
 
 A modern, configurable appointment scheduling portal built with React 19, Material UI 7, and Biome for code quality.
 
 ## Overview
 
-This project creates a user-friendly interface for booking appointments and completing intake forms in a guided, step-by-step process. It's designed for GM Oshawa but can be extended to other companies through a simple configuration system.
+This project creates a user-friendly interface for booking appointments and completing intake forms in a guided, step-by-step process. It's designed for GM Oshawa but can be npm install -g pnpm
+extended to other companies through a simple configuration system.
 
 ## Key Features
 
