@@ -43,8 +43,25 @@ function App() {
     const config = getCompanyConfig(companyId);
     setCompanyConfig(config);
     
-    // Update document title with company name
-    document.title = `${config.name} Appointment Scheduling`;
+    // Update document title with generic title instead of company name
+    document.title = "Online Appointment Scheduling Portal";
+    
+    // Update meta description too
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Online Appointment scheduling portal - Powered by Step Sciences');
+    }
+    
+    // Update Open Graph meta tags if they exist
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', 'Online Appointment Scheduling Portal');
+    }
+    
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', 'Online Appointment scheduling portal - Powered by Step Sciences');
+    }
     
     // Check if there's a status parameter (could be set by the calendar)
     const status = urlParams.get('status');
@@ -363,7 +380,7 @@ function App() {
                   </Typography>
 
                   {activeStep === 0 && (
-                    <>
+                    <Box>
                       <Typography variant="body2" sx={{ mb: 2, fontStyle: 'italic', fontSize: '1.1rem' }}>
                         Please select an available time slot in the calendar below.
                       </Typography>
@@ -410,13 +427,13 @@ function App() {
                           </Typography>
                         </Box>
                       )}
-                    </>
+                    </Box>
                   )}
 
                   {activeStep === 1 && (
-                    <>
+                    <Box>
                       {!showIntakeForm ? (
-                        <>
+                        <Box>
                           <Typography variant="body1" sx={{ mb: 3, fontSize: '1.2rem' }}>
                             Now that you've booked your appointment, please complete the intake form below.
                             This form will help us prepare for your visit.
@@ -433,9 +450,9 @@ function App() {
                               Complete Intake Form
                             </Button>
                           </Box>
-                        </>
+                        </Box>
                       ) : (
-                        <>
+                        <Box>
                           <Box sx={{ 
                             mb: 2, 
                             display: 'flex', 
@@ -482,13 +499,13 @@ function App() {
                               frameBorder="0"
                             />
                           </Box>
-                        </>
+                        </Box>
                       )}
-                    </>
+                    </Box>
                   )}
 
                   {activeStep === 2 && (
-                    <>
+                    <Box>
                       <Typography variant="body1" sx={{ mb: 3, fontSize: '1.2rem' }}>
                         Thank you for completing both steps! Your appointment is now fully confirmed.
                       </Typography>
@@ -535,7 +552,7 @@ function App() {
                           )}
                         </Box>
                       )}
-                    </>
+                    </Box>
                   )}
                 </Box>
               </CardContent>
