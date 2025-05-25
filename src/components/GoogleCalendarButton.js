@@ -5,18 +5,15 @@ import { Schedule } from '@mui/icons-material';
 const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
   const calendarButtonRef = useRef(null);
   const [buttonLoaded, setButtonLoaded] = useState(false);
-  const [scriptError, setScriptError] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
     const initializeButton = () => {
-      // Add timeout to ensure scripts are fully loaded
       setTimeout(() => {
         if (window.calendar?.schedulingButton && calendarButtonRef.current) {
           try {
-            console.log('Loading Google Calendar button with URL:', companyConfig.calendarUrl);
-            
             window.calendar.schedulingButton.load({
-              url: companyConfig.calendarUrl, // Remove ?gv=true as it might cause issues
+              url: companyConfig.calendarUrl,
               color: companyConfig.primaryColor,
               label: 'Book Your Appointment',
               target: calendarButtonRef.current,
@@ -24,100 +21,107 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
             setButtonLoaded(true);
           } catch (error) {
             console.error('Error loading Google Calendar button:', error);
-            setScriptError(true);
+            setShowFallback(true);
           }
         } else {
-          console.error('Google Calendar scheduling script not loaded');
-          setScriptError(true);
+          setShowFallback(true);
         }
-      }, 1000);
+      }, 2000);
     };
 
-    // Check if script is already loaded
     if (window.calendar?.schedulingButton) {
       initializeButton();
     } else {
-      // Wait for script to load with longer timeout
+      const timeout = setTimeout(() => {
+        setShowFallback(true);
+      }, 5000);
+
       const checkScript = setInterval(() => {
         if (window.calendar?.schedulingButton) {
           clearInterval(checkScript);
+          clearTimeout(timeout);
           initializeButton();
         }
       }, 500);
 
-      // Longer cleanup timeout
-      setTimeout(() => {
+      return () => {
         clearInterval(checkScript);
-        if (!buttonLoaded) {
-          setScriptError(true);
-        }
-      }, 15000);
+        clearTimeout(timeout);
+      };
     }
-  }, [companyConfig, buttonLoaded]);
+  }, [companyConfig]);
 
-  // Fallback to direct link if button fails
   const handleDirectBooking = () => {
     window.open(companyConfig.calendarUrl, '_blank');
   };
 
   return (
     <Box sx={{ textAlign: 'center' }}>
-      <Box 
-        ref={calendarButtonRef}
-        sx={{ 
-          minHeight: '60px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          mb: 3
-        }}
-      />
-      
-      {buttonLoaded && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="body2" sx={{ 
-            fontStyle: 'italic', 
-            color: 'text.secondary',
-            fontSize: '1rem'
-          }}>
-            Click the button above to open the appointment scheduler
-          </Typography>
-        </Box>
-      )}
-      
-      {/* Fallback button if Google Calendar button fails */}
-      {(scriptError || !buttonLoaded) && (
-        <Box sx={{ 
-          p: 3, 
-          border: '2px solid', 
-          borderColor: 'primary.main',
-          borderRadius: 2,
-          bgcolor: 'background.paper'
-        }}>
-          <Schedule sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
-          <Typography variant="h6" gutterBottom>
-            Book Your Appointment
-          </Typography>
+      {/* Only show ONE button - either Google's embedded button OR fallback */}
+      {!showFallback ? (
+        <>
+          <Box 
+            ref={calendarButtonRef}
+            sx={{ 
+              minHeight: '80px', // Increased height
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mb: 3,
+              '& .calendar-scheduling-button': {
+                fontSize: '1.3rem !important', // Larger button
+                padding: '16px 32px !important',
+                minHeight: '60px !important',
+                minWidth: '300px !important'
+              }
+            }}
+          />
+          
+          {buttonLoaded && (
+            <Typography variant="body2" sx={{ 
+              color: 'text.secondary',
+              fontSize: '1rem',
+              mb: 3
+            }}>
+              Click the button above to schedule your appointment
+            </Typography>
+          )}
+        </>
+      ) : (
+        // Fallback button - larger and more prominent
+        <Box sx={{ mb: 3 }}>
           <Button
             variant="contained"
             color="primary"
             size="large"
             onClick={handleDirectBooking}
             sx={{ 
-              fontSize: '1.1rem', 
-              py: 1.5, 
-              px: 4,
-              mb: 2
+              fontSize: '1.3rem', 
+              py: 2.5, 
+              px: 6,
+              minHeight: '70px',
+              minWidth: '320px',
+              borderRadius: 3,
+              boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+              '&:hover': {
+                boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+                transform: 'translateY(-2px)'
+              }
             }}
           >
-            Open Scheduling Calendar
+            📅 Book Your Appointment
           </Button>
-          <Typography variant="body2" color="text.secondary">
-            Click above to open the booking calendar in a new tab
+          <Typography variant="body2" sx={{ 
+            mt: 2, 
+            color: 'text.secondary',
+            fontSize: '1rem'
+          }}>
+            Opens booking calendar in a new tab
           </Typography>
         </Box>
       )}
 
+      {/* Confirmation button */}
       <Box sx={{ mt: 4 }}>
         <Button
           variant="contained"
@@ -125,9 +129,11 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
           size="large"
           onClick={onAppointmentBooked}
           sx={{ 
-            fontSize: '1.1rem', 
-            py: 1.5, 
-            px: 4,
+            fontSize: '1.2rem', 
+            py: 2, 
+            px: 5,
+            minHeight: '60px',
+            borderRadius: 3,
             boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
           }}
         >
@@ -138,7 +144,7 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
           color: 'text.secondary',
           fontSize: '1rem'
         }}>
-          Click this button after you've completed your booking to continue
+          Click after completing your booking to continue to the intake form
         </Typography>
       </Box>
     </Box>

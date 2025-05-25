@@ -25,17 +25,26 @@ const ScanDayLocationInfo = ({ companyConfig }) => {
           <Card sx={{ 
             border: '2px solid', 
             borderColor: 'success.main',
-            bgcolor: 'success.light',
+            bgcolor: '#e8f5e8', // Lighter background for better text contrast
             '&:hover': { boxShadow: '0 6px 16px rgba(0,0,0,0.15)' }
           }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <LocationOn color="success" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'success.dark' }}>
+                <LocationOn sx={{ mr: 1, color: '#2e7d32' }} /> {/* Dark green */}
+                <Typography variant="h6" sx={{ 
+                  fontWeight: 'bold', 
+                  color: '#000000', // Force black text
+                  zIndex: 10
+                }}>
                   Monday Appointments
                 </Typography>
               </Box>
-              <Typography variant="body1" sx={{ fontSize: '1.1rem', color: 'success.dark' }}>
+              <Typography variant="body1" sx={{ 
+                fontSize: '1.1rem', 
+                color: '#000000', // Force black text
+                fontWeight: 500,
+                zIndex: 10
+              }}>
                 {companyConfig.scanDayLocations.monday}
               </Typography>
             </CardContent>
@@ -46,17 +55,26 @@ const ScanDayLocationInfo = ({ companyConfig }) => {
           <Card sx={{ 
             border: '2px solid', 
             borderColor: 'info.main',
-            bgcolor: 'info.light',
+            bgcolor: '#e3f2fd', // Lighter background for better text contrast
             '&:hover': { boxShadow: '0 6px 16px rgba(0,0,0,0.15)' }
           }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <LocationOn color="info" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'info.dark' }}>
+                <LocationOn sx={{ mr: 1, color: '#1976d2' }} /> {/* Dark blue */}
+                <Typography variant="h6" sx={{ 
+                  fontWeight: 'bold', 
+                  color: '#000000', // Force black text
+                  zIndex: 10
+                }}>
                   Friday Appointments
                 </Typography>
               </Box>
-              <Typography variant="body1" sx={{ fontSize: '1.1rem', color: 'info.dark' }}>
+              <Typography variant="body1" sx={{ 
+                fontSize: '1.1rem', 
+                color: '#000000', // Force black text
+                fontWeight: 500,
+                zIndex: 10
+              }}>
                 {companyConfig.scanDayLocations.friday}
               </Typography>
             </CardContent>
@@ -67,16 +85,17 @@ const ScanDayLocationInfo = ({ companyConfig }) => {
       <Box sx={{ 
         mt: 3, 
         p: 2, 
-        bgcolor: 'warning.light', 
+        bgcolor: '#fff3e0', // Lighter warning background
         borderRadius: 2,
         border: '1px solid',
         borderColor: 'warning.main'
       }}>
         <Typography variant="body2" sx={{ 
           fontWeight: 'medium', 
-          color: 'warning.dark',
+          color: '#000000', // Force black text
           textAlign: 'center',
-          fontSize: '1.05rem'
+          fontSize: '1.05rem',
+          zIndex: 10
         }}>
           <strong>Important:</strong> Please note the different locations for Monday and Friday appointments when booking your time slot.
         </Typography>
