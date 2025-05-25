@@ -1,19 +1,25 @@
 // src/config/companyConfigs.js
 const companyConfigs = {
   'gm-oshawa': {
-    name: 'GM Oshawa',
-    fullName: 'General Motors Oshawa Assembly',
-    primaryColor: '#000000', 
-    secondaryColor: '#D4AF37',
-    logo: '/logos/gm-logo.png',
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ13iuKCFJo-LEdLYI0xL61iPO3DA4XB5di_P9b7NQ05dR2qYKjYKjCu9hzYaBn3G2-p8o2qDoE9',
-    intakeFormUrl: 'https://step-sciences-project-1.web.app/',
-    contactEmail: 'info@stepsciences.com',
-    showBranding: true,
-    meetingLocation: 'Building A, Room 101 - Enter through south entrance',
-    specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
-    domain: 'gmoshawa.stepsciences.com'
+  name: 'GM Oshawa',
+  fullName: 'General Motors Oshawa Assembly',
+  primaryColor: '#000000', 
+  secondaryColor: '#D4AF37',
+  logo: '/logos/gm-logo.png',
+  calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ13iuKCFJo-LEdLYI0xL61iPO3DA4XB5di_P9b7NQ05dR2qYKjYKjCu9hzYaBn3G2-p8o2qDoE9',
+  intakeFormUrl: 'https://step-sciences.web.app/intake/gm/oshawa', // NEW URL
+  contactEmail: 'info@stepsciences.com',
+  showBranding: true,
+  // Remove the single meetingLocation and replace with dual locations
+  scanDayLocations: {
+    monday: 'Building C - Medical Offices next to SUD Office',
+    friday: 'Building D - TFT Boardrooms (east end of building D)'
   },
+  specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
+  domain: 'gmoshawa.stepsciences.com',
+  // Add scan day feature flag
+  hasScanDays: true
+},
   
   'gm-cami': {
     name: 'GM CAMI',
