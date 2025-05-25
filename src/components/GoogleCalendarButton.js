@@ -9,24 +9,62 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
 
   useEffect(() => {
     const initializeButton = () => {
-      setTimeout(() => {
-        if (window.calendar?.schedulingButton && calendarButtonRef.current) {
-          try {
-            window.calendar.schedulingButton.load({
-              url: companyConfig.calendarUrl,
-              color: companyConfig.primaryColor,
-              label: 'Book Your Appointment',
-              target: calendarButtonRef.current,
-            });
-            setButtonLoaded(true);
-          } catch (error) {
-            console.error('Error loading Google Calendar button:', error);
-            setShowFallback(true);
-          }
-        } else {
+      if (window.calendar?.schedulingButton && calendarButtonRef.current) {
+        try {
+          window.calendar.schedulingButton.load({
+            url: companyConfig.calendarUrl,
+            color: companyConfig.primaryColor,
+            label: 'Book Your Appointment',
+            target: calendarButtonRef.current,
+          });
+
+          // THE KEY FIX: Use setTimeout to wait for Google to create the button
+          setTimeout(() => {
+            // Select the button adjacent to our target div
+            const button = calendarButtonRef.current.nextElementSibling;
+            
+            if (button && button.tagName === 'BUTTON') {
+              // Apply inline styles directly (this is the only way to override Google's styles)
+              button.style.fontSize = '1.6rem';
+              button.style.fontWeight = '700';
+              button.style.padding = '24px 48px';
+              button.style.minHeight = '80px';
+              button.style.minWidth = '400px';
+              button.style.height = '80px';
+              button.style.borderRadius = '16px';
+              button.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+              button.style.transition = 'all 0.3s ease';
+              button.style.textTransform = 'none';
+              button.style.letterSpacing = '0.8px';
+              button.style.lineHeight = '1.2';
+              button.style.fontFamily = 'Roboto, sans-serif';
+              
+              // Add hover effects
+              button.addEventListener('mouseenter', () => {
+                button.style.transform = 'translateY(-4px)';
+                button.style.boxShadow = '0 12px 35px rgba(0,0,0,0.3)';
+              });
+              
+              button.addEventListener('mouseleave', () => {
+                button.style.transform = 'translateY(0px)';
+                button.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+              });
+
+              console.log('Successfully styled Google Calendar button!');
+              setButtonLoaded(true);
+            } else {
+              console.warn('Could not find Google Calendar button');
+              setShowFallback(true);
+            }
+          }, 2000); // Wait 2 seconds for Google to create the button
+
+        } catch (error) {
+          console.error('Error loading Google Calendar button:', error);
           setShowFallback(true);
         }
-      }, 2000);
+      } else {
+        setShowFallback(true);
+      }
     };
 
     if (window.calendar?.schedulingButton) {
@@ -34,7 +72,7 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
     } else {
       const timeout = setTimeout(() => {
         setShowFallback(true);
-      }, 5000);
+      }, 8000);
 
       const checkScript = setInterval(() => {
         if (window.calendar?.schedulingButton) {
@@ -57,23 +95,17 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
 
   return (
     <Box sx={{ textAlign: 'center' }}>
-      {/* Only show ONE button - either Google's embedded button OR fallback */}
-      {!showFallback ? (
+      {/* Google Calendar Button Container */}
+      {!showFallback && (
         <>
           <Box 
             ref={calendarButtonRef}
             sx={{ 
-              minHeight: '80px', // Increased height
+              minHeight: '100px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              mb: 3,
-              '& .calendar-scheduling-button': {
-                fontSize: '1.3rem !important', // Larger button
-                padding: '16px 32px !important',
-                minHeight: '60px !important',
-                minWidth: '300px !important'
-              }
+              mb: 3
             }}
           />
           
@@ -87,8 +119,10 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
             </Typography>
           )}
         </>
-      ) : (
-        // Fallback button - larger and more prominent
+      )}
+
+      {/* Fallback button if Google's button fails */}
+      {showFallback && (
         <Box sx={{ mb: 3 }}>
           <Button
             variant="contained"
@@ -96,16 +130,17 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
             size="large"
             onClick={handleDirectBooking}
             sx={{ 
-              fontSize: '1.3rem', 
-              py: 2.5, 
+              fontSize: '1.6rem', 
+              py: 3, 
               px: 6,
-              minHeight: '70px',
-              minWidth: '320px',
-              borderRadius: 3,
-              boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+              minHeight: '80px',
+              minWidth: '400px',
+              borderRadius: 4,
+              boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+              fontWeight: 700,
               '&:hover': {
-                boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
-                transform: 'translateY(-2px)'
+                boxShadow: '0 12px 35px rgba(0,0,0,0.3)',
+                transform: 'translateY(-4px)'
               }
             }}
           >
