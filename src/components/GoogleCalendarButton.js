@@ -5,36 +5,60 @@ import { Schedule } from '@mui/icons-material';
 const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
   const calendarButtonRef = useRef(null);
   const [buttonLoaded, setButtonLoaded] = useState(false);
+  const [scriptError, setScriptError] = useState(false);
 
   useEffect(() => {
     const initializeButton = () => {
-      if (window.calendar?.schedulingButton && calendarButtonRef.current) {
-        try {
-          window.calendar.schedulingButton.load({
-            url: `${companyConfig.calendarUrl}?gv=true`,
-            color: companyConfig.primaryColor,
-            label: 'Book Your Appointment',
-            target: calendarButtonRef.current,
-          });
-          setButtonLoaded(true);
-        } catch (error) {
-          console.error('Error loading Google Calendar button:', error);
+      // Add timeout to ensure scripts are fully loaded
+      setTimeout(() => {
+        if (window.calendar?.schedulingButton && calendarButtonRef.current) {
+          try {
+            console.log('Loading Google Calendar button with URL:', companyConfig.calendarUrl);
+            
+            window.calendar.schedulingButton.load({
+              url: companyConfig.calendarUrl, // Remove ?gv=true as it might cause issues
+              color: companyConfig.primaryColor,
+              label: 'Book Your Appointment',
+              target: calendarButtonRef.current,
+            });
+            setButtonLoaded(true);
+          } catch (error) {
+            console.error('Error loading Google Calendar button:', error);
+            setScriptError(true);
+          }
+        } else {
+          console.error('Google Calendar scheduling script not loaded');
+          setScriptError(true);
         }
-      }
+      }, 1000);
     };
 
-    if (window.calendar) {
+    // Check if script is already loaded
+    if (window.calendar?.schedulingButton) {
       initializeButton();
     } else {
+      // Wait for script to load with longer timeout
       const checkScript = setInterval(() => {
-        if (window.calendar) {
+        if (window.calendar?.schedulingButton) {
           clearInterval(checkScript);
           initializeButton();
         }
-      }, 100);
-      setTimeout(() => clearInterval(checkScript), 10000);
+      }, 500);
+
+      // Longer cleanup timeout
+      setTimeout(() => {
+        clearInterval(checkScript);
+        if (!buttonLoaded) {
+          setScriptError(true);
+        }
+      }, 15000);
     }
-  }, [companyConfig]);
+  }, [companyConfig, buttonLoaded]);
+
+  // Fallback to direct link if button fails
+  const handleDirectBooking = () => {
+    window.open(companyConfig.calendarUrl, '_blank');
+  };
 
   return (
     <Box sx={{ textAlign: 'center' }}>
@@ -61,17 +85,35 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked }) => {
         </Box>
       )}
       
-      {!buttonLoaded && (
+      {/* Fallback button if Google Calendar button fails */}
+      {(scriptError || !buttonLoaded) && (
         <Box sx={{ 
           p: 3, 
-          border: '2px dashed', 
-          borderColor: 'grey.300',
+          border: '2px solid', 
+          borderColor: 'primary.main',
           borderRadius: 2,
-          bgcolor: 'grey.50'
+          bgcolor: 'background.paper'
         }}>
-          <Schedule sx={{ fontSize: 48, color: 'grey.400', mb: 2 }} />
-          <Typography variant="body1" color="text.secondary">
-            Loading appointment scheduler...
+          <Schedule sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+          <Typography variant="h6" gutterBottom>
+            Book Your Appointment
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={handleDirectBooking}
+            sx={{ 
+              fontSize: '1.1rem', 
+              py: 1.5, 
+              px: 4,
+              mb: 2
+            }}
+          >
+            Open Scheduling Calendar
+          </Button>
+          <Typography variant="body2" color="text.secondary">
+            Click above to open the booking calendar in a new tab
           </Typography>
         </Box>
       )}

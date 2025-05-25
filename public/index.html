@@ -28,14 +28,31 @@
         background-color: #f5f5f5;
       }
       
-      /* Ensure the app takes the full height of the viewport */
       html, body, #root {
         height: 100%;
+      }
+      
+      .calendar-scheduling-button {
+        font-family: 'Roboto', sans-serif !important;
+        font-size: 1.1rem !important;
+        font-weight: 500 !important;
+        padding: 12px 24px !important;
+        border-radius: 8px !important;
+        transition: all 0.2s ease !important;
+      }
+      
+      .calendar-scheduling-button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important;
       }
     </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    
+    <!-- Google Calendar Appointment Scheduling - Load at end of body -->
+    <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+    <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
   </body>
 </html>
