@@ -7,7 +7,12 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Online Appointment scheduling portal  - Powered by Step Sciences"
+      content="Online Appointment scheduling portal - Powered by Step Sciences"
+    />
+    <meta property="og:title" content="Online Appointment Scheduling Portal" />
+    <meta
+      property="og:description"
+      content="Online Appointment scheduling portal - Powered by Step Sciences"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logos/apple-touch-icon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -17,6 +22,9 @@
     
     <!-- Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    
+    <!-- Google Calendar Appointment Scheduling CSS -->
+    <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
     
     <title>Online Appointment Scheduling Portal</title>
     
@@ -28,22 +36,124 @@
         background-color: #f5f5f5;
       }
       
+      /* Ensure the app takes the full height of the viewport */
       html, body, #root {
         height: 100%;
       }
       
+      /* Google Calendar button styling - Make it larger and more prominent */
       .calendar-scheduling-button {
         font-family: 'Roboto', sans-serif !important;
-        font-size: 1.1rem !important;
-        font-weight: 500 !important;
-        padding: 12px 24px !important;
-        border-radius: 8px !important;
-        transition: all 0.2s ease !important;
+        font-size: 1.4rem !important;
+        font-weight: 600 !important;
+        padding: 18px 36px !important;
+        border-radius: 12px !important;
+        transition: all 0.3s ease !important;
+        min-height: 70px !important;
+        min-width: 320px !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+        text-transform: none !important;
+        letter-spacing: 0.5px !important;
       }
       
       .calendar-scheduling-button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important;
+      }
+      
+      .calendar-scheduling-button:active {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+      }
+      
+      /* Force proper text visibility in colored cards */
+      .MuiCard-root .MuiTypography-root {
+        color: #000000 !important;
+        z-index: 10 !important;
+        position: relative !important;
+        text-shadow: none !important;
+      }
+      
+      /* Ensure card content has proper contrast */
+      .MuiCardContent-root {
+        position: relative !important;
+        z-index: 5 !important;
+      }
+      
+      /* Override any theme colors that might interfere with text readability */
+      .MuiCard-root[style*="background"] .MuiTypography-root,
+      .MuiCard-root .MuiTypography-h6,
+      .MuiCard-root .MuiTypography-body1 {
+        color: #000000 !important;
+        font-weight: 500 !important;
+      }
+      
+      /* Improve scan day location cards */
+      .scan-day-card {
+        position: relative !important;
+      }
+      
+      .scan-day-card .MuiTypography-root {
+        color: #000000 !important;
+        z-index: 10 !important;
+      }
+      
+      /* Warning box text */
+      .warning-box .MuiTypography-root {
+        color: #000000 !important;
+        font-weight: 500 !important;
+      }
+      
+      /* Loading states */
+      .calendar-button-loading {
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #ccc;
+        border-radius: 12px;
+        background-color: #f9f9f9;
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        .calendar-scheduling-button {
+          font-size: 1.2rem !important;
+          padding: 16px 24px !important;
+          min-width: 280px !important;
+          min-height: 60px !important;
+        }
+      }
+      
+      /* Ensure Material-UI icons have proper contrast */
+      .MuiSvgIcon-root {
+        z-index: 10 !important;
+      }
+      
+      /* Override any conflicting background colors */
+      .MuiPaper-root[style*="background-color"] .MuiTypography-root {
+        color: #000000 !important;
+      }
+      
+      /* Success and info colored backgrounds need dark text */
+      .MuiCard-root[style*="rgb(232, 245, 233)"] .MuiTypography-root,
+      .MuiCard-root[style*="rgb(227, 242, 253)"] .MuiTypography-root {
+        color: #000000 !important;
+        font-weight: 500 !important;
+      }
+      
+      /* Alert boxes */
+      .MuiAlert-root .MuiTypography-root {
+        color: inherit !important;
+      }
+      
+      /* Button improvements */
+      .MuiButton-containedPrimary {
+        font-weight: 600 !important;
+      }
+      
+      .MuiButton-containedSuccess {
+        font-weight: 600 !important;
       }
     </style>
   </head>
@@ -51,8 +161,29 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     
-    <!-- Google Calendar Appointment Scheduling - Load at end of body -->
-    <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+    <!-- Google Calendar Appointment Scheduling JavaScript - Load at end -->
     <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+    
+    <!-- Additional script to ensure proper loading -->
+    <script>
+      // Ensure Google Calendar script loads properly
+      window.addEventListener('load', function() {
+        // Add a small delay to ensure all scripts are loaded
+        setTimeout(function() {
+          if (window.calendar && window.calendar.schedulingButton) {
+            console.log('Google Calendar scheduling script loaded successfully');
+          } else {
+            console.warn('Google Calendar scheduling script may not have loaded');
+          }
+        }, 2000);
+      });
+      
+      // Handle any console errors gracefully
+      window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes('calendar')) {
+          console.warn('Calendar script error handled:', e.message);
+        }
+      });
+    </script>
   </body>
 </html>
