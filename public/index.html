@@ -41,29 +41,64 @@
         height: 100%;
       }
       
-      /* Google Calendar button styling - Make it larger and more prominent */
-      .calendar-scheduling-button {
+      /* Google Calendar button styling - AGGRESSIVE SIZING */
+      .calendar-scheduling-button,
+      button[data-calendar-scheduling-button],
+      [class*="calendar"][class*="button"],
+      [class*="scheduling"][class*="button"] {
         font-family: 'Roboto', sans-serif !important;
-        font-size: 1.4rem !important;
-        font-weight: 600 !important;
-        padding: 18px 36px !important;
-        border-radius: 12px !important;
+        font-size: 1.6rem !important;
+        font-weight: 700 !important;
+        padding: 24px 48px !important;
+        border-radius: 16px !important;
         transition: all 0.3s ease !important;
-        min-height: 70px !important;
-        min-width: 320px !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+        min-height: 80px !important;
+        min-width: 400px !important;
+        max-width: 500px !important;
+        height: 80px !important;
+        width: auto !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
         text-transform: none !important;
-        letter-spacing: 0.5px !important;
+        letter-spacing: 0.8px !important;
+        line-height: 1.2 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
       
-      .calendar-scheduling-button:hover {
-        transform: translateY(-3px) !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important;
+      /* Multiple selectors to catch Google's button */
+      div[data-calendar-scheduling] button,
+      div[data-calendar-scheduling-button] button,
+      .calendar-scheduling-button,
+      button[aria-label*="appointment"],
+      button[aria-label*="booking"],
+      button[aria-label*="schedule"] {
+        font-size: 1.6rem !important;
+        padding: 24px 48px !important;
+        min-height: 80px !important;
+        min-width: 400px !important;
+        height: 80px !important;
+        font-weight: 700 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
       }
       
-      .calendar-scheduling-button:active {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+      .calendar-scheduling-button:hover,
+      button[data-calendar-scheduling-button]:hover,
+      div[data-calendar-scheduling] button:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 12px 35px rgba(0,0,0,0.3) !important;
+        font-size: 1.6rem !important;
+        padding: 24px 48px !important;
+        min-height: 80px !important;
+        min-width: 400px !important;
+      }
+      
+      .calendar-scheduling-button:active,
+      button[data-calendar-scheduling-button]:active,
+      div[data-calendar-scheduling] button:active {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25) !important;
       }
       
       /* Force proper text visibility in colored cards */
@@ -164,19 +199,77 @@
     <!-- Google Calendar Appointment Scheduling JavaScript - Load at end -->
     <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
     
-    <!-- Additional script to ensure proper loading -->
+    <!-- Additional script to ensure proper loading and button styling -->
     <script>
+      // Function to force style the Google Calendar button
+      function forceStyleCalendarButton() {
+        // Find all possible button elements
+        const selectors = [
+          '.calendar-scheduling-button',
+          'button[data-calendar-scheduling-button]',
+          'div[data-calendar-scheduling] button',
+          'button[aria-label*="appointment"]',
+          'button[aria-label*="booking"]',
+          'button[aria-label*="schedule"]',
+          'button[class*="calendar"]',
+          'button[class*="scheduling"]'
+        ];
+        
+        selectors.forEach(selector => {
+          const buttons = document.querySelectorAll(selector);
+          buttons.forEach(button => {
+            if (button && button.textContent && button.textContent.toLowerCase().includes('appointment')) {
+              // Force apply large button styles
+              button.style.fontSize = '1.6rem';
+              button.style.padding = '24px 48px';
+              button.style.minHeight = '80px';
+              button.style.minWidth = '400px';
+              button.style.height = '80px';
+              button.style.fontWeight = '700';
+              button.style.borderRadius = '16px';
+              button.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+              button.style.transition = 'all 0.3s ease';
+              button.style.textTransform = 'none';
+              button.style.letterSpacing = '0.8px';
+              button.style.lineHeight = '1.2';
+              console.log('Applied large button styling to:', button);
+            }
+          });
+        });
+      }
+      
       // Ensure Google Calendar script loads properly
       window.addEventListener('load', function() {
-        // Add a small delay to ensure all scripts are loaded
         setTimeout(function() {
           if (window.calendar && window.calendar.schedulingButton) {
             console.log('Google Calendar scheduling script loaded successfully');
+            // Apply button styling after a delay
+            setTimeout(forceStyleCalendarButton, 1000);
+            setTimeout(forceStyleCalendarButton, 3000);
+            setTimeout(forceStyleCalendarButton, 5000);
           } else {
             console.warn('Google Calendar scheduling script may not have loaded');
           }
         }, 2000);
       });
+      
+      // Observer to catch dynamically added buttons
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.addedNodes.length > 0) {
+            setTimeout(forceStyleCalendarButton, 500);
+          }
+        });
+      });
+      
+      // Start observing
+      if (document.body) {
+        observer.observe(document.body, { childList: true, subtree: true });
+      } else {
+        document.addEventListener('DOMContentLoaded', function() {
+          observer.observe(document.body, { childList: true, subtree: true });
+        });
+      }
       
       // Handle any console errors gracefully
       window.addEventListener('error', function(e) {
