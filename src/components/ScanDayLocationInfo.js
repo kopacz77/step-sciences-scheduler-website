@@ -36,7 +36,7 @@ const ScanDayLocationInfo = ({ companyConfig }) => {
                   color: '#000000', // Force black text
                   zIndex: 10
                 }}>
-                  Monday Appointments
+                  Monday Appointment
                 </Typography>
               </Box>
               <Typography variant="body1" sx={{ 
@@ -66,7 +66,7 @@ const ScanDayLocationInfo = ({ companyConfig }) => {
                   color: '#000000', // Force black text
                   zIndex: 10
                 }}>
-                  Friday Appointments
+                  Friday Appointment
                 </Typography>
               </Box>
               <Typography variant="body1" sx={{ 
