@@ -114,8 +114,8 @@ const companyConfigs = {
   'copernicus-lodge': {
   name: 'Copernicus Lodge',
   fullName: 'Copernicus Lodge Toronto',
-  primaryColor: '#8B4513', // Rich brown
-  secondaryColor: '#DAA520', // Goldenrod
+  primaryColor: '#000000', // Standard black (same as other clients)
+  secondaryColor: '#D4AF37', // Standard gold (same as other clients)
   logo: '/logos/copernicus-lodge.png',
   calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0f5-nJpsx_uNkfZjXbvtQ1sQRCtWNEV64db7YUkMM1i-_sgf9hjajZB6z-a0iCKU7qbnsNNWaK',
   intakeFormUrl: 'https://step-sciences.web.app/intake/copernicus/lodge',
