@@ -133,7 +133,7 @@ function App() {
     setShowIntakeForm(false);
   };
 
-  // NEW: Reset function
+  // Reset function
   const handleStartOver = () => {
     // Clear localStorage
     localStorage.removeItem('appointmentBooked');
@@ -189,32 +189,6 @@ function App() {
         <Header companyConfig={companyConfig} />
 
         <Container maxWidth="lg" sx={{ py: 3, flexGrow: 1 }}>
-          {/* Start Over Button - Show when not on step 0 */}
-          {activeStep > 0 && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleStartOver}
-                startIcon={<Refresh />}
-                sx={{
-                  fontSize: '1rem',
-                  py: 1.5,
-                  px: 3,
-                  borderRadius: 3,
-                  borderWidth: 2,
-                  '&:hover': {
-                    borderWidth: 2,
-                    backgroundColor: 'primary.main',
-                    color: 'white'
-                  }
-                }}
-              >
-                Start Over
-              </Button>
-            </Box>
-          )}
-
           {/* Welcome Message */}
           <Paper 
             elevation={0} 
@@ -329,6 +303,32 @@ function App() {
             onBackToForm={handleBackToFormButton}
           />
 
+          {/* MOVED: Start Over Button - Show when on step 1 (Complete Intake Form) */}
+          {activeStep === 1 && !showIntakeForm && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 4 }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleStartOver}
+                startIcon={<Refresh />}
+                sx={{
+                  fontSize: '1rem',
+                  py: 1.5,
+                  px: 3,
+                  borderRadius: 3,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderWidth: 2,
+                    backgroundColor: 'primary.main',
+                    color: 'white'
+                  }
+                }}
+              >
+                Start Over
+              </Button>
+            </Box>
+          )}
+
           {/* Final Step Location Reminder */}
           {activeStep === 2 && (companyConfig.hasScanDays || companyConfig.meetingLocation) && (
             <Box sx={{ 
@@ -401,8 +401,8 @@ function App() {
           </Paper>
         </Container>
 
-        {/* Floating Action Button for Start Over (Mobile) */}
-        {activeStep > 0 && isMobile && (
+        {/* Floating Action Button for Start Over (Mobile) - Show on step 1 only */}
+        {activeStep === 1 && !showIntakeForm && isMobile && (
           <Fab
             color="primary"
             aria-label="start over"
