@@ -109,14 +109,30 @@ const companyConfigs = {
     meetingLocation: 'Medical Center, First Floor',
     specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
     domain: 'fordoakville.stepsciences.com'
-  }
+  },
+
+  'copernicus-lodge': {
+  name: 'Copernicus Lodge',
+  fullName: 'Copernicus Lodge Toronto',
+  primaryColor: '#8B4513', // Rich brown
+  secondaryColor: '#DAA520', // Goldenrod
+  logo: '/logos/copernicus-lodge.png',
+  calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0f5-nJpsx_uNkfZjXbvtQ1sQRCtWNEV64db7YUkMM1i-_sgf9hjajZB6z-a0iCKU7qbnsNNWaK',
+  intakeFormUrl: 'https://step-sciences.web.app/intake/copernicus/lodge',
+  contactEmail: 'info@stepsciences.com',
+  showBranding: true,
+  meetingLocation: 'Copernicus Lodge, 66 Roncesvalles Ave, Toronto, ON',
+  specialInstructions: 'Please bring valid ID and any relevant documentation to your appointment.',
+  domain: 'copernicus-lodge.stepsciences.com'
+}
+
 };
 
 // Domain detection helper
 export const getCompanyIdFromDomain = () => {
   const hostname = window.location.hostname.toLowerCase();
   
-  // Check for specific subdomains of stepsciences.com
+  // Automotive clients
   if (hostname.includes('gmoshawa.stepsciences.com')) return 'gm-oshawa';
   if (hostname.includes('gmcami.stepsciences.com')) return 'gm-cami';
   if (hostname.includes('stellantiswindsor.stepsciences.com')) return 'stellantis-windsor';
@@ -125,18 +141,19 @@ export const getCompanyIdFromDomain = () => {
   if (hostname.includes('stellantisbrampton.stepsciences.com')) return 'stellantis-brampton';
   if (hostname.includes('fordoakville.stepsciences.com')) return 'ford-oakville';
   
-  // For GitHub Pages development or when using the main appointment domain
+  // Lodge/hospitality clients
+  if (hostname.includes('copernicus-lodge.stepsciences.com')) return 'copernicus-lodge';
+  
+  // Main domain with parameters (fallback)
   if (hostname.includes('appointments.stepsciences.com') || 
       hostname.includes('localhost') || 
       hostname.includes('127.0.0.1')) {
-    // Check if there's a company parameter in the URL
     const urlParams = new URLSearchParams(window.location.search);
     const companyParam = urlParams.get('company');
     if (companyParam) return companyParam;
   }
   
-  // Default fallback
-  return 'gm-oshawa';
+  return 'gm-oshawa'; // Default
 };
 
 export const getCompanyConfig = (companyId) => {
