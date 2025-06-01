@@ -9,9 +9,11 @@ import {
   StepLabel,
   useMediaQuery,
   Alert,
+  Button,
+  Fab,
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { EventAvailable, NoteAdd, Check, LocationOn, Info } from '@mui/icons-material';
+import { EventAvailable, NoteAdd, Check, LocationOn, Info, Refresh } from '@mui/icons-material';
 import { getCompanyConfig, getCompanyIdFromDomain } from './config/companyConfigs';
 
 // Import components
@@ -51,6 +53,23 @@ function App() {
     if (status === 'booked') {
       setAppointmentBooked(true);
       setActiveStep(1);
+    }
+    
+    // Check for reset parameter
+    const resetParam = urlParams.get('reset');
+    if (resetParam === 'true') {
+      // Clear localStorage and reset state
+      localStorage.removeItem('appointmentBooked');
+      localStorage.removeItem('intakeFormCompleted');
+      setAppointmentBooked(false);
+      setActiveStep(0);
+      setShowIntakeForm(false);
+      
+      // Clean URL by removing reset parameter
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.delete('reset');
+      window.history.replaceState({}, '', newUrl);
+      return;
     }
 
     const storedBookingStatus = localStorage.getItem('appointmentBooked');
@@ -112,6 +131,21 @@ function App() {
 
   const handleBackToFormButton = () => {
     setShowIntakeForm(false);
+  };
+
+  // Reset function
+  const handleStartOver = () => {
+    // Clear localStorage
+    localStorage.removeItem('appointmentBooked');
+    localStorage.removeItem('intakeFormCompleted');
+    
+    // Reset all state
+    setAppointmentBooked(false);
+    setActiveStep(0);
+    setShowIntakeForm(false);
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
   };
 
   // Define steps
@@ -269,6 +303,32 @@ function App() {
             onBackToForm={handleBackToFormButton}
           />
 
+          {/* MOVED: Start Over Button - Show when on step 1 (Complete Intake Form) */}
+          {activeStep === 1 && !showIntakeForm && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 4 }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleStartOver}
+                startIcon={<Refresh />}
+                sx={{
+                  fontSize: '1rem',
+                  py: 1.5,
+                  px: 3,
+                  borderRadius: 3,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderWidth: 2,
+                    backgroundColor: 'primary.main',
+                    color: 'white'
+                  }
+                }}
+              >
+                Start Over
+              </Button>
+            </Box>
+          )}
+
           {/* Final Step Location Reminder */}
           {activeStep === 2 && (companyConfig.hasScanDays || companyConfig.meetingLocation) && (
             <Box sx={{ 
@@ -340,6 +400,23 @@ function App() {
             </Typography>
           </Paper>
         </Container>
+
+        {/* Floating Action Button for Start Over (Mobile) - Show on step 1 only */}
+        {activeStep === 1 && !showIntakeForm && isMobile && (
+          <Fab
+            color="primary"
+            aria-label="start over"
+            onClick={handleStartOver}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000,
+            }}
+          >
+            <Refresh />
+          </Fab>
+        )}
 
         {/* Footer */}
         <Box sx={{ 
