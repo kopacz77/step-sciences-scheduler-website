@@ -1,4 +1,4 @@
-import { Box, Typography, Card, CardContent, Alert, Button } from '@mui/material';
+import { Box, Typography, Card, CardContent, Alert, Button, useMediaQuery } from '@mui/material';
 import { EventAvailable, NoteAdd, Check, Info, ArrowBack } from '@mui/icons-material';
 import GoogleCalendarButton from './GoogleCalendarButton';
 
@@ -12,14 +12,16 @@ const StepContent = ({
   onIntakeFormComplete,
   onBackToForm
 }) => {
+  const isMobile = useMediaQuery('(max-width:600px)');
+
   return (
-    <Card variant="outlined" sx={{ mb: 4, overflow: 'hidden' }}>
+    <Card variant="outlined" sx={{ mb: { xs: 2, sm: 4 }, overflow: 'hidden' }}>
       <CardContent sx={{ p: 0 }}>
-        {/* Step Header */}
+        {/* Mobile-Optimized Step Header */}
         <Box sx={{ 
           display: 'flex', 
           alignItems: 'center', 
-          p: 3,
+          p: { xs: 2, sm: 3 },
           borderBottom: '1px solid',
           borderColor: 'grey.200',
           bgcolor: 'grey.50'
@@ -28,49 +30,58 @@ const StepContent = ({
             backgroundColor: 'primary.main',
             color: 'white',
             borderRadius: '50%',
-            width: 48,
-            height: 48,
+            width: { xs: 40, sm: 48 },
+            height: { xs: 40, sm: 48 },
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            mr: 2,
+            mr: { xs: 1.5, sm: 2 },
             boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
           }}>
             {steps[activeStep].icon}
           </Box>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" component="h2" sx={{ fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
             {steps[activeStep].label}
           </Typography>
         </Box>
 
         {/* Step Content */}
-        <Box sx={{ p: 3 }}>
-          <Typography variant="body1" sx={{ mb: 3, fontSize: '1.2rem' }}>
-            {steps[activeStep].description}
-          </Typography>
+        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+          {/* Reduced description on mobile */}
+          {!isMobile && (
+            <Typography variant="body1" sx={{ mb: 3, fontSize: '1.2rem' }}>
+              {steps[activeStep].description}
+            </Typography>
+          )}
 
           {activeStep === 0 && (
             <Box>
-              <Typography variant="body2" sx={{ mb: 3, fontSize: '1.1rem', textAlign: 'center' }}>
-                Click the booking button below to schedule your appointment:
+              <Typography variant="body2" sx={{ 
+                mb: { xs: 2, sm: 3 }, 
+                fontSize: { xs: '1rem', sm: '1.1rem' }, 
+                textAlign: 'center',
+                fontWeight: isMobile ? 600 : 400
+              }}>
+                {isMobile ? 'Tap to book your appointment:' : 'Click the booking button below to schedule your appointment:'}
               </Typography>
               
               <GoogleCalendarButton 
                 companyConfig={companyConfig}
                 onAppointmentBooked={onAppointmentBooked}
+                isMobile={isMobile}
               />
 
               {companyConfig.specialInstructions && (
                 <Box sx={{ 
                   display: 'flex', 
                   alignItems: 'flex-start', 
-                  mt: 4, 
-                  p: 3, 
+                  mt: { xs: 3, sm: 4 }, 
+                  p: { xs: 2, sm: 3 }, 
                   bgcolor: 'info.light', 
                   borderRadius: 2 
                 }}>
-                  <Info color="info" sx={{ mr: 1, mt: 0.3, fontSize: 24 }} />
-                  <Typography variant="body2" color="info.dark" sx={{ fontSize: '1.1rem' }}>
+                  <Info color="info" sx={{ mr: 1, mt: 0.3, fontSize: { xs: 20, sm: 24 } }} />
+                  <Typography variant="body2" color="info.dark" sx={{ fontSize: { xs: '0.95rem', sm: '1.1rem' } }}>
                     <strong>Note:</strong> {companyConfig.specialInstructions}
                   </Typography>
                 </Box>
@@ -82,28 +93,62 @@ const StepContent = ({
             <Box>
               {!showIntakeForm ? (
                 <Box>
-                  <Alert severity="success" sx={{ mb: 3 }}>
-                    <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>
-                      ✓ Great! Your appointment has been booked.
+                  <Alert severity="success" sx={{ mb: { xs: 2, sm: 3 } }}>
+                    <Typography variant="body1" sx={{ fontSize: { xs: '1rem', sm: '1.1rem' }, fontWeight: 600 }}>
+                      ✓ {isMobile ? 'Appointment booked!' : 'Great! Your appointment has been booked.'}
                     </Typography>
                   </Alert>
                   
-                  <Typography variant="body1" sx={{ mb: 3, fontSize: '1.2rem' }}>
-                    Now please complete the intake form below. This form will help us prepare for your visit.
+                  <Typography variant="body1" sx={{ 
+                    mb: { xs: 2, sm: 3 }, 
+                    fontSize: { xs: '1.05rem', sm: '1.2rem' },
+                    textAlign: isMobile ? 'center' : 'left',
+                    fontWeight: isMobile ? 500 : 400
+                  }}>
+                    {isMobile ? 'Now complete the intake form:' : 'Now please complete the intake form below. This form will help us prepare for your visit.'}
                   </Typography>
                   
-                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  {/* CRITICAL: Make this button super prominent on mobile */}
+                  <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'center',
+                    mt: { xs: 2, sm: 0 }
+                  }}>
                     <Button
                       variant="contained"
                       color="primary"
                       size="large"
-                      startIcon={<NoteAdd sx={{ fontSize: 24 }} />}
+                      startIcon={<NoteAdd sx={{ fontSize: { xs: 20, sm: 24 } }} />}
                       onClick={onIntakeForm}
-                      sx={{ fontSize: '1.2rem', py: 1.5, px: 4 }}
+                      sx={{ 
+                        fontSize: { xs: '1.1rem', sm: '1.2rem' }, 
+                        py: { xs: 2, sm: 1.5 }, 
+                        px: { xs: 4, sm: 4 },
+                        fontWeight: 'bold',
+                        minHeight: { xs: '56px', sm: 'auto' },
+                        boxShadow: isMobile ? '0 6px 20px rgba(0,0,0,0.15)' : undefined,
+                        '&:hover': {
+                          boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+                          transform: 'translateY(-2px)'
+                        }
+                      }}
                     >
-                      Complete Intake Form
+                      {isMobile ? 'Complete Form' : 'Complete Intake Form'}
                     </Button>
                   </Box>
+
+                  {/* Mobile-specific CTA reminder */}
+                  {isMobile && (
+                    <Typography variant="body2" sx={{ 
+                      mt: 2, 
+                      textAlign: 'center', 
+                      color: 'text.secondary',
+                      fontSize: '0.9rem',
+                      fontStyle: 'italic'
+                    }}>
+                      Required to complete your appointment
+                    </Typography>
+                  )}
                 </Box>
               ) : (
                 <Box>
@@ -120,10 +165,15 @@ const StepContent = ({
                       color="primary" 
                       onClick={onBackToForm}
                       startIcon={<ArrowBack />}
-                      sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
+                      sx={{ 
+                        alignSelf: { xs: 'flex-start', sm: 'center' },
+                        fontSize: { xs: '0.9rem', sm: '1rem' }
+                      }}
                     >
                       Back to Instructions
                     </Button>
+                    
+                    {/* CRITICAL: Make this completion button super prominent */}
                     <Button 
                       variant="contained" 
                       color="success"
@@ -131,15 +181,33 @@ const StepContent = ({
                       onClick={onIntakeFormComplete}
                       sx={{ 
                         fontWeight: 'bold',
-                        fontSize: '1.1rem',
-                        alignSelf: { xs: 'flex-end', sm: 'center' }
+                        fontSize: { xs: '1.05rem', sm: '1.1rem' },
+                        alignSelf: { xs: 'flex-end', sm: 'center' },
+                        py: { xs: 1.5, sm: 1 },
+                        px: { xs: 3, sm: 2 },
+                        minHeight: { xs: '48px', sm: 'auto' },
+                        boxShadow: isMobile ? '0 6px 20px rgba(76, 175, 80, 0.3)' : undefined,
+                        '&:hover': {
+                          boxShadow: '0 8px 25px rgba(76, 175, 80, 0.4)',
+                          transform: 'translateY(-2px)'
+                        }
                       }}
                     >
-                      I've Completed the Form
+                      {isMobile ? 'Form Complete ✓' : 'I\'ve Completed the Form'}
                     </Button>
                   </Box>
+
+                  {/* Mobile-specific reminder above iframe */}
+                  {isMobile && (
+                    <Alert severity="warning" sx={{ mb: 2 }}>
+                      <Typography variant="body2" sx={{ fontSize: '0.9rem' }}>
+                        <strong>Important:</strong> Complete the form below, then tap "Form Complete ✓" above
+                      </Typography>
+                    </Alert>
+                  )}
+
                   <Box sx={{ 
-                    height: { xs: '600px', md: '700px' }, 
+                    height: { xs: '500px', sm: '600px', md: '700px' }, 
                     border: '1px solid #e0e0e0', 
                     borderRadius: 2, 
                     overflow: 'hidden',
@@ -160,20 +228,29 @@ const StepContent = ({
 
           {activeStep === 2 && (
             <Box>
-              <Typography variant="body1" sx={{ mb: 3, fontSize: '1.2rem' }}>
-                Thank you for completing both steps! Your appointment is now fully confirmed.
+              <Typography variant="body1" sx={{ 
+                mb: { xs: 2, sm: 3 }, 
+                fontSize: { xs: '1.1rem', sm: '1.2rem' },
+                textAlign: isMobile ? 'center' : 'left'
+              }}>
+                {isMobile ? 'All done! Your appointment is confirmed.' : 'Thank you for completing both steps! Your appointment is now fully confirmed.'}
               </Typography>
               <Box sx={{ 
-                p: 3, 
+                p: { xs: 2, sm: 3 }, 
                 backgroundColor: 'success.light', 
                 borderRadius: 2,
                 display: 'flex',
                 alignItems: 'center',
+                flexDirection: { xs: 'column', sm: 'row' },
+                textAlign: { xs: 'center', sm: 'left' },
                 mb: 4
               }}>
-                <Check color="success" sx={{ mr: 2, fontSize: 32 }} />
-                <Typography variant="h6" color="success.dark" sx={{ fontWeight: 500 }}>
-                  You're all set! We look forward to seeing you at your scheduled time.
+                <Check color="success" sx={{ mr: { xs: 0, sm: 2 }, mb: { xs: 1, sm: 0 }, fontSize: { xs: 28, sm: 32 } }} />
+                <Typography variant="h6" color="success.dark" sx={{ 
+                  fontWeight: 500,
+                  fontSize: { xs: '1.1rem', sm: '1.25rem' }
+                }}>
+                  {isMobile ? 'You\'re all set!' : 'You\'re all set! We look forward to seeing you at your scheduled time.'}
                 </Typography>
               </Box>
             </Box>
