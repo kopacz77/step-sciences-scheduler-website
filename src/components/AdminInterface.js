@@ -77,7 +77,12 @@ const formatCompanyForDatabase = (company) => ({
   show_branding: Boolean(company.showBranding ?? true),
   meeting_location: company.meetingLocation?.trim() || null,
   monday_location: company.scanDayLocations?.monday?.trim() || null,
+  tuesday_location: company.scanDayLocations?.tuesday?.trim() || null,
+  wednesday_location: company.scanDayLocations?.wednesday?.trim() || null,
+  thursday_location: company.scanDayLocations?.thursday?.trim() || null,
   friday_location: company.scanDayLocations?.friday?.trim() || null,
+  saturday_location: company.scanDayLocations?.saturday?.trim() || null,
+  sunday_location: company.scanDayLocations?.sunday?.trim() || null,
   special_instructions: company.specialInstructions?.trim() || null,
   domain: company.domain?.toLowerCase().trim(),
   has_scan_days: Boolean(company.hasScanDays),
@@ -167,8 +172,14 @@ const AdminInterface = () => {
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save company');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Save company error:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorData,
+          sentData: dbCompany
+        });
+        throw new Error(errorData.error || errorData.errors?.join(', ') || `HTTP ${response.status}: ${response.statusText}`);
       }
       
       const result = await response.json();
@@ -341,13 +352,13 @@ const AdminInterface = () => {
       </Grid>
 
       {/* Edit/Add Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg" fullWidth>
         <DialogTitle>
           {editingCompany?.id ? 'Edit Company' : 'Add New Company'}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ py: 3 }}>
           {editingCompany && (
-            <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -515,47 +526,72 @@ const AdminInterface = () => {
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     Select which days have different meeting locations
                   </Typography>
-                  <Grid container spacing={2}>
-                    {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
-                      <Grid item xs={12} sm={6} md={4} key={day}>
-                        <Paper sx={{ p: 2, bgcolor: 'grey.50', height: '100%' }}>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined}
-                                onChange={(e) => {
-                                  const newLocations = {...(editingCompany.scanDayLocations || {})};
-                                  if (e.target.checked) {
-                                    newLocations[day] = '';
-                                  } else {
-                                    delete newLocations[day];
+                  <Box sx={{ mt: 2 }}>
+                    <Grid container spacing={2}>
+                      {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                        <Grid item xs={12} sm={6} md={4} key={day}>
+                          <Paper 
+                            elevation={1} 
+                            sx={{ 
+                              p: 2.5, 
+                              bgcolor: editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined ? 'primary.50' : 'grey.50',
+                              border: editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined ? '1px solid' : 'none',
+                              borderColor: 'primary.200',
+                              minHeight: 120,
+                              display: 'flex',
+                              flexDirection: 'column'
+                            }}
+                          >
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined}
+                                  onChange={(e) => {
+                                    const newLocations = {...(editingCompany.scanDayLocations || {})};
+                                    if (e.target.checked) {
+                                      newLocations[day] = '';
+                                    } else {
+                                      delete newLocations[day];
+                                    }
+                                    setEditingCompany({...editingCompany, scanDayLocations: newLocations});
+                                  }}
+                                  size="small"
+                                />
+                              }
+                              label={
+                                <Typography variant="subtitle2" fontWeight="600" color="text.primary">
+                                  {day.charAt(0).toUpperCase() + day.slice(1)}
+                                </Typography>
+                              }
+                              sx={{ mb: 1, alignSelf: 'flex-start' }}
+                            />
+                            {editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined && (
+                              <TextField
+                                fullWidth
+                                label="Location Details"
+                                value={editingCompany.scanDayLocations[day] || ''}
+                                onChange={(e) => setEditingCompany({
+                                  ...editingCompany,
+                                  scanDayLocations: {...editingCompany.scanDayLocations, [day]: e.target.value}
+                                })}
+                                multiline
+                                rows={2}
+                                size="small"
+                                variant="outlined"
+                                placeholder="e.g., Building C - Room 101"
+                                sx={{ 
+                                  '& .MuiOutlinedInput-root': {
+                                    backgroundColor: 'white',
+                                    fontSize: '0.875rem'
                                   }
-                                  setEditingCompany({...editingCompany, scanDayLocations: newLocations});
                                 }}
                               />
-                            }
-                            label={<Typography variant="subtitle2" fontWeight="bold">{day.charAt(0).toUpperCase() + day.slice(1)}</Typography>}
-                          />
-                          {editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined && (
-                            <TextField
-                              fullWidth
-                              label={`Location`}
-                              value={editingCompany.scanDayLocations[day] || ''}
-                              onChange={(e) => setEditingCompany({
-                                ...editingCompany,
-                                scanDayLocations: {...editingCompany.scanDayLocations, [day]: e.target.value}
-                              })}
-                              multiline
-                              rows={3}
-                              size="small"
-                              sx={{ mt: 1 }}
-                              placeholder="Building & room info"
-                            />
-                          )}
-                        </Paper>
-                      </Grid>
-                    ))}
-                  </Grid>
+                            )}
+                          </Paper>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
                 </Grid>
               ) : (
                 <Grid item xs={12}>
