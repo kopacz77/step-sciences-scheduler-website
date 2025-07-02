@@ -201,6 +201,14 @@ const AdminInterface = () => {
       setValidationErrors({});
       const dbCompany = formatCompanyForDatabase(company);
 
+      // Debug logging
+      console.log('Frontend validation passed. Sending data:', {
+        originalData: company,
+        formattedData: dbCompany,
+        calendarUrl: dbCompany.calendar_url,
+        intakeFormUrl: dbCompany.intake_form_url
+      });
+
       // Use API endpoints instead of direct Supabase calls to bypass RLS
       const isUpdate = companies.find(c => c.id === company.id);
       const url = isUpdate ? `/api/companies/${company.id}` : '/api/companies';

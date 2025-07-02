@@ -23,11 +23,11 @@ const validateCompany = (company) => {
   }
   
   // Accept any URL that starts with http/https
-  if (!company.calendarUrl || !company.calendarUrl.startsWith('http')) {
+  if (!company.calendar_url || !company.calendar_url.startsWith('http')) {
     errors.push('Valid calendar URL is required (must start with http:// or https://)');
   }
   
-  if (!company.intakeFormUrl || !company.intakeFormUrl.startsWith('http')) {
+  if (!company.intake_form_url || !company.intake_form_url.startsWith('http')) {
     errors.push('Valid intake form URL is required (must start with http:// or https://)');
   }
   
@@ -41,26 +41,26 @@ const validateCompany = (company) => {
 const sanitizeCompany = (company) => ({
   id: company.id?.toLowerCase().trim(),
   name: company.name?.trim(),
-  full_name: company.fullName?.trim(),
-  primary_color: company.primaryColor || '#000000',
-  secondary_color: company.secondaryColor || '#D4AF37',
+  full_name: company.full_name?.trim(),
+  primary_color: company.primary_color || '#000000',
+  secondary_color: company.secondary_color || '#D4AF37',
   logo: company.logo || '/logos/default-logo.png',
-  calendar_url: company.calendarUrl?.trim(),
-  intake_form_url: company.intakeFormUrl?.trim(),
-  contact_email: company.contactEmail?.trim() || 'info@stepsciences.com',
-  show_branding: Boolean(company.showBranding ?? true),
-  meeting_location: company.meetingLocation?.trim() || null,
-  monday_location: company.scanDayLocations?.monday?.trim() || null,
-  tuesday_location: company.scanDayLocations?.tuesday?.trim() || null,
-  wednesday_location: company.scanDayLocations?.wednesday?.trim() || null,
-  thursday_location: company.scanDayLocations?.thursday?.trim() || null,
-  friday_location: company.scanDayLocations?.friday?.trim() || null,
-  saturday_location: company.scanDayLocations?.saturday?.trim() || null,
-  sunday_location: company.scanDayLocations?.sunday?.trim() || null,
-  special_instructions: company.specialInstructions?.trim() || null,
+  calendar_url: company.calendar_url?.trim(),
+  intake_form_url: company.intake_form_url?.trim(),
+  contact_email: company.contact_email?.trim() || 'info@stepsciences.com',
+  show_branding: Boolean(company.show_branding ?? true),
+  meeting_location: company.meeting_location?.trim() || null,
+  monday_location: company.monday_location?.trim() || null,
+  tuesday_location: company.tuesday_location?.trim() || null,
+  wednesday_location: company.wednesday_location?.trim() || null,
+  thursday_location: company.thursday_location?.trim() || null,
+  friday_location: company.friday_location?.trim() || null,
+  saturday_location: company.saturday_location?.trim() || null,
+  sunday_location: company.sunday_location?.trim() || null,
+  special_instructions: company.special_instructions?.trim() || null,
   domain: company.domain?.toLowerCase().trim(),
-  has_scan_days: Boolean(company.hasScanDays),
-  is_active: Boolean(company.isActive ?? true)
+  has_scan_days: Boolean(company.has_scan_days),
+  is_active: Boolean(company.is_active ?? true)
 });
 
 const formatCompanyForClient = (row) => {
@@ -127,8 +127,11 @@ export default async function handler(req, res) {
 
       case 'POST':
         // Create new company (requires admin access)
+        console.log('API received data:', req.body);
         const newCompany = sanitizeCompany(req.body);
+        console.log('After sanitize:', newCompany);
         const errors = validateCompany(newCompany);
+        console.log('Validation errors:', errors);
         
         if (errors.length > 0) {
           return res.status(400).json({ errors });
