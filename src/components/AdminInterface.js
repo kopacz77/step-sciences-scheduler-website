@@ -20,7 +20,9 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  CircularProgress
+  CircularProgress,
+  Paper,
+  Checkbox
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -153,29 +155,23 @@ const AdminInterface = () => {
         throw new Error('Please fill in all required fields');
       }
 
-      let result;
-      if (companies.find(c => c.id === company.id)) {
-        // Update existing company
-        const { data, error } = await supabase
-          .from('companies')
-          .update(dbCompany)
-          .eq('id', company.id)
-          .select()
-          .single();
-        
-        if (error) throw new Error(error.message);
-        result = data;
-      } else {
-        // Insert new company
-        const { data, error } = await supabase
-          .from('companies')
-          .insert([dbCompany])
-          .select()
-          .single();
-        
-        if (error) throw new Error(error.message);
-        result = data;
+      // Use API endpoints instead of direct Supabase calls to bypass RLS
+      const isUpdate = companies.find(c => c.id === company.id);
+      const url = isUpdate ? `/api/companies/${company.id}` : '/api/companies';
+      const method = isUpdate ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dbCompany)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save company');
       }
+      
+      const result = await response.json();
 
       await loadCompanies();
       setDialogOpen(false);
@@ -384,38 +380,66 @@ const AdminInterface = () => {
                   control={
                     <Switch
                       checked={editingCompany.hasScanDays}
-                      onChange={(e) => setEditingCompany({...editingCompany, hasScanDays: e.target.checked})}
+                      onChange={(e) => {
+                        const newState = {...editingCompany, hasScanDays: e.target.checked};
+                        if (!e.target.checked) {
+                          newState.scanDayLocations = {};
+                        } else if (!newState.scanDayLocations || Object.keys(newState.scanDayLocations).length === 0) {
+                          newState.scanDayLocations = { monday: '', friday: '' };
+                        }
+                        setEditingCompany(newState);
+                      }}
                     />
                   }
-                  label="Has Different Locations for Monday/Friday"
+                  label="Has Different Locations by Day of Week"
                 />
               </Grid>
 
               {editingCompany.hasScanDays ? (
-                <>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Monday Location"
-                      value={editingCompany.scanDayLocations.monday}
-                      onChange={(e) => setEditingCompany({
-                        ...editingCompany,
-                        scanDayLocations: {...editingCompany.scanDayLocations, monday: e.target.value}
-                      })}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Friday Location"
-                      value={editingCompany.scanDayLocations.friday}
-                      onChange={(e) => setEditingCompany({
-                        ...editingCompany,
-                        scanDayLocations: {...editingCompany.scanDayLocations, friday: e.target.value}
-                      })}
-                    />
-                  </Grid>
-                </>
+                <Grid item xs={12}>
+                  <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                    Day-Specific Locations
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Select which days have different meeting locations
+                  </Typography>
+                  {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                    <Paper key={day} sx={{ p: 2, mb: 2, bgcolor: 'grey.50' }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined}
+                            onChange={(e) => {
+                              const newLocations = {...(editingCompany.scanDayLocations || {})};
+                              if (e.target.checked) {
+                                newLocations[day] = '';
+                              } else {
+                                delete newLocations[day];
+                              }
+                              setEditingCompany({...editingCompany, scanDayLocations: newLocations});
+                            }}
+                          />
+                        }
+                        label={<Typography variant="subtitle1">{day.charAt(0).toUpperCase() + day.slice(1)}</Typography>}
+                      />
+                      {editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined && (
+                        <TextField
+                          fullWidth
+                          label={`${day.charAt(0).toUpperCase() + day.slice(1)} Location`}
+                          value={editingCompany.scanDayLocations[day] || ''}
+                          onChange={(e) => setEditingCompany({
+                            ...editingCompany,
+                            scanDayLocations: {...editingCompany.scanDayLocations, [day]: e.target.value}
+                          })}
+                          multiline
+                          rows={2}
+                          sx={{ mt: 1 }}
+                          placeholder="e.g., Building C - Medical Offices, 1st Floor"
+                        />
+                      )}
+                    </Paper>
+                  ))}
+                </Grid>
               ) : (
                 <Grid item xs={12}>
                   <TextField
@@ -423,6 +447,9 @@ const AdminInterface = () => {
                     label="Meeting Location"
                     value={editingCompany.meetingLocation || ''}
                     onChange={(e) => setEditingCompany({...editingCompany, meetingLocation: e.target.value})}
+                    multiline
+                    rows={3}
+                    placeholder="e.g., Plant Health Services Building, Main Floor Reception"
                   />
                 </Grid>
               )}
@@ -431,11 +458,12 @@ const AdminInterface = () => {
                 <TextField
                   fullWidth
                   multiline
-                  rows={3}
+                  rows={4}
                   label="Special Instructions"
-                  value={editingCompany.specialInstructions}
+                  value={editingCompany.specialInstructions || ''}
                   onChange={(e) => setEditingCompany({...editingCompany, specialInstructions: e.target.value})}
-                  placeholder="e.g., Please bring health card and ID..."
+                  placeholder="e.g., Please bring health card and employee ID. Arrive 10 minutes early."
+                  helperText="Instructions shown to employees during the booking process"
                 />
               </Grid>
             </Grid>
