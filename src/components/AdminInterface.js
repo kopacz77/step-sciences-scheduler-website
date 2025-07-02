@@ -95,6 +95,7 @@ const AdminInterface = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   // Company form template
   const defaultCompany = {
@@ -150,15 +151,43 @@ const AdminInterface = () => {
     }
   };
 
+  // Validate form fields
+  const validateCompany = (company) => {
+    const errors = {};
+    
+    if (!company.id?.trim()) errors.id = 'Company ID is required';
+    if (!company.name?.trim()) errors.name = 'Company name is required';
+    if (!company.fullName?.trim()) errors.fullName = 'Full company name is required';
+    if (!company.calendarUrl?.trim()) errors.calendarUrl = 'Google Calendar URL is required';
+    if (!company.intakeFormUrl?.trim()) errors.intakeFormUrl = 'Intake form URL is required';
+    if (!company.domain?.trim()) errors.domain = 'Domain is required';
+    
+    // Validate URL formats (relaxed for testing)
+    if (company.calendarUrl && !company.calendarUrl.includes('calendar.google')) {
+      errors.calendarUrl = 'Must be a valid Google Calendar URL';
+    }
+    
+    // Validate ID format
+    if (company.id && !/^[a-z0-9-]+$/.test(company.id)) {
+      errors.id = 'ID must contain only lowercase letters, numbers, and hyphens';
+    }
+    
+    return errors;
+  };
+
   const handleSave = async (company) => {
     try {
       setLoading(true);
-      const dbCompany = formatCompanyForDatabase(company);
       
-      // Validate required fields
-      if (!dbCompany.id || !dbCompany.name || !dbCompany.calendar_url || !dbCompany.intake_form_url) {
-        throw new Error('Please fill in all required fields');
+      // Validate form
+      const errors = validateCompany(company);
+      if (Object.keys(errors).length > 0) {
+        setValidationErrors(errors);
+        throw new Error('Please fix the highlighted fields');
       }
+      
+      setValidationErrors({});
+      const dbCompany = formatCompanyForDatabase(company);
 
       // Use API endpoints instead of direct Supabase calls to bypass RLS
       const isUpdate = companies.find(c => c.id === company.id);
@@ -362,28 +391,52 @@ const AdminInterface = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Company ID"
+                  label="Company ID *"
                   value={editingCompany.id}
-                  onChange={(e) => setEditingCompany({...editingCompany, id: e.target.value})}
-                  placeholder="e.g., gm-windsor"
+                  onChange={(e) => {
+                    setEditingCompany({...editingCompany, id: e.target.value});
+                    if (validationErrors.id) {
+                      setValidationErrors({...validationErrors, id: null});
+                    }
+                  }}
+                  placeholder="e.g., test-plant"
+                  error={!!validationErrors.id}
+                  helperText={validationErrors.id || "Lowercase letters, numbers, and hyphens only"}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Display Name"
+                  label="Display Name *"
                   value={editingCompany.name}
-                  onChange={(e) => setEditingCompany({...editingCompany, name: e.target.value})}
-                  placeholder="e.g., GM Windsor"
+                  onChange={(e) => {
+                    setEditingCompany({...editingCompany, name: e.target.value});
+                    if (validationErrors.name) {
+                      setValidationErrors({...validationErrors, name: null});
+                    }
+                  }}
+                  placeholder="e.g., Test Plant"
+                  error={!!validationErrors.name}
+                  helperText={validationErrors.name}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Full Name"
+                  label="Full Name *"
                   value={editingCompany.fullName}
-                  onChange={(e) => setEditingCompany({...editingCompany, fullName: e.target.value})}
-                  placeholder="e.g., General Motors Windsor Engine Plant"
+                  onChange={(e) => {
+                    setEditingCompany({...editingCompany, fullName: e.target.value});
+                    if (validationErrors.fullName) {
+                      setValidationErrors({...validationErrors, fullName: null});
+                    }
+                  }}
+                  placeholder="e.g., Test Manufacturing Plant - Test City, ON"
+                  error={!!validationErrors.fullName}
+                  helperText={validationErrors.fullName}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -465,19 +518,35 @@ const AdminInterface = () => {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Google Calendar URL"
+                  label="Google Calendar URL *"
                   value={editingCompany.calendarUrl}
-                  onChange={(e) => setEditingCompany({...editingCompany, calendarUrl: e.target.value})}
-                  placeholder="https://calendar.google.com/..."
+                  onChange={(e) => {
+                    setEditingCompany({...editingCompany, calendarUrl: e.target.value});
+                    if (validationErrors.calendarUrl) {
+                      setValidationErrors({...validationErrors, calendarUrl: null});
+                    }
+                  }}
+                  placeholder="https://calendar.google.com/calendar/u/0/appointments/schedules/..."
+                  error={!!validationErrors.calendarUrl}
+                  helperText={validationErrors.calendarUrl || "Copy from an existing plant's calendar URL"}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Intake Form URL"
+                  label="Intake Form URL *"
                   value={editingCompany.intakeFormUrl}
-                  onChange={(e) => setEditingCompany({...editingCompany, intakeFormUrl: e.target.value})}
-                  placeholder="https://step-sciences.web.app/intake/..."
+                  onChange={(e) => {
+                    setEditingCompany({...editingCompany, intakeFormUrl: e.target.value});
+                    if (validationErrors.intakeFormUrl) {
+                      setValidationErrors({...validationErrors, intakeFormUrl: null});
+                    }
+                  }}
+                  placeholder="https://step-sciences.web.app/intake/test/plant"
+                  error={!!validationErrors.intakeFormUrl}
+                  helperText={validationErrors.intakeFormUrl || "Copy from an existing plant's intake form URL"}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -491,10 +560,18 @@ const AdminInterface = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Domain"
+                  label="Domain *"
                   value={editingCompany.domain}
-                  onChange={(e) => setEditingCompany({...editingCompany, domain: e.target.value})}
-                  placeholder="company.stepsciences.com"
+                  onChange={(e) => {
+                    setEditingCompany({...editingCompany, domain: e.target.value});
+                    if (validationErrors.domain) {
+                      setValidationErrors({...validationErrors, domain: null});
+                    }
+                  }}
+                  placeholder="testplant.stepsciences.com"
+                  error={!!validationErrors.domain}
+                  helperText={validationErrors.domain || "Must be a stepsciences.com subdomain"}
+                  required
                 />
               </Grid>
               
