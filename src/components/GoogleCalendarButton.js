@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { Box, Typography, Button, useMediaQuery } from '@mui/material';
-import { Schedule } from '@mui/icons-material';
+import { useState, useEffect, useRef, memo } from 'react';
+import { Box, Typography, Button, useMediaQuery, Alert, CircularProgress, Tooltip } from '@mui/material';
+import { Schedule, CheckCircle, Error as ErrorIcon, Refresh } from '@mui/icons-material';
 
-const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked, isMobile }) => {
+const GoogleCalendarButton = memo(({ companyConfig, onAppointmentBooked, isMobile, isLoading, error, setError }) => {
   const calendarButtonRef = useRef(null);
   const [buttonLoaded, setButtonLoaded] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
+  const [loadingCalendar, setLoadingCalendar] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
   const mobileCheck = useMediaQuery('(max-width:600px)');
   const isActuallyMobile = isMobile || mobileCheck;
 
@@ -118,10 +120,35 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked, isMobile }) 
     window.open(companyConfig.calendarUrl, '_blank');
   };
 
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+    setShowFallback(false);
+    setButtonLoaded(false);
+    setLoadingCalendar(true);
+    setError?.(null);
+  };
+
   return (
     <Box sx={{ textAlign: 'center' }}>
+      {/* Loading State */}
+      {loadingCalendar && !showFallback && (
+        <Box sx={{ 
+          minHeight: { xs: '80px', sm: '100px' },
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          mb: { xs: 2, sm: 3 }
+        }}>
+          <CircularProgress size={isActuallyMobile ? 32 : 40} sx={{ mb: 2 }} />
+          <Typography variant="body2" color="text.secondary">
+            Loading booking calendar...
+          </Typography>
+        </Box>
+      )}
+
       {/* Google Calendar Button Container */}
-      {!showFallback && (
+      {!showFallback && !loadingCalendar && (
         <>
           <Box 
             ref={calendarButtonRef}
@@ -148,9 +175,28 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked, isMobile }) 
         </>
       )}
 
-      {/* Fallback button if Google's button fails */}
+      {/* Enhanced Fallback with Retry Option */}
       {showFallback && (
         <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+          {retryCount < 2 && (
+            <Alert 
+              severity="warning" 
+              sx={{ mb: 2 }}
+              action={
+                <Button
+                  color="inherit"
+                  size="small"
+                  onClick={handleRetry}
+                  startIcon={<Refresh />}
+                >
+                  Retry
+                </Button>
+              }
+            >
+              Calendar didn't load properly. You can retry or use the direct link below.
+            </Alert>
+          )}
+          
           <Button
             variant="contained"
             color="primary"
@@ -186,39 +232,60 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked, isMobile }) 
         </Box>
       )}
 
-      {/* CRITICAL: Make the confirmation button super prominent on mobile */}
+      {/* Enhanced Confirmation Button with Better UX */}
       <Box sx={{ mt: { xs: 3, sm: 4 } }}>
-        <Button
-          variant="contained"
-          color="success"
-          size="large"
-          onClick={onAppointmentBooked}
-          sx={{ 
-            fontSize: { xs: '1.1rem', sm: '1.2rem' }, 
-            py: { xs: 2, sm: 2 }, 
-            px: { xs: 4, sm: 5 },
-            minHeight: { xs: '56px', sm: '60px' },
-            minWidth: { xs: '260px', sm: 'auto' },
-            maxWidth: { xs: '90vw', sm: 'none' },
-            borderRadius: { xs: 3, sm: 3 },
-            boxShadow: { xs: '0 6px 20px rgba(76, 175, 80, 0.3)', sm: '0 4px 12px rgba(0,0,0,0.15)' },
-            fontWeight: 'bold',
-            width: { xs: '100%', sm: 'auto' },
-            '&:hover': {
-              boxShadow: { xs: '0 8px 25px rgba(76, 175, 80, 0.4)', sm: '0 6px 16px rgba(0,0,0,0.2)' },
-              transform: 'translateY(-2px)'
-            }
-          }}
+        <Tooltip 
+          title={isActuallyMobile ? 
+            "Tap this after you've finished booking your appointment" : 
+            "Click this after you've successfully booked your appointment in the calendar above"
+          }
+          placement="top"
         >
-          ✓ {isActuallyMobile ? 'Appointment Booked!' : 'I\'ve Successfully Booked My Appointment'}
-        </Button>
+          <span>
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              onClick={onAppointmentBooked}
+              disabled={isLoading}
+              startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <CheckCircle />}
+              sx={{ 
+                fontSize: { xs: '1.1rem', sm: '1.2rem' }, 
+                py: { xs: 2, sm: 2 }, 
+                px: { xs: 4, sm: 5 },
+                minHeight: { xs: '56px', sm: '60px' },
+                minWidth: { xs: '260px', sm: 'auto' },
+                maxWidth: { xs: '90vw', sm: 'none' },
+                borderRadius: { xs: 3, sm: 3 },
+                boxShadow: { xs: '0 6px 20px rgba(76, 175, 80, 0.3)', sm: '0 4px 12px rgba(0,0,0,0.15)' },
+                fontWeight: 'bold',
+                width: { xs: '100%', sm: 'auto' },
+                '&:hover': {
+                  boxShadow: { xs: '0 8px 25px rgba(76, 175, 80, 0.4)', sm: '0 6px 16px rgba(0,0,0,0.2)' },
+                  transform: 'translateY(-2px)'
+                },
+                '&:disabled': {
+                  backgroundColor: 'grey.400',
+                  color: 'white',
+                  boxShadow: 'none'
+                }
+              }}
+            >
+              {isLoading ? 
+                'Processing...' : 
+                (isActuallyMobile ? 'Appointment Booked!' : 'I\'ve Successfully Booked My Appointment')
+              }
+            </Button>
+          </span>
+        </Tooltip>
         
         <Typography variant="body2" sx={{ 
           mt: 2, 
           color: 'text.secondary',
           fontSize: { xs: '0.9rem', sm: '1rem' },
           fontWeight: isActuallyMobile ? 500 : 400,
-          textAlign: 'center'
+          textAlign: 'center',
+          px: { xs: 2, sm: 0 }
         }}>
           {isActuallyMobile ? 
             'Tap after booking to continue' : 
@@ -228,6 +295,8 @@ const GoogleCalendarButton = ({ companyConfig, onAppointmentBooked, isMobile }) 
       </Box>
     </Box>
   );
-};
+});
+
+GoogleCalendarButton.displayName = 'GoogleCalendarButton';
 
 export default GoogleCalendarButton;

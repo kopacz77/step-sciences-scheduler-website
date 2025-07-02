@@ -128,7 +128,48 @@ const companyConfigs = {
 
 };
 
-// Domain detection helper
+// Validation helpers
+const sanitizeInput = (input) => {
+  if (typeof input !== 'string') return '';
+  return input.replace(/[<>'"&]/g, '').trim().toLowerCase();
+};
+
+const isValidCompanyId = (companyId) => {
+  const validIds = Object.keys(companyConfigs);
+  return validIds.includes(companyId);
+};
+
+const isValidStatus = (status) => {
+  const validStatuses = ['booked', 'completed'];
+  return validStatuses.includes(status);
+};
+
+// Validate intake form URLs to prevent malicious redirects
+const isValidIntakeFormUrl = (url) => {
+  try {
+    const parsedUrl = new URL(url);
+    const allowedDomains = [
+      'step-sciences.web.app',
+      'stepsciences.com',
+      'www.stepsciences.com'
+    ];
+    return allowedDomains.includes(parsedUrl.hostname) && parsedUrl.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+// Validate calendar URLs to prevent malicious redirects
+const isValidCalendarUrl = (url) => {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.hostname === 'calendar.google.com' && parsedUrl.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+// Domain detection helper with validation
 export const getCompanyIdFromDomain = () => {
   const hostname = window.location.hostname.toLowerCase();
   
@@ -150,10 +191,41 @@ export const getCompanyIdFromDomain = () => {
       hostname.includes('127.0.0.1')) {
     const urlParams = new URLSearchParams(window.location.search);
     const companyParam = urlParams.get('company');
-    if (companyParam) return companyParam;
+    if (companyParam) {
+      const sanitized = sanitizeInput(companyParam);
+      return isValidCompanyId(sanitized) ? sanitized : 'gm-oshawa';
+    }
   }
   
   return 'gm-oshawa'; // Default
+};
+
+// Secure URL parameter validation
+export const validateUrlParams = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const validatedParams = {};
+  
+  // Validate company parameter
+  const company = urlParams.get('company');
+  if (company) {
+    const sanitized = sanitizeInput(company);
+    validatedParams.company = isValidCompanyId(sanitized) ? sanitized : null;
+  }
+  
+  // Validate status parameter
+  const status = urlParams.get('status');
+  if (status) {
+    const sanitized = sanitizeInput(status);
+    validatedParams.status = isValidStatus(sanitized) ? sanitized : null;
+  }
+  
+  // Validate reset parameter (boolean only)
+  const reset = urlParams.get('reset');
+  if (reset) {
+    validatedParams.reset = reset === 'true';
+  }
+  
+  return validatedParams;
 };
 
 export const getCompanyConfig = (companyId) => {
@@ -161,7 +233,23 @@ export const getCompanyConfig = (companyId) => {
   if (!companyId || !companyConfigs[companyId]) {
     return companyConfigs['gm-oshawa'];
   }
-  return companyConfigs[companyId];
+  
+  const config = companyConfigs[companyId];
+  
+  // Validate URLs before returning config
+  if (!isValidIntakeFormUrl(config.intakeFormUrl)) {
+    console.error(`Invalid intake form URL for ${companyId}:`, config.intakeFormUrl);
+    // Use default config if URL is invalid
+    return companyConfigs['gm-oshawa'];
+  }
+  
+  if (!isValidCalendarUrl(config.calendarUrl)) {
+    console.error(`Invalid calendar URL for ${companyId}:`, config.calendarUrl);
+    // Use default config if URL is invalid
+    return companyConfigs['gm-oshawa'];
+  }
+  
+  return config;
 };
 
 export default companyConfigs;

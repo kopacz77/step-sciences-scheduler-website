@@ -9,6 +9,10 @@
       name="description"
       content="Online Appointment scheduling portal - Powered by Step Sciences"
     />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://calendar.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://calendar.google.com; font-src 'self' https://fonts.gstatic.com; frame-src https://step-sciences.web.app https://calendar.google.com; img-src 'self' data: https:; connect-src 'self' https://calendar.google.com https://cabtsqukaofxofsufaui.supabase.co;" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta property="og:title" content="Online Appointment Scheduling Portal" />
     <meta
       property="og:description"
@@ -101,42 +105,9 @@
         box-shadow: 0 6px 20px rgba(0,0,0,0.25) !important;
       }
       
-      /* Force proper text visibility in colored cards */
-      .MuiCard-root .MuiTypography-root {
-        color: #000000 !important;
-        z-index: 10 !important;
-        position: relative !important;
-        text-shadow: none !important;
-      }
-      
-      /* Ensure card content has proper contrast */
-      .MuiCardContent-root {
-        position: relative !important;
-        z-index: 5 !important;
-      }
-      
-      /* Override any theme colors that might interfere with text readability */
-      .MuiCard-root[style*="background"] .MuiTypography-root,
-      .MuiCard-root .MuiTypography-h6,
-      .MuiCard-root .MuiTypography-body1 {
-        color: #000000 !important;
-        font-weight: 500 !important;
-      }
-      
-      /* Improve scan day location cards */
-      .scan-day-card {
-        position: relative !important;
-      }
-      
-      .scan-day-card .MuiTypography-root {
-        color: #000000 !important;
-        z-index: 10 !important;
-      }
-      
-      /* Warning box text */
-      .warning-box .MuiTypography-root {
-        color: #000000 !important;
-        font-weight: 500 !important;
+      /* Ensure Material-UI icons have proper contrast */
+      .MuiSvgIcon-root {
+        z-index: 10;
       }
       
       /* Loading states */
@@ -150,32 +121,48 @@
         background-color: #f9f9f9;
       }
       
-      /* Responsive adjustments */
+      /* Enhanced responsive adjustments */
       @media (max-width: 600px) {
         .calendar-scheduling-button {
           font-size: 1.2rem !important;
-          padding: 16px 24px !important;
+          padding: 20px 32px !important;
           min-width: 280px !important;
-          min-height: 60px !important;
+          min-height: 64px !important;
+          width: 100% !important;
+          max-width: 90vw !important;
+          border-radius: 12px !important;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+        }
+        
+        /* Enhanced touch targets for mobile */
+        .MuiButton-root {
+          min-height: 44px !important;
+          min-width: 44px !important;
+        }
+        
+        /* Better spacing for mobile interactions */
+        .MuiCard-root {
+          margin-bottom: 16px !important;
+        }
+        
+        /* Improved text contrast for readability */
+        .MuiTypography-root {
+          line-height: 1.5 !important;
+        }
+        
+        /* Enhanced form field sizing */
+        .MuiTextField-root {
+          margin-bottom: 16px !important;
+        }
+        
+        /* Better mobile navigation */
+        .MuiAppBar-root {
+          position: sticky !important;
+          top: 0 !important;
+          z-index: 1100 !important;
         }
       }
       
-      /* Ensure Material-UI icons have proper contrast */
-      .MuiSvgIcon-root {
-        z-index: 10 !important;
-      }
-      
-      /* Override any conflicting background colors */
-      .MuiPaper-root[style*="background-color"] .MuiTypography-root {
-        color: #000000 !important;
-      }
-      
-      /* Success and info colored backgrounds need dark text */
-      .MuiCard-root[style*="rgb(232, 245, 233)"] .MuiTypography-root,
-      .MuiCard-root[style*="rgb(227, 242, 253)"] .MuiTypography-root {
-        color: #000000 !important;
-        font-weight: 500 !important;
-      }
       
       /* Alert boxes */
       .MuiAlert-root .MuiTypography-root {

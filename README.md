@@ -1,54 +1,65 @@
-# Step Sciences Appointment Scheduler Portal
+# Step Sciences Scheduler Portal
 
-A modern, multi-tenant appointment scheduling portal built with React 19, Material UI 7, and deployed on Vercel with custom subdomain support.
+> A modern, multi-tenant appointment scheduling platform serving healthcare and performance assessment services across multiple industries.
 
-## Overview
+[![Vercel](https://img.shields.io/badge/deployed-vercel-black?style=flat-square&logo=vercel)](https://appointments.stepsciences.com)
+[![React](https://img.shields.io/badge/react-19.0.0-blue?style=flat-square&logo=react)](https://reactjs.org/)
+[![Material-UI](https://img.shields.io/badge/mui-7.0.0-blue?style=flat-square&logo=mui)](https://mui.com/)
+[![TypeScript Ready](https://img.shields.io/badge/typescript-ready-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 
-This project creates a user-friendly interface for booking appointments and completing intake forms in a guided, step-by-step process. Originally designed for GM Oshawa, it now serves multiple clients across automotive, hospitality, and corporate sectors through dynamic branding and custom subdomains.
+## 🎯 Overview
 
-## Key Features
+The Step Sciences Scheduler is a sophisticated multi-tenant React application that streamlines appointment booking and intake form completion through a guided 3-step process. Built for scalability and ease of use, it serves clients across automotive, healthcare, hospitality, and corporate sectors with customized branding and workflows.
 
-- **Multi-Tenant Architecture**: Serves multiple clients with custom branding via subdomains
-- **Google Calendar Integration**: Direct booking through Google's appointment scheduling
-- **Guided User Flow**: Step-by-step process prevents users from skipping required steps
-- **Dynamic Branding**: Company-specific colors, logos, messaging, and locations
-- **Custom Subdomains**: Professional client URLs (e.g., `gmoshawa.stepsciences.com`)
-- **Responsive Design**: Optimized for desktop and mobile devices
-- **Modular Component Architecture**: Clean, maintainable React components
-- **Vercel Deployment**: Automatic deployments with unlimited custom domains
+## ✨ Key Features
 
-## Live Client Sites
+- **🏢 Multi-Tenant Architecture**: Serves multiple clients with custom branding via subdomains
+- **📅 Google Calendar Integration**: Direct booking through Google's appointment scheduling API
+- **🎯 Guided User Flow**: Intuitive 3-step process ensures completion of all required tasks
+- **🎨 Dynamic Branding**: Company-specific colors, logos, messaging, and locations
+- **🌐 Custom Subdomains**: Professional client URLs (e.g., `gmoshawa.stepsciences.com`)
+- **📱 Responsive Design**: Optimized for desktop and mobile devices with touch-friendly interfaces
+- **⚡ Performance Optimized**: Fast loading with Material-UI components and efficient rendering
+- **🔧 Modular Architecture**: Clean, maintainable React components with separation of concerns
+- **🚀 Vercel Deployment**: Automatic deployments with unlimited custom domains and SSL
 
-- **GM Oshawa**: `gmoshawa.stepsciences.com`
-- **GM CAMI**: `gmcami.stepsciences.com`
-- **Stellantis Windsor**: `stellantiswindsor.stepsciences.com`
-- **Stellantis Brampton**: `stellantisbrampton.stepsciences.com`
-- **Unifor Windsor**: `uniforwindsor.stepsciences.com`
-- **Copernicus Lodge**: `copernicus-lodge.stepsciences.com`
-- **Main Portal**: `appointments.stepsciences.com`
+## 🌐 Live Client Sites
 
-## Technologies
+| Client | URL | Industry |
+|--------|-----|----------|
+| **GM Oshawa** | [gmoshawa.stepsciences.com](https://gmoshawa.stepsciences.com) | Automotive |
+| **GM CAMI** | [gmcami.stepsciences.com](https://gmcami.stepsciences.com) | Automotive |
+| **Stellantis Windsor** | [stellantiswindsor.stepsciences.com](https://stellantiswindsor.stepsciences.com) | Automotive |
+| **Stellantis Brampton** | [stellantisbrampton.stepsciences.com](https://stellantisbrampton.stepsciences.com) | Automotive |
+| **Unifor Windsor** | [uniforwindsor.stepsciences.com](https://uniforwindsor.stepsciences.com) | Labor Union |
+| **Copernicus Lodge** | [copernicus-lodge.stepsciences.com](https://copernicus-lodge.stepsciences.com) | Hospitality |
+| **Main Portal** | [appointments.stepsciences.com](https://appointments.stepsciences.com) | Default/Fallback |
 
-- **Frontend**: React 19, Material UI 7
-- **Build Tool**: Create React App
-- **Package Manager**: pnpm
-- **Code Quality**: Biome (linting/formatting)
-- **Deployment**: Vercel
-- **DNS**: Custom subdomains via GoDaddy
-- **Integration**: Google Calendar Appointment Scheduling
+## 🛠️ Tech Stack
 
-## Quick Start
+| Category | Technology | Version | Purpose |
+|----------|------------|---------|---------|
+| **Frontend** | React | 19.0.0 | Core UI framework |
+| **UI Library** | Material-UI | 7.0.0 | Component library & theming |
+| **Build Tool** | Create React App | 5.0.1 | Development & build pipeline |
+| **Package Manager** | pnpm | Latest | Dependency management |
+| **Code Quality** | Biome | 1.4.1 | Linting & formatting |
+| **Deployment** | Vercel | - | Hosting & CI/CD |
+| **DNS** | GoDaddy | - | Domain management |
+| **External APIs** | Google Calendar | - | Appointment scheduling |
+
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v16 or later)
-- pnpm (recommended) or npm
+- **Node.js** (v18 or later) - [Download](https://nodejs.org/)
+- **pnpm** (recommended) - `npm install -g pnpm`
 
 ### Installation
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/your-org/automotive-scheduler-website
-cd automotive-scheduler-website
+git clone https://github.com/kopacz77/step-sciences-scheduler-website
+cd step-sciences-scheduler-website
 ```
 
 2. **Install dependencies:**
@@ -61,11 +72,22 @@ pnpm install
 pnpm start
 ```
 
-4. **Visit local development:**
+4. **Open your browser:**
 ```
-http://localhost:3000                              # Default (GM Oshawa)
-http://localhost:3000?company=copernicus-lodge     # Specific client
+🌐 Local:           http://localhost:3000
+🎯 Specific client: http://localhost:3000?company=copernicus-lodge
+📱 Mobile testing:  http://192.168.1.xxx:3000
 ```
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm start` | Start development server |
+| `pnpm build` | Build for production |
+| `pnpm format` | Format code with Biome |
+| `pnpm lint` | Lint code with Biome |
+| `pnpm check` | Check and fix code issues |
 
 ## Project Architecture
 
@@ -254,6 +276,36 @@ git push origin main
 
 ---
 
-**For detailed client addition procedures, see `READMENEWCLIENT.md`**
+## 📚 Documentation
 
-*System designed for simplicity, reliability, and scale.*
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to this project
+- [Deployment Guide](DEPLOYMENT.md) - Production deployment procedures
+- [API Documentation](API.md) - External integrations and APIs
+- [Troubleshooting](TROUBLESHOOTING.md) - Common issues and solutions
+- [Client Setup Guide](READMENEWCLIENT.md) - Adding new clients (detailed)
+- [Changelog](CHANGELOG.md) - Version history and changes
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
+
+- Setting up the development environment
+- Code style and standards
+- Pull request process
+- Testing requirements
+
+## 📄 License
+
+© 2025 Step Sciences. All rights reserved.
+
+## 🆘 Support
+
+- **Technical Issues**: Check [Troubleshooting Guide](TROUBLESHOOTING.md)
+- **Client Requests**: Contact development team
+- **Emergency**: Rollback via Git if needed
+
+---
+
+**For detailed client addition procedures, see [Client Setup Guide](READMENEWCLIENT.md)**
+
+*Built with ❤️ for simplicity, reliability, and scale.*

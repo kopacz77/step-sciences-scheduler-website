@@ -1,8 +1,9 @@
-import { Box, Typography, Card, CardContent, Alert, Button, useMediaQuery } from '@mui/material';
-import { EventAvailable, NoteAdd, Check, Info, ArrowBack } from '@mui/icons-material';
+import { Box, Typography, Card, CardContent, Alert, Button, useMediaQuery, LinearProgress, Fade, Skeleton } from '@mui/material';
+import { EventAvailable, NoteAdd, Check, Info, ArrowBack, Schedule, CheckCircle, Error as ErrorIcon } from '@mui/icons-material';
+import { useState, useEffect, memo } from 'react';
 import GoogleCalendarButton from './GoogleCalendarButton';
 
-const StepContent = ({ 
+const StepContent = memo(({ 
   activeStep, 
   steps, 
   companyConfig, 
@@ -13,21 +14,69 @@ const StepContent = ({
   onBackToForm
 }) => {
   const isMobile = useMediaQuery('(max-width:600px)');
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
+  const [error, setError] = useState(null);
+
+  // Enhanced loading states for better UX
+  const handleAppointmentBookedWithLoading = async () => {
+    setIsLoading(true);
+    setLoadingMessage('Confirming your appointment...');
+    
+    try {
+      // Add small delay for better UX feedback
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      onAppointmentBooked();
+    } catch (err) {
+      setError('Failed to confirm appointment. Please try again.');
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage('');
+    }
+  };
+
+  const handleIntakeFormWithLoading = async () => {
+    setIsLoading(true);
+    setLoadingMessage('Loading intake form...');
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      onIntakeForm();
+    } catch (err) {
+      setError('Failed to load intake form. Please try again.');
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage('');
+    }
+  };
 
   return (
     <Card variant="outlined" sx={{ mb: { xs: 2, sm: 4 }, overflow: 'hidden' }}>
+      {/* Loading Progress Bar */}
+      {isLoading && (
+        <LinearProgress 
+          sx={{ 
+            height: 4,
+            '& .MuiLinearProgress-bar': {
+              transition: 'transform 1.5s ease-in-out'
+            }
+          }} 
+        />
+      )}
+
       <CardContent sx={{ p: 0 }}>
-        {/* Mobile-Optimized Step Header */}
+        {/* Enhanced Step Header with Loading States */}
         <Box sx={{ 
           display: 'flex', 
           alignItems: 'center', 
           p: { xs: 2, sm: 3 },
           borderBottom: '1px solid',
           borderColor: 'grey.200',
-          bgcolor: 'grey.50'
+          bgcolor: isLoading ? 'grey.100' : 'grey.50',
+          transition: 'background-color 0.3s ease'
         }}>
           <Box sx={{ 
-            backgroundColor: 'primary.main',
+            backgroundColor: isLoading ? 'grey.400' : 'primary.main',
             color: 'white',
             borderRadius: '50%',
             width: { xs: 40, sm: 48 },
@@ -36,16 +85,50 @@ const StepContent = ({
             justifyContent: 'center',
             alignItems: 'center',
             mr: { xs: 1.5, sm: 2 },
-            boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+            transition: 'background-color 0.3s ease'
           }}>
-            {steps[activeStep].icon}
+            {error ? <ErrorIcon /> : steps[activeStep].icon}
           </Box>
-          <Typography variant="h5" component="h2" sx={{ fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
-            {steps[activeStep].label}
-          </Typography>
+          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+            <Typography 
+              variant="h5" 
+              component="h2" 
+              sx={{ 
+                fontSize: { xs: '1.3rem', sm: '1.5rem' },
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
+              {error ? 'Error' : steps[activeStep].label}
+            </Typography>
+            {loadingMessage && (
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                sx={{ 
+                  fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                  mt: 0.5
+                }}
+              >
+                {loadingMessage}
+              </Typography>
+            )}
+          </Box>
         </Box>
 
-        {/* Step Content */}
+        {/* Error Display */}
+        {error && (
+          <Alert 
+            severity="error" 
+            sx={{ m: { xs: 2, sm: 3 }, mb: 0 }}
+            onClose={() => setError(null)}
+          >
+            {error}
+          </Alert>
+        )}
+
+        {/* Step Content with Loading States */}
         <Box sx={{ p: { xs: 2, sm: 3 } }}>
           {/* Reduced description on mobile */}
           {!isMobile && (
@@ -67,8 +150,11 @@ const StepContent = ({
               
               <GoogleCalendarButton 
                 companyConfig={companyConfig}
-                onAppointmentBooked={onAppointmentBooked}
+                onAppointmentBooked={handleAppointmentBookedWithLoading}
                 isMobile={isMobile}
+                isLoading={isLoading}
+                error={error}
+                setError={setError}
               />
 
               {companyConfig.specialInstructions && (
@@ -119,21 +205,27 @@ const StepContent = ({
                       color="primary"
                       size="large"
                       startIcon={<NoteAdd sx={{ fontSize: { xs: 20, sm: 24 } }} />}
-                      onClick={onIntakeForm}
+                      onClick={handleIntakeFormWithLoading}
+                      disabled={isLoading}
                       sx={{ 
                         fontSize: { xs: '1.1rem', sm: '1.2rem' }, 
                         py: { xs: 2, sm: 1.5 }, 
                         px: { xs: 4, sm: 4 },
                         fontWeight: 'bold',
                         minHeight: { xs: '56px', sm: 'auto' },
+                        minWidth: { xs: '200px', sm: '250px' },
                         boxShadow: isMobile ? '0 6px 20px rgba(0,0,0,0.15)' : undefined,
                         '&:hover': {
                           boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
                           transform: 'translateY(-2px)'
+                        },
+                        '&:disabled': {
+                          backgroundColor: 'grey.400',
+                          color: 'white'
                         }
                       }}
                     >
-                      {isMobile ? 'Complete Form' : 'Complete Intake Form'}
+                      {isLoading ? 'Loading...' : (isMobile ? 'Complete Form' : 'Complete Intake Form')}
                     </Button>
                   </Box>
 
@@ -219,6 +311,10 @@ const StepContent = ({
                       width="100%"
                       height="100%"
                       frameBorder="0"
+                      sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      loading="lazy"
+                      allow="encrypted-media"
                     />
                   </Box>
                 </Box>
@@ -259,6 +355,8 @@ const StepContent = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+StepContent.displayName = 'StepContent';
 
 export default StepContent;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   Container, 
   Box, 
@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { EventAvailable, NoteAdd, Check, LocationOn, Info, Refresh, ExpandMore, ExpandLess } from '@mui/icons-material';
-import { getCompanyConfig, getCompanyIdFromDomain } from './config/companyConfigs';
+import { getCompanyConfig, getCompanyIdFromDomain, validateUrlParams } from './config/dynamicCompanyConfigs';
 
 // Import components
 import Header from './components/Header';
@@ -32,112 +32,127 @@ function App() {
   const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
-    // Get company configuration
-    const urlParams = new URLSearchParams(window.location.search);
-    let companyId = urlParams.get('company');
-    
-    if (!companyId) {
-      companyId = getCompanyIdFromDomain();
-    }
-    
-    const config = getCompanyConfig(companyId);
-    setCompanyConfig(config);
-    
-    // Update document metadata
-    document.title = "Online Appointment Scheduling Portal";
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Online Appointment scheduling portal - Powered by Step Sciences');
-    }
-    
-    // Check for existing booking status
-    const status = urlParams.get('status');
-    if (status === 'booked') {
-      setAppointmentBooked(true);
-      setActiveStep(1);
-    }
-    
-    // Check for reset parameter
-    const resetParam = urlParams.get('reset');
-    if (resetParam === 'true') {
-      // Clear localStorage and reset state
-      localStorage.removeItem('appointmentBooked');
-      localStorage.removeItem('intakeFormCompleted');
-      setAppointmentBooked(false);
-      setActiveStep(0);
-      setShowIntakeForm(false);
-      
-      // Clean URL by removing reset parameter
-      const newUrl = new URL(window.location);
-      newUrl.searchParams.delete('reset');
-      window.history.replaceState({}, '', newUrl);
-      return;
-    }
+    const loadCompanyConfig = async () => {
+      try {
+        // Validate and sanitize URL parameters
+        const validatedParams = validateUrlParams();
+        
+        // Get company configuration with validation
+        let companyId = validatedParams.company;
+        if (!companyId) {
+          companyId = await getCompanyIdFromDomain();
+        }
+        
+        const config = await getCompanyConfig(companyId);
+        setCompanyConfig(config);
+        
+        // Update document metadata (XSS safe)
+        document.title = "Online Appointment Scheduling Portal";
+        
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+          metaDescription.setAttribute('content', 'Online Appointment scheduling portal - Powered by Step Sciences');
+        }
+        
+        // Check for existing booking status (validated)
+        if (validatedParams.status === 'booked') {
+          setAppointmentBooked(true);
+          setActiveStep(1);
+        }
+        
+        // Check for reset parameter (validated)
+        if (validatedParams.reset === true) {
+          // Clear localStorage and reset state
+          localStorage.removeItem('appointmentBooked');
+          localStorage.removeItem('intakeFormCompleted');
+          setAppointmentBooked(false);
+          setActiveStep(0);
+          setShowIntakeForm(false);
+          
+          // Clean URL by removing reset parameter
+          const newUrl = new URL(window.location);
+          newUrl.searchParams.delete('reset');
+          window.history.replaceState({}, '', newUrl);
+          return;
+        }
 
-    const storedBookingStatus = localStorage.getItem('appointmentBooked');
-    if (storedBookingStatus === 'true') {
-      setAppointmentBooked(true);
-      setActiveStep(1);
-    }
+        // Check localStorage with validation
+        const storedBookingStatus = localStorage.getItem('appointmentBooked');
+        if (storedBookingStatus === 'true') {
+          setAppointmentBooked(true);
+          setActiveStep(1);
+        }
+      } catch (error) {
+        console.error('Failed to load company configuration:', error);
+        // Set fallback config or show error message
+      }
+    };
+
+    loadCompanyConfig();
   }, []);
 
-  // Create theme based on company config
-  const theme = companyConfig ? createTheme({
-    palette: {
-      primary: { main: companyConfig.primaryColor },
-      secondary: { main: companyConfig.secondaryColor },
-      background: { default: '#f9f9f9', paper: '#ffffff' },
-    },
-    typography: {
-      fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-      fontSize: 16,
-      h4: { fontWeight: 700, fontSize: { xs: '1.6rem', sm: '2.2rem' } },
-      h5: { fontWeight: 600, fontSize: { xs: '1.4rem', sm: '1.8rem' } },
-      h6: { fontSize: { xs: '1.2rem', sm: '1.4rem' }, fontWeight: 500 },
-      body1: { fontSize: { xs: '1rem', sm: '1.1rem' } },
-      body2: { fontSize: { xs: '0.9rem', sm: '1rem' } },
-      button: { fontSize: { xs: '0.95rem', sm: '1rem' }, fontWeight: 500 },
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: { borderRadius: 8, padding: { xs: '8px 16px', sm: '10px 20px' } },
-          containedPrimary: { '&:hover': { boxShadow: '0 4px 8px rgba(0,0,0,0.2)' } },
+  // Memoized theme creation to prevent recreation on every render
+  const theme = useMemo(() => {
+    if (!companyConfig) {
+      return createTheme();
+    }
+
+    return createTheme({
+      palette: {
+        primary: { main: companyConfig.primaryColor },
+        secondary: { main: companyConfig.secondaryColor },
+        background: { default: '#f9f9f9', paper: '#ffffff' },
+      },
+      typography: {
+        fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+        fontSize: 16,
+        h4: { fontWeight: 700, fontSize: { xs: '1.6rem', sm: '2.2rem' } },
+        h5: { fontWeight: 600, fontSize: { xs: '1.4rem', sm: '1.8rem' } },
+        h6: { fontSize: { xs: '1.2rem', sm: '1.4rem' }, fontWeight: 500 },
+        body1: { fontSize: { xs: '1rem', sm: '1.1rem' } },
+        body2: { fontSize: { xs: '0.9rem', sm: '1rem' } },
+        button: { fontSize: { xs: '0.95rem', sm: '1rem' }, fontWeight: 500 },
+      },
+      components: {
+        MuiButton: {
+          styleOverrides: {
+            root: { borderRadius: 8, padding: { xs: '8px 16px', sm: '10px 20px' } },
+            containedPrimary: { '&:hover': { boxShadow: '0 4px 8px rgba(0,0,0,0.2)' } },
+          },
+        },
+        MuiCard: {
+          styleOverrides: { root: { borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' } },
+        },
+        MuiPaper: {
+          styleOverrides: { root: { borderRadius: 12 } },
         },
       },
-      MuiCard: {
-        styleOverrides: { root: { borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' } },
-      },
-      MuiPaper: {
-        styleOverrides: { root: { borderRadius: 12 } },
-      },
-    },
-  }) : createTheme();
+    });
+  }, [companyConfig?.primaryColor, companyConfig?.secondaryColor]);
 
-  // Event handlers
-  const handleAppointmentBooked = () => {
+  // Memoized event handlers to prevent unnecessary re-renders
+  const handleAppointmentBooked = useCallback(() => {
     setAppointmentBooked(true);
     setActiveStep(1);
     localStorage.setItem('appointmentBooked', 'true');
-  };
+  }, []);
 
-  const handleIntakeForm = () => {
+  const handleIntakeForm = useCallback(() => {
     if (companyConfig) setShowIntakeForm(true);
-  };
+  }, [companyConfig]);
 
-  const handleIntakeFormComplete = () => {
+  const handleIntakeFormComplete = useCallback(() => {
     setShowIntakeForm(false);
     setActiveStep(2);
     localStorage.setItem('intakeFormCompleted', 'true');
-  };
+  }, []);
 
-  const handleBackToFormButton = () => {
+  const handleBackToFormButton = useCallback(() => {
     setShowIntakeForm(false);
-  };
+  }, []);
 
   // Reset function
-  const handleStartOver = () => {
+  const handleStartOver = useCallback(() => {
     // Clear localStorage
     localStorage.removeItem('appointmentBooked');
     localStorage.removeItem('intakeFormCompleted');
@@ -149,10 +164,10 @@ function App() {
     
     // Scroll to top
     window.scrollTo(0, 0);
-  };
+  }, []);
 
-  // Define steps
-  const steps = [
+  // Memoized steps array to prevent recreation on every render
+  const steps = useMemo(() => [
     { 
       label: 'Schedule Appointment', 
       icon: <EventAvailable />,
@@ -168,7 +183,7 @@ function App() {
       icon: <Check />,
       description: 'Your appointment is confirmed and you\'re ready to go.'
     },
-  ];
+  ], []);
 
   // Loading state
   if (!companyConfig) {
@@ -188,8 +203,14 @@ function App() {
         minHeight: '100vh',
         bgcolor: 'background.default'
       }}>
-        {/* Header */}
-        <Header companyConfig={companyConfig} />
+        {/* Enhanced Header with Navigation */}
+        <Header 
+          companyConfig={companyConfig} 
+          showBackButton={activeStep > 0 && showIntakeForm}
+          onBackClick={() => setShowIntakeForm(false)}
+          currentStep={activeStep + 1}
+          totalSteps={3}
+        />
 
         <Container maxWidth="lg" sx={{ py: { xs: 2, sm: 3 }, flexGrow: 1 }}>
           {/* Mobile-Optimized Welcome Message */}

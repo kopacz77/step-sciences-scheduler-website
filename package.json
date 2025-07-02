@@ -1,5 +1,5 @@
 {
-  "name": "automotive-scheduler-website",
+  "name": "step-sciences-scheduler-website",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,12 +7,19 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.0.0",
     "@mui/material": "^7.0.0",
+    "@supabase/supabase-js": "^2.50.2",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.6.3",
     "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:api": "node server.js",
+    "dev": "concurrently \"pnpm start:api\" \"pnpm start\"",
     "build": "react-scripts build",
     "format": "biome format --write ./src",
     "lint": "biome lint ./src",
@@ -31,6 +38,7 @@
     ]
   },
   "devDependencies": {
-    "@biomejs/biome": "1.4.1"
+    "@biomejs/biome": "1.4.1",
+    "concurrently": "^9.2.0"
   }
 }
