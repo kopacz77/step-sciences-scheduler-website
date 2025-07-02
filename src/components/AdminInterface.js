@@ -215,18 +215,72 @@ const AdminInterface = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4">Company Portal Management</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => openDialog()}
-          disabled={loading}
-        >
-          Add New Company
-        </Button>
-      </Box>
+    <Box sx={{ 
+      minHeight: '100vh',
+      bgcolor: 'grey.50',
+      py: 4
+    }}>
+      <Box sx={{ maxWidth: 1400, mx: 'auto', px: 3 }}>
+        {/* Header */}
+        <Paper elevation={0} sx={{ p: 4, mb: 4, bgcolor: 'white', borderRadius: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <Box sx={{
+              width: 56,
+              height: 56,
+              bgcolor: 'primary.main',
+              borderRadius: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Typography variant="h4" sx={{ color: 'white' }}>
+                🏭
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                Plant Management Center
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Manage Canadian automotive plant configurations and settings
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+        
+        {/* Action Bar */}
+        <Paper elevation={0} sx={{ p: 3, mb: 4, bgcolor: 'white', borderRadius: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Chip 
+                label={`${companies.length} Plants`} 
+                color="primary" 
+                variant="outlined"
+                sx={{ fontWeight: 600 }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                Active automotive manufacturing facilities
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => openDialog()}
+              disabled={loading}
+              size="large"
+              sx={{ 
+                borderRadius: 2,
+                px: 3,
+                py: 1.5,
+                fontWeight: 600,
+                textTransform: 'none',
+                fontSize: '1rem'
+              }}
+            >
+              Add New Plant
+            </Button>
+          </Box>
+        </Paper>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
