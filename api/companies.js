@@ -50,36 +50,49 @@ const sanitizeCompany = (company) => ({
   show_branding: Boolean(company.showBranding ?? true),
   meeting_location: company.meetingLocation?.trim() || null,
   monday_location: company.scanDayLocations?.monday?.trim() || null,
+  tuesday_location: company.scanDayLocations?.tuesday?.trim() || null,
+  wednesday_location: company.scanDayLocations?.wednesday?.trim() || null,
+  thursday_location: company.scanDayLocations?.thursday?.trim() || null,
   friday_location: company.scanDayLocations?.friday?.trim() || null,
+  saturday_location: company.scanDayLocations?.saturday?.trim() || null,
+  sunday_location: company.scanDayLocations?.sunday?.trim() || null,
   special_instructions: company.specialInstructions?.trim() || null,
   domain: company.domain?.toLowerCase().trim(),
   has_scan_days: Boolean(company.hasScanDays),
   is_active: Boolean(company.isActive ?? true)
 });
 
-const formatCompanyForClient = (row) => ({
-  id: row.id,
-  name: row.name,
-  fullName: row.full_name,
-  primaryColor: row.primary_color,
-  secondaryColor: row.secondary_color,
-  logo: row.logo,
-  calendarUrl: row.calendar_url,
-  intakeFormUrl: row.intake_form_url,
-  contactEmail: row.contact_email,
-  showBranding: Boolean(row.show_branding),
-  meetingLocation: row.meeting_location,
-  scanDayLocations: {
-    monday: row.monday_location,
-    friday: row.friday_location
-  },
-  specialInstructions: row.special_instructions,
-  domain: row.domain,
-  hasScanDays: Boolean(row.has_scan_days),
-  isActive: Boolean(row.is_active),
-  createdAt: row.created_at,
-  updatedAt: row.updated_at
-});
+const formatCompanyForClient = (row) => {
+  const scanDayLocations = {};
+  if (row.monday_location) scanDayLocations.monday = row.monday_location;
+  if (row.tuesday_location) scanDayLocations.tuesday = row.tuesday_location;
+  if (row.wednesday_location) scanDayLocations.wednesday = row.wednesday_location;
+  if (row.thursday_location) scanDayLocations.thursday = row.thursday_location;
+  if (row.friday_location) scanDayLocations.friday = row.friday_location;
+  if (row.saturday_location) scanDayLocations.saturday = row.saturday_location;
+  if (row.sunday_location) scanDayLocations.sunday = row.sunday_location;
+
+  return {
+    id: row.id,
+    name: row.name,
+    fullName: row.full_name,
+    primaryColor: row.primary_color,
+    secondaryColor: row.secondary_color,
+    logo: row.logo,
+    calendarUrl: row.calendar_url,
+    intakeFormUrl: row.intake_form_url,
+    contactEmail: row.contact_email,
+    showBranding: Boolean(row.show_branding),
+    meetingLocation: row.meeting_location,
+    scanDayLocations,
+    specialInstructions: row.special_instructions,
+    domain: row.domain,
+    hasScanDays: Boolean(row.has_scan_days),
+    isActive: Boolean(row.is_active),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+};
 
 export default async function handler(req, res) {
   // Add CORS headers

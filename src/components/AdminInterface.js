@@ -322,22 +322,80 @@ const AdminInterface = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Primary Color"
-                  type="color"
-                  value={editingCompany.primaryColor}
-                  onChange={(e) => setEditingCompany({...editingCompany, primaryColor: e.target.value})}
-                />
+                <Typography variant="subtitle1" gutterBottom>
+                  Primary Color
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <TextField
+                    type="color"
+                    value={editingCompany.primaryColor}
+                    onChange={(e) => setEditingCompany({...editingCompany, primaryColor: e.target.value})}
+                    sx={{ width: 80 }}
+                  />
+                  <Box
+                    sx={{
+                      width: 120,
+                      height: 50,
+                      backgroundColor: editingCompany.primaryColor,
+                      border: '2px solid #ccc',
+                      borderRadius: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ 
+                      color: editingCompany.primaryColor === '#000000' ? 'white' : 'black',
+                      fontWeight: 'bold'
+                    }}>
+                      PRIMARY
+                    </Typography>
+                  </Box>
+                  <TextField
+                    value={editingCompany.primaryColor}
+                    onChange={(e) => setEditingCompany({...editingCompany, primaryColor: e.target.value})}
+                    placeholder="#000000"
+                    sx={{ flex: 1 }}
+                  />
+                </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Secondary Color"
-                  type="color"
-                  value={editingCompany.secondaryColor}
-                  onChange={(e) => setEditingCompany({...editingCompany, secondaryColor: e.target.value})}
-                />
+                <Typography variant="subtitle1" gutterBottom>
+                  Secondary Color
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <TextField
+                    type="color"
+                    value={editingCompany.secondaryColor}
+                    onChange={(e) => setEditingCompany({...editingCompany, secondaryColor: e.target.value})}
+                    sx={{ width: 80 }}
+                  />
+                  <Box
+                    sx={{
+                      width: 120,
+                      height: 50,
+                      backgroundColor: editingCompany.secondaryColor,
+                      border: '2px solid #ccc',
+                      borderRadius: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ 
+                      color: editingCompany.secondaryColor === '#000000' ? 'white' : 'black',
+                      fontWeight: 'bold'
+                    }}>
+                      SECONDARY
+                    </Typography>
+                  </Box>
+                  <TextField
+                    value={editingCompany.secondaryColor}
+                    onChange={(e) => setEditingCompany({...editingCompany, secondaryColor: e.target.value})}
+                    placeholder="#D4AF37"
+                    sx={{ flex: 1 }}
+                  />
+                </Box>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -403,42 +461,47 @@ const AdminInterface = () => {
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     Select which days have different meeting locations
                   </Typography>
-                  {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
-                    <Paper key={day} sx={{ p: 2, mb: 2, bgcolor: 'grey.50' }}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined}
-                            onChange={(e) => {
-                              const newLocations = {...(editingCompany.scanDayLocations || {})};
-                              if (e.target.checked) {
-                                newLocations[day] = '';
-                              } else {
-                                delete newLocations[day];
-                              }
-                              setEditingCompany({...editingCompany, scanDayLocations: newLocations});
-                            }}
+                  <Grid container spacing={2}>
+                    {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                      <Grid item xs={12} sm={6} md={4} key={day}>
+                        <Paper sx={{ p: 2, bgcolor: 'grey.50', height: '100%' }}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined}
+                                onChange={(e) => {
+                                  const newLocations = {...(editingCompany.scanDayLocations || {})};
+                                  if (e.target.checked) {
+                                    newLocations[day] = '';
+                                  } else {
+                                    delete newLocations[day];
+                                  }
+                                  setEditingCompany({...editingCompany, scanDayLocations: newLocations});
+                                }}
+                              />
+                            }
+                            label={<Typography variant="subtitle2" fontWeight="bold">{day.charAt(0).toUpperCase() + day.slice(1)}</Typography>}
                           />
-                        }
-                        label={<Typography variant="subtitle1">{day.charAt(0).toUpperCase() + day.slice(1)}</Typography>}
-                      />
-                      {editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined && (
-                        <TextField
-                          fullWidth
-                          label={`${day.charAt(0).toUpperCase() + day.slice(1)} Location`}
-                          value={editingCompany.scanDayLocations[day] || ''}
-                          onChange={(e) => setEditingCompany({
-                            ...editingCompany,
-                            scanDayLocations: {...editingCompany.scanDayLocations, [day]: e.target.value}
-                          })}
-                          multiline
-                          rows={2}
-                          sx={{ mt: 1 }}
-                          placeholder="e.g., Building C - Medical Offices, 1st Floor"
-                        />
-                      )}
-                    </Paper>
-                  ))}
+                          {editingCompany.scanDayLocations && editingCompany.scanDayLocations[day] !== undefined && (
+                            <TextField
+                              fullWidth
+                              label={`Location`}
+                              value={editingCompany.scanDayLocations[day] || ''}
+                              onChange={(e) => setEditingCompany({
+                                ...editingCompany,
+                                scanDayLocations: {...editingCompany.scanDayLocations, [day]: e.target.value}
+                              })}
+                              multiline
+                              rows={3}
+                              size="small"
+                              sx={{ mt: 1 }}
+                              placeholder="Building & room info"
+                            />
+                          )}
+                        </Paper>
+                      </Grid>
+                    ))}
+                  </Grid>
                 </Grid>
               ) : (
                 <Grid item xs={12}>
