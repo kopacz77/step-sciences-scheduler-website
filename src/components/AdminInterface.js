@@ -158,13 +158,25 @@ const AdminInterface = () => {
     if (!company.id?.trim()) errors.id = 'Company ID is required';
     if (!company.name?.trim()) errors.name = 'Company name is required';
     if (!company.fullName?.trim()) errors.fullName = 'Full company name is required';
-    if (!company.calendarUrl?.trim()) errors.calendarUrl = 'Google Calendar URL is required';
+    if (!company.calendarUrl?.trim()) errors.calendarUrl = 'Calendar URL is required';
     if (!company.intakeFormUrl?.trim()) errors.intakeFormUrl = 'Intake form URL is required';
     if (!company.domain?.trim()) errors.domain = 'Domain is required';
     
-    // Validate URL formats (relaxed for testing)
-    if (company.calendarUrl && !company.calendarUrl.includes('calendar.google')) {
-      errors.calendarUrl = 'Must be a valid Google Calendar URL';
+    // Basic URL validation - just check if it's a valid URL format
+    try {
+      if (company.calendarUrl && !company.calendarUrl.startsWith('http')) {
+        errors.calendarUrl = 'Must be a valid URL (starting with http:// or https://)';
+      }
+    } catch (e) {
+      errors.calendarUrl = 'Must be a valid URL';
+    }
+    
+    try {
+      if (company.intakeFormUrl && !company.intakeFormUrl.startsWith('http')) {
+        errors.intakeFormUrl = 'Must be a valid URL (starting with http:// or https://)';
+      }
+    } catch (e) {
+      errors.intakeFormUrl = 'Must be a valid URL';
     }
     
     // Validate ID format
@@ -528,7 +540,7 @@ const AdminInterface = () => {
                   }}
                   placeholder="https://calendar.google.com/calendar/u/0/appointments/schedules/..."
                   error={!!validationErrors.calendarUrl}
-                  helperText={validationErrors.calendarUrl || "Copy from an existing plant's calendar URL"}
+                  helperText={validationErrors.calendarUrl || "Any valid URL (Google Calendar, external calendar, etc.)"}
                   required
                 />
               </Grid>
@@ -545,7 +557,7 @@ const AdminInterface = () => {
                   }}
                   placeholder="https://step-sciences.web.app/intake/test/plant"
                   error={!!validationErrors.intakeFormUrl}
-                  helperText={validationErrors.intakeFormUrl || "Copy from an existing plant's intake form URL"}
+                  helperText={validationErrors.intakeFormUrl || "Any valid URL (Step Sciences forms, external forms, etc.)"}
                   required
                 />
               </Grid>

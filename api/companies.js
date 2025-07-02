@@ -22,13 +22,13 @@ const validateCompany = (company) => {
     errors.push('Company name is required (minimum 2 characters)');
   }
   
-  if (!company.calendarUrl || !company.calendarUrl.includes('calendar.google')) {
-    errors.push('Valid Google Calendar URL is required');
+  // Accept any URL that starts with http/https
+  if (!company.calendarUrl || !company.calendarUrl.startsWith('http')) {
+    errors.push('Valid calendar URL is required (must start with http:// or https://)');
   }
   
-  // Allow any intake form URL for testing (relaxed validation)
-  if (!company.intakeFormUrl || company.intakeFormUrl.trim().length < 10) {
-    errors.push('Valid intake form URL is required');
+  if (!company.intakeFormUrl || !company.intakeFormUrl.startsWith('http')) {
+    errors.push('Valid intake form URL is required (must start with http:// or https://)');
   }
   
   if (!company.domain || !company.domain.includes('stepsciences.com')) {
