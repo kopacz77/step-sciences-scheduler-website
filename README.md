@@ -1,27 +1,26 @@
 # Step Sciences Scheduler Portal
 
-> A modern, multi-tenant appointment scheduling platform serving healthcare and performance assessment services across multiple industries.
+> Multi-tenant appointment scheduling platform for Canadian automotive plants with dynamic branding and Google Calendar integration.
 
 [![Vercel](https://img.shields.io/badge/deployed-vercel-black?style=flat-square&logo=vercel)](https://appointments.stepsciences.com)
 [![React](https://img.shields.io/badge/react-19.0.0-blue?style=flat-square&logo=react)](https://reactjs.org/)
 [![Material-UI](https://img.shields.io/badge/mui-7.0.0-blue?style=flat-square&logo=mui)](https://mui.com/)
-[![TypeScript Ready](https://img.shields.io/badge/typescript-ready-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/supabase-database-green?style=flat-square&logo=supabase)](https://supabase.com/)
 
 ## 🎯 Overview
 
-The Step Sciences Scheduler is a sophisticated multi-tenant React application that streamlines appointment booking and intake form completion through a guided 3-step process. Built for scalability and ease of use, it serves clients across automotive, healthcare, hospitality, and corporate sectors with customized branding and workflows.
+A scalable React application serving Canadian automotive plants with custom-branded appointment scheduling. Each plant gets its own subdomain, branding, and Google Calendar integration through a database-driven architecture.
 
 ## ✨ Key Features
 
-- **🏢 Multi-Tenant Architecture**: Serves multiple clients with custom branding via subdomains
-- **📅 Google Calendar Integration**: Direct booking through Google's appointment scheduling API
-- **🎯 Guided User Flow**: Intuitive 3-step process ensures completion of all required tasks
-- **🎨 Dynamic Branding**: Company-specific colors, logos, messaging, and locations
-- **🌐 Custom Subdomains**: Professional client URLs (e.g., `gmoshawa.stepsciences.com`)
-- **📱 Responsive Design**: Optimized for desktop and mobile devices with touch-friendly interfaces
-- **⚡ Performance Optimized**: Fast loading with Material-UI components and efficient rendering
-- **🔧 Modular Architecture**: Clean, maintainable React components with separation of concerns
-- **🚀 Vercel Deployment**: Automatic deployments with unlimited custom domains and SSL
+- **🏭 Automotive Plant Focus**: Specialized for Canadian auto manufacturers (GM, Stellantis, Ford, etc.)
+- **🗄️ Database-Driven**: Supabase PostgreSQL with admin interface - no code changes for new plants
+- **🌐 Custom Subdomains**: Each plant gets professional URL (e.g., `gmoshawa.stepsciences.com`)
+- **📅 Google Calendar Integration**: Direct booking through plant-specific appointment calendars
+- **🎨 Dynamic Branding**: Plant-specific colors, logos, locations, and custom messaging
+- **⚖️ Dual-Location Support**: Handle scan days (Monday/Friday different locations)
+- **🔐 Admin Interface**: Web-based plant management with authentication
+- **📱 Mobile Optimized**: Works on plant floor tablets and mobile devices
 
 ## 🌐 Live Client Sites
 
@@ -50,34 +49,23 @@ The Step Sciences Scheduler is a sophisticated multi-tenant React application th
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- **Node.js** (v18 or later) - [Download](https://nodejs.org/)
-- **pnpm** (recommended) - `npm install -g pnpm`
+### 1. Database Setup (Required First!)
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard/projects)
+2. SQL Editor → Run entire `supabase-schema.sql`
+3. Test connection: `node test-supabase.js`
 
-### Installation
-
-1. **Clone the repository:**
+### 2. Installation
 ```bash
 git clone https://github.com/kopacz77/step-sciences-scheduler-website
 cd step-sciences-scheduler-website
-```
-
-2. **Install dependencies:**
-```bash
 pnpm install
-```
-
-3. **Start development server:**
-```bash
 pnpm start
 ```
 
-4. **Open your browser:**
-```
-🌐 Local:           http://localhost:3000
-🎯 Specific client: http://localhost:3000?company=copernicus-lodge
-📱 Mobile testing:  http://192.168.1.xxx:3000
-```
+### 3. Test URLs
+- **Main App**: http://localhost:3000 (GM Oshawa)
+- **Admin Panel**: http://localhost:3000/admin (admin@stepsciences.com / admin123)
+- **Parameter Fallback**: http://localhost:3000?company=gm-cami
 
 ### Available Commands
 
@@ -89,47 +77,39 @@ pnpm start
 | `pnpm lint` | Lint code with Biome |
 | `pnpm check` | Check and fix code issues |
 
-## Project Architecture
+## 🏗️ Architecture
+
+### Database-Driven Configuration
+**No more static config files!** All plants managed through Supabase:
+
+```sql
+companies (
+  id TEXT PRIMARY KEY,           -- 'gm-oshawa'
+  name TEXT,                     -- 'GM Oshawa'
+  domain TEXT,                   -- 'gmoshawa.stepsciences.com'
+  primary_color TEXT,            -- '#000000'
+  calendar_url TEXT,             -- Google Calendar booking URL
+  meeting_location TEXT,         -- Plant address
+  has_scan_days BOOLEAN,         -- Monday/Friday locations
+  local_organizer_message TEXT,  -- Custom plant instructions
+  is_active BOOLEAN DEFAULT true
+);
+```
 
 ### File Structure
 ```
 src/
 ├── components/
-│   ├── Header.js                  # Company-branded header
-│   ├── GoogleCalendarButton.js    # Calendar integration
-│   ├── ScanDayLocationInfo.js     # Multi-location display
-│   └── StepContent.js            # Main step content
+│   ├── AdminInterface.js         # Plant management UI
+│   ├── AdminLogin.js            # Authentication
+│   ├── Header.js                # Branded header
+│   └── StepContent.js           # Main flow
 ├── config/
-│   └── companyConfigs.js         # Client configurations
-├── App.js                        # Main application logic
-└── index.js                      # Entry point
-
-public/
-├── logos/                        # Client logos
-├── index.html                    # Google Calendar scripts
-└── manifest.json                # PWA configuration
-
-vercel.json                       # Vercel deployment config
-```
-
-### Client Configuration System
-
-Each client is configured in `src/config/companyConfigs.js`:
-
-```javascript
-'client-id': {
-  name: 'Client Name',
-  fullName: 'Full Client Name',
-  primaryColor: '#000000',
-  secondaryColor: '#D4AF37',
-  logo: '/logos/client-logo.png',
-  calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/[ID]',
-  intakeFormUrl: 'https://step-sciences.web.app/intake/client/path',
-  contactEmail: 'info@stepsciences.com',
-  meetingLocation: 'Client Address',
-  specialInstructions: 'Client-specific instructions',
-  domain: 'client-id.stepsciences.com'
-}
+│   └── dynamicCompanyConfigs.js # Supabase integration
+api/
+├── companies.js                 # CRUD operations
+├── config/[domain].js          # Domain lookup
+└── admin/login.js              # Authentication
 ```
 
 ## Deployment (Vercel)
@@ -160,40 +140,49 @@ pnpm run lint
 pnpm run check
 ```
 
-## Configuration Options
+## 🏭 Plant Management
 
-### Standard Client
+### Adding New Plants
+1. **Via Admin Interface** (Recommended):
+   - Visit `/admin` → Add New Company
+   - Fill form with plant details
+   - Set custom domain and branding
+   - Save and test
+
+2. **Dual-Location Setup** (GM Oshawa style):
+   ```json
+   {
+     "has_scan_days": true,
+     "scan_day_locations": {
+       "monday": "Building C - Medical Offices",
+       "friday": "Building D - TFT Boardrooms"
+     }
+   }
+   ```
+
+### Pre-loaded Canadian Plants
+- GM Oshawa, GM CAMI
+- Stellantis Windsor, Stellantis Brampton  
+- Ford Oakville, Ford Windsor
+- Unifor Local 200/444
+
+## 🌐 Domain System
+
+### Automatic Plant Detection
 ```javascript
-'client-id': {
-  // Basic configuration
-  meetingLocation: 'Single location address',
-  // ... other properties
-}
+// Domain-based routing
+gmoshawa.stepsciences.com → GM Oshawa config
+stellantiswindsor.stepsciences.com → Stellantis config
+
+// Parameter fallback
+appointments.stepsciences.com?company=gm-cami → GM CAMI config
 ```
 
-### Multi-Location Client (GM Oshawa)
-```javascript
-'gm-oshawa': {
-  // Dual-location configuration
-  scanDayLocations: {
-    monday: 'Building C - Medical Offices',
-    friday: 'Building D - TFT Boardrooms'
-  },
-  hasScanDays: true,
-  // ... other properties
-}
-```
-
-## Domain Routing
-
-### Subdomain Detection
-The app automatically detects the client based on the subdomain:
-- `gmoshawa.stepsciences.com` → GM Oshawa branding
-- `copernicus-lodge.stepsciences.com` → Lodge branding
-- `appointments.stepsciences.com?company=client-id` → Parameter fallback
-
-### Fallback System
-If subdomain detection fails, the app falls back to URL parameters, ensuring reliability.
+### Dynamic Loading
+- Database lookup by domain
+- 5-minute caching for performance
+- Fallback to URL parameters
+- Default to GM Oshawa if not found
 
 ## Google Calendar Integration
 
@@ -214,16 +203,16 @@ If subdomain detection fails, the app falls back to URL parameters, ensuring rel
 - Edge (latest)
 - Mobile browsers (iOS Safari, Chrome Mobile)
 
-## Adding New Clients
+## 🔧 Adding New Plants
 
-> **See `READMENEWCLIENT.md`** for detailed step-by-step instructions on adding new clients.
+### Quick Process (5 minutes):
+1. **Admin Interface**: `/admin` → Add New Company
+2. **Fill Details**: Name, colors, calendar URL, location
+3. **Domain Setup**: Add domain in Vercel dashboard
+4. **DNS**: Add CNAME record pointing to Vercel
+5. **Test**: Visit new subdomain
 
-Quick overview:
-1. Add configuration to `companyConfigs.js`
-2. Add client logo to `public/logos/`
-3. Configure domain in Vercel
-4. Add DNS record
-5. Test and deploy
+**No code changes required!** All configuration is database-driven.
 
 ## Monitoring & Maintenance
 
@@ -276,36 +265,50 @@ git push origin main
 
 ---
 
-## 📚 Documentation
+## 📋 Available Commands
 
-- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to this project
-- [Deployment Guide](DEPLOYMENT.md) - Production deployment procedures
-- [API Documentation](API.md) - External integrations and APIs
-- [Troubleshooting](TROUBLESHOOTING.md) - Common issues and solutions
-- [Client Setup Guide](READMENEWCLIENT.md) - Adding new clients (detailed)
-- [Changelog](CHANGELOG.md) - Version history and changes
+```bash
+pnpm start          # Development server
+pnpm build          # Production build
+pnpm format         # Format code with Biome
+pnpm lint           # Lint code
+pnpm check          # Fix code issues
+node test-supabase  # Test database connection
+```
 
-## 🤝 Contributing
+## 🚀 Deployment
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
+### Environment Variables
+```bash
+# Database
+REACT_APP_SUPABASE_URL=https://cabtsqukaofxofsufaui.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-- Setting up the development environment
-- Code style and standards
-- Pull request process
-- Testing requirements
+# Admin
+JWT_SECRET=your-secure-jwt-secret
+```
 
-## 📄 License
+### Vercel Setup
+1. Connect GitHub repository
+2. Add environment variables
+3. Deploy automatically on push to main
+4. Configure wildcard DNS: `*.stepsciences.com`
 
-© 2025 Step Sciences. All rights reserved.
+## 🔐 Security
 
-## 🆘 Support
+- Row Level Security (RLS) on all tables
+- Admin-only write access
+- Input validation and XSS protection
+- Secure iframe sandboxing
+- HTTPS enforced on all domains
 
-- **Technical Issues**: Check [Troubleshooting Guide](TROUBLESHOOTING.md)
-- **Client Requests**: Contact development team
-- **Emergency**: Rollback via Git if needed
+## 📞 Support
+
+- **New Plant Setup**: Use admin interface
+- **Technical Issues**: Check Vercel and Supabase logs
+- **Emergency**: Git rollback available
 
 ---
 
-**For detailed client addition procedures, see [Client Setup Guide](READMENEWCLIENT.md)**
-
-*Built with ❤️ for simplicity, reliability, and scale.*
+*Built for Canadian automotive manufacturing with ❤️*
