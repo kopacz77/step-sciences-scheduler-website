@@ -600,6 +600,7 @@ const AdminInterface = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      </Box>
     </Box>
   );
 };
