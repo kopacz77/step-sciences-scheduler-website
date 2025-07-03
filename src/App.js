@@ -1,22 +1,35 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { 
-  Container, 
-  Box, 
-  Typography, 
-  Paper, 
-  Stepper, 
-  Step, 
-  StepLabel,
-  useMediaQuery,
+import {
+  Check,
+  EventAvailable,
+  ExpandLess,
+  ExpandMore,
+  Info,
+  LocationOn,
+  NoteAdd,
+  Refresh,
+} from '@mui/icons-material';
+import {
   Alert,
+  Box,
   Button,
-  Fab,
   Collapse,
+  Container,
+  Fab,
   IconButton,
+  Paper,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { EventAvailable, NoteAdd, Check, LocationOn, Info, Refresh, ExpandMore, ExpandLess } from '@mui/icons-material';
-import { getCompanyConfig, getCompanyIdFromDomain, validateUrlParams } from './config/dynamicCompanyConfigs';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  getCompanyConfig,
+  getCompanyIdFromDomain,
+  validateUrlParams,
+} from './config/dynamicCompanyConfigs';
 
 // Import components
 import Header from './components/Header';
@@ -36,30 +49,33 @@ function App() {
       try {
         // Validate and sanitize URL parameters
         const validatedParams = validateUrlParams();
-        
+
         // Get company configuration with validation
         let companyId = validatedParams.company;
         if (!companyId) {
           companyId = await getCompanyIdFromDomain();
         }
-        
+
         const config = await getCompanyConfig(companyId);
         setCompanyConfig(config);
-        
+
         // Update document metadata (XSS safe)
-        document.title = "Online Appointment Scheduling Portal";
-        
+        document.title = 'Online Appointment Scheduling Portal';
+
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-          metaDescription.setAttribute('content', 'Online Appointment scheduling portal - Powered by Step Sciences');
+          metaDescription.setAttribute(
+            'content',
+            'Online Appointment scheduling portal - Powered by Step Sciences'
+          );
         }
-        
+
         // Check for existing booking status (validated)
         if (validatedParams.status === 'booked') {
           setAppointmentBooked(true);
           setActiveStep(1);
         }
-        
+
         // Check for reset parameter (validated)
         if (validatedParams.reset === true) {
           // Clear localStorage and reset state
@@ -68,7 +84,7 @@ function App() {
           setAppointmentBooked(false);
           setActiveStep(0);
           setShowIntakeForm(false);
-          
+
           // Clean URL by removing reset parameter
           const newUrl = new URL(window.location);
           newUrl.searchParams.delete('reset');
@@ -156,39 +172,44 @@ function App() {
     // Clear localStorage
     localStorage.removeItem('appointmentBooked');
     localStorage.removeItem('intakeFormCompleted');
-    
+
     // Reset all state
     setAppointmentBooked(false);
     setActiveStep(0);
     setShowIntakeForm(false);
-    
+
     // Scroll to top
     window.scrollTo(0, 0);
   }, []);
 
   // Memoized steps array to prevent recreation on every render
-  const steps = useMemo(() => [
-    { 
-      label: 'Schedule Appointment', 
-      icon: <EventAvailable />,
-      description: 'Select an available time slot that works for you.'
-    },
-    { 
-      label: 'Complete Intake Form', 
-      icon: <NoteAdd />,
-      description: 'Fill out the required intake information.'
-    },
-    { 
-      label: 'All Set!', 
-      icon: <Check />,
-      description: 'Your appointment is confirmed and you\'re ready to go.'
-    },
-  ], []);
+  const steps = useMemo(
+    () => [
+      {
+        label: 'Schedule Appointment',
+        icon: <EventAvailable />,
+        description: 'Select an available time slot that works for you.',
+      },
+      {
+        label: 'Complete Intake Form',
+        icon: <NoteAdd />,
+        description: 'Fill out the required intake information.',
+      },
+      {
+        label: 'All Set!',
+        icon: <Check />,
+        description: "Your appointment is confirmed and you're ready to go.",
+      },
+    ],
+    []
+  );
 
   // Loading state
   if (!companyConfig) {
     return (
-      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Container
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
         <Typography variant="h5">Loading...</Typography>
       </Container>
     );
@@ -196,16 +217,18 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ 
-        flexGrow: 1, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        minHeight: '100vh',
-        bgcolor: 'background.default'
-      }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          bgcolor: 'background.default',
+        }}
+      >
         {/* Enhanced Header with Navigation */}
-        <Header 
-          companyConfig={companyConfig} 
+        <Header
+          companyConfig={companyConfig}
           showBackButton={activeStep > 0 && showIntakeForm}
           onBackClick={() => setShowIntakeForm(false)}
           currentStep={activeStep + 1}
@@ -214,14 +237,14 @@ function App() {
 
         <Container maxWidth="lg" sx={{ py: { xs: 2, sm: 3 }, flexGrow: 1 }}>
           {/* Mobile-Optimized Welcome Message */}
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              p: { xs: 2.5, sm: 4 }, 
-              mb: { xs: 2, sm: 4 }, 
-              backgroundColor: 'secondary.light', 
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 2.5, sm: 4 },
+              mb: { xs: 2, sm: 4 },
+              backgroundColor: 'secondary.light',
               borderRadius: 3,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
             }}
           >
             <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: 'center' }}>
@@ -229,22 +252,26 @@ function App() {
             </Typography>
             {!isMobile && (
               <Typography variant="body1" sx={{ fontSize: '1.2rem' }}>
-                We're excited to help you with your health and performance needs. Please follow the steps below to book your appointment.
+                We're excited to help you with your health and performance needs. Please follow the
+                steps below to book your appointment.
               </Typography>
             )}
           </Paper>
 
           {/* Compact Process Flow Alert for Mobile */}
-          <Alert 
-            severity="info" 
-            sx={{ 
-              mb: { xs: 2, sm: 4 }, 
+          <Alert
+            severity="info"
+            sx={{
+              mb: { xs: 2, sm: 4 },
               fontSize: { xs: '0.95rem', sm: '1.1rem' },
-              '& .MuiAlert-message': { fontSize: { xs: '0.95rem', sm: '1.1rem' } }
+              '& .MuiAlert-message': { fontSize: { xs: '0.95rem', sm: '1.1rem' } },
             }}
           >
             <Typography variant="body1" sx={{ fontWeight: 500 }}>
-              <strong>{isMobile ? 'Required:' : 'Important:'}</strong> {isMobile ? 'Book appointment, then complete intake form.' : 'Please complete both steps below - first book your appointment, then fill out the intake form. Both are required for your visit.'}
+              <strong>{isMobile ? 'Required:' : 'Important:'}</strong>{' '}
+              {isMobile
+                ? 'Book appointment, then complete intake form.'
+                : 'Please complete both steps below - first book your appointment, then fill out the intake form. Both are required for your visit.'}
             </Typography>
           </Alert>
 
@@ -253,24 +280,24 @@ function App() {
             <ScanDayLocationInfo companyConfig={companyConfig} />
           ) : (
             companyConfig.meetingLocation && (
-              <Paper 
-                variant="outlined" 
-                sx={{ 
-                  mb: { xs: 2, sm: 4 }, 
+              <Paper
+                variant="outlined"
+                sx={{
+                  mb: { xs: 2, sm: 4 },
                   borderColor: 'grey.300',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                 }}
               >
                 {isMobile ? (
                   // Collapsible version for mobile
                   <Box>
-                    <Box 
-                      sx={{ 
-                        p: 2, 
-                        display: 'flex', 
-                        alignItems: 'center', 
+                    <Box
+                      sx={{
+                        p: 2,
+                        display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'space-between',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
                       }}
                       onClick={() => setShowLocationDetails(!showLocationDetails)}
                     >
@@ -294,7 +321,15 @@ function App() {
                   </Box>
                 ) : (
                   // Full version for desktop
-                  <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                  <Box
+                    sx={{
+                      p: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                    }}
+                  >
                     <LocationOn color="primary" sx={{ mt: 0.5, mr: 1, fontSize: 28 }} />
                     <Box>
                       <Typography variant="h6" gutterBottom sx={{ fontWeight: 'medium', mb: 1 }}>
@@ -325,21 +360,25 @@ function App() {
               <Stepper activeStep={activeStep} alternativeLabel>
                 {steps.map((step, index) => (
                   <Step key={step.label}>
-                    <StepLabel StepIconComponent={() => (
-                      <Box sx={{ 
-                        backgroundColor: index <= activeStep ? 'primary.main' : 'grey.400',
-                        color: 'white',
-                        borderRadius: '50%',
-                        width: 48,
-                        height: 48,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        boxShadow: index <= activeStep ? '0 4px 8px rgba(0,0,0,0.2)' : 'none'
-                      }}>
-                        {step.icon}
-                      </Box>
-                    )}>
+                    <StepLabel
+                      StepIconComponent={() => (
+                        <Box
+                          sx={{
+                            backgroundColor: index <= activeStep ? 'primary.main' : 'grey.400',
+                            color: 'white',
+                            borderRadius: '50%',
+                            width: 48,
+                            height: 48,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            boxShadow: index <= activeStep ? '0 4px 8px rgba(0,0,0,0.2)' : 'none',
+                          }}
+                        >
+                          {step.icon}
+                        </Box>
+                      )}
+                    >
                       <Typography sx={{ mt: 1, fontWeight: index === activeStep ? 600 : 400 }}>
                         {step.label}
                       </Typography>
@@ -364,19 +403,25 @@ function App() {
 
           {/* Final Step Location Reminder */}
           {activeStep === 2 && (companyConfig.hasScanDays || companyConfig.meetingLocation) && (
-            <Box sx={{ 
-              p: { xs: 2.5, sm: 3 }, 
-              bgcolor: 'background.paper', 
-              border: '1px solid', 
-              borderColor: 'primary.light',
-              borderRadius: 2,
-              boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-              mb: { xs: 2, sm: 4 }
-            }}>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
+            <Box
+              sx={{
+                p: { xs: 2.5, sm: 3 },
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'primary.light',
+                borderRadius: 2,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                mb: { xs: 2, sm: 4 },
+              }}
+            >
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ fontWeight: 500, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}
+              >
                 Appointment Details:
               </Typography>
-              
+
               {companyConfig.hasScanDays ? (
                 <Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -400,7 +445,7 @@ function App() {
                   </Typography>
                 </Box>
               )}
-              
+
               {companyConfig.specialInstructions && (
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Info fontSize="medium" sx={{ mr: 1.5 }} color="primary" />
@@ -414,7 +459,14 @@ function App() {
 
           {/* Start Over Button - Positioned near bottom, before Need Help section */}
           {activeStep === 1 && !showIntakeForm && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 3, sm: 4 }, mb: { xs: 3, sm: 4 } }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                mt: { xs: 3, sm: 4 },
+                mb: { xs: 3, sm: 4 },
+              }}
+            >
               <Button
                 variant="outlined"
                 color="primary"
@@ -429,8 +481,8 @@ function App() {
                   '&:hover': {
                     borderWidth: 2,
                     backgroundColor: 'primary.main',
-                    color: 'white'
-                  }
+                    color: 'white',
+                  },
                 }}
               >
                 Start Over
@@ -439,20 +491,22 @@ function App() {
           )}
 
           {/* Compact Need Help Section */}
-          <Paper 
-            variant="outlined" 
-            sx={{ 
-              p: { xs: 2.5, sm: 3 }, 
-              mb: { xs: 2, sm: 4 }, 
+          <Paper
+            variant="outlined"
+            sx={{
+              p: { xs: 2.5, sm: 3 },
+              mb: { xs: 2, sm: 4 },
               borderColor: 'grey.300',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+              boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
             }}
           >
             <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1.1rem', sm: '1.3rem' } }}>
               Need Assistance?
             </Typography>
             <Typography variant="body1" sx={{ fontSize: { xs: '1rem', sm: '1.1rem' } }}>
-              {isMobile ? 'Questions? Email us at ' : 'If you have any questions or need help with the scheduling process, please contact us at '}
+              {isMobile
+                ? 'Questions? Email us at '
+                : 'If you have any questions or need help with the scheduling process, please contact us at '}
               <Box component="span" sx={{ fontWeight: 'bold' }}>
                 {companyConfig.contactEmail}
               </Box>
@@ -478,32 +532,40 @@ function App() {
         )}
 
         {/* Footer */}
-        <Box sx={{ 
-          py: { xs: 2, sm: 3 }, 
-          px: 2, 
-          mt: 'auto', 
-          backgroundColor: 'grey.100',
-          borderTop: '1px solid',
-          borderColor: 'grey.300'
-        }}>
+        <Box
+          sx={{
+            py: { xs: 2, sm: 3 },
+            px: 2,
+            mt: 'auto',
+            backgroundColor: 'grey.100',
+            borderTop: '1px solid',
+            borderColor: 'grey.300',
+          }}
+        >
           <Container maxWidth="lg">
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              textAlign: 'center' 
-            }}>
-              <Box 
-                component="img" 
-                src="/favicon.ico" 
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+              }}
+            >
+              <Box
+                component="img"
+                src="/favicon.ico"
                 alt="Step Sciences logo"
                 sx={{ height: { xs: 35, sm: 45 }, mb: 1.5 }}
               />
-              
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 1, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
+
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ mb: 1, fontSize: { xs: '1rem', sm: '1.1rem' } }}
+              >
                 &copy; {new Date().getFullYear()} Step Sciences
               </Typography>
-              
+
               {companyConfig.showBranding && !isMobile && (
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                   Powered by Step Sciences | Health and Performance Solutions

@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import { AdminPanelSettings, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
+  Alert,
   Box,
+  Button,
   Card,
   CardContent,
-  TextField,
-  Button,
-  Typography,
-  Alert,
+  IconButton,
   InputAdornment,
-  IconButton
+  TextField,
+  Typography,
 } from '@mui/material';
-import { Visibility, VisibilityOff, AdminPanelSettings } from '@mui/icons-material';
+import React, { useState } from 'react';
 
 const AdminLogin = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -27,7 +27,7 @@ const AdminLogin = ({ onLogin }) => {
       const response = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
 
       if (!response.ok) {
@@ -35,11 +35,11 @@ const AdminLogin = ({ onLogin }) => {
       }
 
       const { token, user } = await response.json();
-      
+
       // Store token in localStorage
       localStorage.setItem('adminToken', token);
       localStorage.setItem('adminUser', JSON.stringify(user));
-      
+
       onLogin(user, token);
     } catch (err) {
       setError('Invalid email or password');
@@ -56,15 +56,13 @@ const AdminLogin = ({ onLogin }) => {
         alignItems: 'center',
         justifyContent: 'center',
         bgcolor: 'grey.100',
-        p: 2
+        p: 2,
       }}
     >
       <Card sx={{ maxWidth: 400, width: '100%' }}>
         <CardContent sx={{ p: 4 }}>
           <Box sx={{ textAlign: 'center', mb: 3 }}>
-            <AdminPanelSettings 
-              sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} 
-            />
+            <AdminPanelSettings sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
             <Typography variant="h4" gutterBottom>
               Admin Login
             </Typography>
@@ -85,31 +83,28 @@ const AdminLogin = ({ onLogin }) => {
               label="Email"
               type="email"
               value={credentials.email}
-              onChange={(e) => setCredentials({...credentials, email: e.target.value})}
+              onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
               margin="normal"
               required
               autoFocus
             />
-            
+
             <TextField
               fullWidth
               label="Password"
               type={showPassword ? 'text' : 'password'}
               value={credentials.password}
-              onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
               margin="normal"
               required
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
-                )
+                ),
               }}
             />
 
@@ -125,7 +120,11 @@ const AdminLogin = ({ onLogin }) => {
             </Button>
           </form>
 
-          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', display: 'block' }}>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ textAlign: 'center', display: 'block' }}
+          >
             Contact IT support if you need access
           </Typography>
         </CardContent>

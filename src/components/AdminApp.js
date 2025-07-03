@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Button, 
+import { Dashboard as DashboardIcon, ExitToApp, Person, Settings } from '@mui/icons-material';
+import {
+  AppBar,
   Avatar,
+  Box,
+  Button,
+  Divider,
   Menu,
   MenuItem,
-  Divider
+  Toolbar,
+  Typography,
 } from '@mui/material';
-import { 
-  ExitToApp, 
-  Person, 
-  Settings,
-  Dashboard as DashboardIcon 
-} from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
 import AdminInterface from './AdminInterface';
 import AdminLogin from './AdminLogin';
 
@@ -28,7 +23,7 @@ const AdminApp = () => {
     // Check for existing session
     const savedToken = localStorage.getItem('adminToken');
     const savedUser = localStorage.getItem('adminUser');
-    
+
     if (savedToken && savedUser) {
       try {
         setToken(savedToken);
@@ -76,15 +71,17 @@ const AdminApp = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Step Sciences Admin Portal
           </Typography>
-          
+
           <Button
             color="inherit"
             onClick={handleMenuClick}
-            startIcon={<Avatar sx={{ width: 32, height: 32 }}>{user.email?.[0]?.toUpperCase()}</Avatar>}
+            startIcon={
+              <Avatar sx={{ width: 32, height: 32 }}>{user.email?.[0]?.toUpperCase()}</Avatar>
+            }
           >
             {user.email}
           </Button>
-          
+
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}

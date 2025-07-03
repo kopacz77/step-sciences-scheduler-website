@@ -8,45 +8,83 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || supabaseAnonKey);
 const supabasePublic = createClient(supabaseUrl, supabaseAnonKey);
 
-const formatCompanyForClient = (row) => ({
-  id: row.id,
-  name: row.name,
-  fullName: row.full_name,
-  primaryColor: row.primary_color,
-  secondaryColor: row.secondary_color,
-  logo: row.logo,
-  calendarUrl: row.calendar_url,
-  intakeFormUrl: row.intake_form_url,
-  contactEmail: row.contact_email,
-  showBranding: Boolean(row.show_branding),
-  meetingLocation: row.meeting_location,
-  scanDayLocations: {
-    monday: row.monday_location,
-    friday: row.friday_location
-  },
-  specialInstructions: row.special_instructions,
-  domain: row.domain,
-  hasScanDays: Boolean(row.has_scan_days),
-  isActive: Boolean(row.is_active)
-});
+const formatCompanyForClient = (row) => {
+  const scanDayLocations = {};
+  if (row.monday_location) scanDayLocations.monday = row.monday_location;
+  if (row.tuesday_location) scanDayLocations.tuesday = row.tuesday_location;
+  if (row.wednesday_location) scanDayLocations.wednesday = row.wednesday_location;
+  if (row.thursday_location) scanDayLocations.thursday = row.thursday_location;
+  if (row.friday_location) scanDayLocations.friday = row.friday_location;
+  if (row.saturday_location) scanDayLocations.saturday = row.saturday_location;
+  if (row.sunday_location) scanDayLocations.sunday = row.sunday_location;
+
+  return {
+    id: row.id,
+    name: row.name,
+    fullName: row.full_name,
+    primaryColor: row.primary_color,
+    secondaryColor: row.secondary_color,
+    logo: row.logo,
+    calendarUrl: row.calendar_url,
+    intakeFormUrl: row.intake_form_url,
+    contactEmail: row.contact_email,
+    showBranding: Boolean(row.show_branding),
+    meetingLocation: row.meeting_location,
+    scanDayLocations,
+    specialInstructions: row.special_instructions,
+    domain: row.domain,
+    hasScanDays: Boolean(row.has_scan_days),
+    isActive: Boolean(row.is_active),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+};
+
+const validateCompany = (company) => {
+  const errors = [];
+  
+  if (!company.name || company.name.trim().length < 2) {
+    errors.push('Company name is required (minimum 2 characters)');
+  }
+  
+  // Accept any URL that starts with http/https
+  if (!company.calendar_url || !company.calendar_url.startsWith('http')) {
+    errors.push('Valid calendar URL is required (must start with http:// or https://)');
+  }
+  
+  if (!company.intake_form_url || !company.intake_form_url.startsWith('http')) {
+    errors.push('Valid intake form URL is required (must start with http:// or https://)');
+  }
+  
+  if (!company.domain || !company.domain.includes('stepsciences.com')) {
+    errors.push('Valid domain is required (must be stepsciences.com subdomain)');
+  }
+  
+  return errors;
+};
 
 const sanitizeCompany = (company) => ({
   name: company.name?.trim(),
-  full_name: company.fullName?.trim(),
-  primary_color: company.primaryColor || '#000000',
-  secondary_color: company.secondaryColor || '#D4AF37',
+  full_name: company.full_name?.trim(),
+  primary_color: company.primary_color || '#000000',
+  secondary_color: company.secondary_color || '#D4AF37',
   logo: company.logo || '/logos/default-logo.png',
-  calendar_url: company.calendarUrl?.trim(),
-  intake_form_url: company.intakeFormUrl?.trim(),
-  contact_email: company.contactEmail?.trim() || 'info@stepsciences.com',
-  show_branding: Boolean(company.showBranding ?? true),
-  meeting_location: company.meetingLocation?.trim() || null,
-  monday_location: company.scanDayLocations?.monday?.trim() || null,
-  friday_location: company.scanDayLocations?.friday?.trim() || null,
-  special_instructions: company.specialInstructions?.trim() || null,
+  calendar_url: company.calendar_url?.trim(),
+  intake_form_url: company.intake_form_url?.trim(),
+  contact_email: company.contact_email?.trim() || 'info@stepsciences.com',
+  show_branding: Boolean(company.show_branding ?? true),
+  meeting_location: company.meeting_location?.trim() || null,
+  monday_location: company.monday_location?.trim() || null,
+  tuesday_location: company.tuesday_location?.trim() || null,
+  wednesday_location: company.wednesday_location?.trim() || null,
+  thursday_location: company.thursday_location?.trim() || null,
+  friday_location: company.friday_location?.trim() || null,
+  saturday_location: company.saturday_location?.trim() || null,
+  sunday_location: company.sunday_location?.trim() || null,
+  special_instructions: company.special_instructions?.trim() || null,
   domain: company.domain?.toLowerCase().trim(),
-  has_scan_days: Boolean(company.hasScanDays),
-  is_active: Boolean(company.isActive ?? true)
+  has_scan_days: Boolean(company.has_scan_days),
+  is_active: Boolean(company.is_active ?? true)
 });
 
 export default async function handler(req, res) {
@@ -86,7 +124,18 @@ export default async function handler(req, res) {
 
       case 'PUT':
         // Update company (admin only)
+        console.log('PUT request received for ID:', id);
+        console.log('PUT request body:', req.body);
+        
         const updates = sanitizeCompany(req.body);
+        console.log('Sanitized updates:', updates);
+        
+        const errors = validateCompany(updates);
+        console.log('Validation errors:', errors);
+        
+        if (errors.length > 0) {
+          return res.status(400).json({ errors });
+        }
         
         const { data: updated, error: updateError } = await supabaseAdmin
           .from('companies')

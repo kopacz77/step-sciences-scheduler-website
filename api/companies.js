@@ -171,42 +171,6 @@ export default async function handler(req, res) {
         });
         break;
 
-      case 'PUT':
-        // Update existing company (requires admin access)
-        console.log('API received PUT data:', req.body);
-        const updatedCompany = sanitizeCompany(req.body);
-        console.log('After sanitize PUT:', updatedCompany);
-        const updateErrors = validateCompany(updatedCompany);
-        console.log('PUT validation errors:', updateErrors);
-        
-        if (updateErrors.length > 0) {
-          return res.status(400).json({ errors: updateErrors });
-        }
-
-        // Update company
-        const { data: updated, error: updateError } = await supabaseAdmin
-          .from('companies')
-          .update(updatedCompany)
-          .eq('id', updatedCompany.id)
-          .select()
-          .single();
-
-        if (updateError) {
-          console.error('Supabase update error:', updateError);
-          console.error('Data being updated:', updatedCompany);
-          return res.status(500).json({ 
-            error: 'Database update failed', 
-            details: updateError.message,
-            data: updatedCompany 
-          });
-        }
-
-        res.status(200).json({ 
-          message: 'Company updated successfully', 
-          company: formatCompanyForClient(updated)
-        });
-        break;
-
       case 'DELETE':
         // Soft delete company (requires admin access)
         const companyId = req.query.id || req.body.id;

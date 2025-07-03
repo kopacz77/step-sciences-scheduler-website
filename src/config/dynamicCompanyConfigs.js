@@ -1,7 +1,7 @@
 // src/config/dynamicCompanyConfigs.js
 // This replaces the static companyConfigs.js with dynamic loading
 
-let configCache = new Map();
+const configCache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 // Fallback static config for development/offline mode
@@ -12,24 +12,28 @@ const fallbackConfigs = {
     primaryColor: '#000000',
     secondaryColor: '#D4AF37',
     logo: '/logos/gm-logo.png',
-    calendarUrl: 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ13iuKCFJo-LEdLYI0xL61iPO3DA4XB5di_P9b7NQ05dR2qYKjYKjCu9hzYaBn3G2-p8o2qDoE9',
+    calendarUrl:
+      'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ13iuKCFJo-LEdLYI0xL61iPO3DA4XB5di_P9b7NQ05dR2qYKjYKjCu9hzYaBn3G2-p8o2qDoE9',
     intakeFormUrl: 'https://step-sciences.web.app/intake/gm/oshawa',
     contactEmail: 'info@stepsciences.com',
     showBranding: true,
     scanDayLocations: {
       monday: 'Building C - Medical Offices next to SUD Office',
-      friday: 'Building D - TFT Boardrooms (east end of building D)'
+      friday: 'Building D - TFT Boardrooms (east end of building D)',
     },
     specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
     domain: 'gmoshawa.stepsciences.com',
-    hasScanDays: true
-  }
+    hasScanDays: true,
+  },
 };
 
 // Validation helpers (keeping existing security)
 const sanitizeInput = (input) => {
   if (typeof input !== 'string') return '';
-  return input.replace(/[<>'"&]/g, '').trim().toLowerCase();
+  return input
+    .replace(/[<>'"&]/g, '')
+    .trim()
+    .toLowerCase();
 };
 
 const isValidCompanyId = (companyId) => {
@@ -44,11 +48,7 @@ const isValidStatus = (status) => {
 const isValidIntakeFormUrl = (url) => {
   try {
     const parsedUrl = new URL(url);
-    const allowedDomains = [
-      'step-sciences.web.app',
-      'stepsciences.com',
-      'www.stepsciences.com'
-    ];
+    const allowedDomains = ['step-sciences.web.app', 'stepsciences.com', 'www.stepsciences.com'];
     return allowedDomains.includes(parsedUrl.hostname) && parsedUrl.protocol === 'https:';
   } catch {
     return false;
@@ -67,8 +67,11 @@ const isValidCalendarUrl = (url) => {
 // Supabase client for direct database access
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://cabtsqukaofxofsufaui.supabase.co';
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnRzcXVrYW9meG9mc3VmYXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0NjQwMzksImV4cCI6MjA2NzA0MDAzOX0.bjITY67lM0h4wWdpEpqvZCOhZuj-lLhF-PS65_6SyDk';
+const supabaseUrl =
+  process.env.REACT_APP_SUPABASE_URL || 'https://cabtsqukaofxofsufaui.supabase.co';
+const supabaseAnonKey =
+  process.env.REACT_APP_SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnRzcXVrYW9meG9mc3VmYXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0NjQwMzksImV4cCI6MjA2NzA0MDAzOX0.bjITY67lM0h4wWdpEpqvZCOhZuj-lLhF-PS65_6SyDk';
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -87,12 +90,12 @@ const formatCompanyForClient = (row) => ({
   meetingLocation: row.meeting_location,
   scanDayLocations: {
     monday: row.monday_location,
-    friday: row.friday_location
+    friday: row.friday_location,
   },
   specialInstructions: row.special_instructions,
   domain: row.domain,
   hasScanDays: Boolean(row.has_scan_days),
-  isActive: Boolean(row.is_active)
+  isActive: Boolean(row.is_active),
 });
 
 // API client for company configs
@@ -190,14 +193,14 @@ const getCachedConfig = (key) => {
 const setCachedConfig = (key, data) => {
   configCache.set(key, {
     data,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 };
 
 // Domain detection with dynamic loading
 export const getCompanyIdFromDomain = async () => {
   const hostname = window.location.hostname.toLowerCase();
-  
+
   // Check cache first
   const cacheKey = `domain:${hostname}`;
   const cached = getCachedConfig(cacheKey);
@@ -224,7 +227,7 @@ export const getCompanyIdFromDomain = async () => {
       return sanitized;
     }
   }
-  
+
   // Final fallback
   const defaultId = 'gm-oshawa';
   setCachedConfig(cacheKey, defaultId);
@@ -245,14 +248,14 @@ export const getCompanyConfig = async (companyId) => {
   try {
     // Try to fetch from API
     const config = await api.fetchCompanyById(companyId);
-    
+
     if (config) {
       // Validate URLs before caching
       if (!isValidIntakeFormUrl(config.intakeFormUrl)) {
         console.error(`Invalid intake form URL for ${companyId}:`, config.intakeFormUrl);
         throw new Error('Invalid intake form URL');
       }
-      
+
       if (!isValidCalendarUrl(config.calendarUrl)) {
         console.error(`Invalid calendar URL for ${companyId}:`, config.calendarUrl);
         throw new Error('Invalid calendar URL');
@@ -291,24 +294,24 @@ export const getAllCompanies = async () => {
 export const validateUrlParams = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const validatedParams = {};
-  
+
   const company = urlParams.get('company');
   if (company) {
     const sanitized = sanitizeInput(company);
     validatedParams.company = isValidCompanyId(sanitized) ? sanitized : null;
   }
-  
+
   const status = urlParams.get('status');
   if (status) {
     const sanitized = sanitizeInput(status);
     validatedParams.status = isValidStatus(sanitized) ? sanitized : null;
   }
-  
+
   const reset = urlParams.get('reset');
   if (reset) {
     validatedParams.reset = reset === 'true';
   }
-  
+
   return validatedParams;
 };
 
@@ -332,5 +335,5 @@ export default {
   getAllCompanies,
   validateUrlParams,
   clearConfigCache,
-  preloadCompanyConfig
+  preloadCompanyConfig,
 };
