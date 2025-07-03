@@ -69,6 +69,7 @@ const AdminInterface = () => {
   const [error, setError] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [availableLogos, setAvailableLogos] = useState([]);
 
   // Company form template
   const defaultCompany = {
@@ -97,6 +98,7 @@ const AdminInterface = () => {
 
   useEffect(() => {
     loadCompanies();
+    loadAvailableLogos();
   }, []);
 
   const loadCompanies = async () => {
@@ -117,6 +119,19 @@ const AdminInterface = () => {
       setError('Failed to load companies: ' + err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadAvailableLogos = async () => {
+    try {
+      const response = await fetch('/api/logos');
+      if (response.ok) {
+        const logos = await response.json();
+        setAvailableLogos(logos);
+      }
+    } catch (err) {
+      console.error('Failed to load available logos:', err);
+      // Don't show error to user - just fall back to empty list
     }
   };
 
@@ -696,12 +711,11 @@ const AdminInterface = () => {
                           sx={{ minWidth: 180 }}
                           size="small"
                         >
-                          <MenuItem value="/logos/gm-logo.png">GM Logo</MenuItem>
-                          <MenuItem value="/logos/ford-logo.png">Ford Logo</MenuItem>
-                          <MenuItem value="/logos/stellantis-logo.png">Stellantis Logo</MenuItem>
-                          <MenuItem value="/logos/unifor-logo.png">Unifor Logo</MenuItem>
-                          <MenuItem value="/logos/copernicus-lodge.png">Copernicus Lodge</MenuItem>
-                          <MenuItem value="/logos/default-logo.png">Default Logo</MenuItem>
+                          {availableLogos.map((logo) => (
+                            <MenuItem key={logo.value} value={logo.value}>
+                              {logo.label}
+                            </MenuItem>
+                          ))}
                         </TextField>
                       </Box>
                       <Typography variant="caption" display="block" color="text.secondary">
