@@ -173,19 +173,36 @@ const AdminInterface = () => {
         throw new Error('Image must be smaller than 2MB');
       }
 
-      // Create filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${companyId}-logo.${fileExt}`;
+      // Convert file to base64 for upload
+      const reader = new FileReader();
+      const fileData = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
-      // For now, generate a placeholder logo path
-      // In production, you would upload to Vercel Blob Storage, AWS S3, or similar
-      const logoPath = `/logos/${fileName}`;
+      // Upload to API endpoint
+      const response = await fetch('/api/upload-logo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: file.name,
+          fileData,
+          companyId
+        })
+      });
 
-      // TODO: Implement actual file upload to storage service
-      console.log('Logo would be uploaded as:', logoPath);
-      console.log('File details:', { name: file.name, size: file.size, type: file.type });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(errorData.error || 'Upload failed');
+      }
 
-      return logoPath;
+      const result = await response.json();
+      console.log('Logo upload result:', result);
+      
+      // Return the actual file path that was saved
+      return result.logoPath;
+
     } catch (error) {
       console.error('Logo upload error:', error);
       throw error;
@@ -707,7 +724,8 @@ const AdminInterface = () => {
                         </TextField>
                       </Box>
                       <Typography variant="caption" display="block" color="text.secondary">
-                        Upload: PNG, JPG up to 2MB. Recommended: 200x50px
+                        Upload: PNG, JPG up to 2MB. Recommended: 200x50px<br />
+                        <em>Note: Files saved to public/logos/. Commit to Git to persist changes.</em>
                       </Typography>
                     </Box>
                   </Box>
