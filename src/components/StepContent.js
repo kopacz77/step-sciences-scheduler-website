@@ -164,20 +164,6 @@ const StepContent = memo(
 
             {activeStep === 0 && (
               <Box>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    mb: { xs: 2, sm: 3 },
-                    fontSize: { xs: '1rem', sm: '1.1rem' },
-                    textAlign: 'center',
-                    fontWeight: isMobile ? 600 : 400,
-                  }}
-                >
-                  {isMobile
-                    ? 'Tap to book your appointment:'
-                    : 'Click the booking button below to schedule your appointment:'}
-                </Typography>
-
                 <GoogleCalendarButton
                   companyConfig={companyConfig}
                   onAppointmentBooked={handleAppointmentBookedWithLoading}
@@ -194,15 +180,20 @@ const StepContent = memo(
                       alignItems: 'flex-start',
                       mt: { xs: 3, sm: 4 },
                       p: { xs: 2, sm: 3 },
-                      bgcolor: 'info.light',
+                      bgcolor: 'warning.light',
                       borderRadius: 2,
+                      border: '1px solid',
+                      borderColor: 'warning.main',
                     }}
                   >
-                    <Info color="info" sx={{ mr: 1, mt: 0.3, fontSize: { xs: 20, sm: 24 } }} />
+                    <Info color="warning" sx={{ mr: 1, mt: 0.3, fontSize: { xs: 20, sm: 24 } }} />
                     <Typography
                       variant="body2"
-                      color="info.dark"
-                      sx={{ fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
+                      color="text.primary"
+                      sx={{ 
+                        fontSize: { xs: '0.95rem', sm: '1.1rem' },
+                        fontWeight: 500
+                      }}
                     >
                       <strong>Note:</strong> {companyConfig.specialInstructions}
                     </Typography>

@@ -317,10 +317,10 @@ const AdminInterface = () => {
             </Box>
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-                Plant Management Center
+                Company Management Center
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Manage Canadian automotive plant configurations and settings
+                Manage company configurations and scheduling settings
               </Typography>
             </Box>
           </Box>
@@ -331,13 +331,13 @@ const AdminInterface = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Chip
-                label={`${companies.length} Plants`}
+                label={`${companies.length} Companies`}
                 color="primary"
                 variant="outlined"
                 sx={{ fontWeight: 600 }}
               />
               <Typography variant="body2" color="text.secondary">
-                Active automotive manufacturing facilities
+                Active company configurations
               </Typography>
             </Box>
             <Button
@@ -355,7 +355,7 @@ const AdminInterface = () => {
                 fontSize: '1rem',
               }}
             >
-              Add New Plant
+              Add New Company
             </Button>
           </Box>
         </Paper>
