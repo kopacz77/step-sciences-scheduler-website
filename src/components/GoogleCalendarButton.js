@@ -21,6 +21,16 @@ const GoogleCalendarButton = memo(
     const isActuallyMobile = isMobile || mobileCheck;
 
     useEffect(() => {
+      // Check if the URL is a Google Calendar appointment URL
+      const isAppointmentUrl = companyConfig.calendarUrl?.includes('/appointments/schedules/');
+      
+      if (isAppointmentUrl) {
+        // For appointment URLs, we'll embed them directly as an iframe
+        setLoadingCalendar(false);
+        setButtonLoaded(true);
+        return;
+      }
+
       const initializeButton = () => {
         if (window.calendar?.schedulingButton && calendarButtonRef.current) {
           try {
@@ -160,20 +170,49 @@ const GoogleCalendarButton = memo(
           </Box>
         )}
 
-        {/* Google Calendar Button Container */}
+        {/* Google Calendar Embed or Button Container */}
         {!showFallback && !loadingCalendar && (
           <>
-            <Box
-              ref={calendarButtonRef}
-              sx={{
-                minHeight: { xs: '80px', sm: '100px' },
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                mb: { xs: 2, sm: 3 },
-                width: '100%',
-              }}
-            />
+            {companyConfig.calendarUrl?.includes('/appointments/schedules/') ? (
+              // Embedded Google Calendar for appointment URLs
+              <Box
+                sx={{
+                  width: '100%',
+                  mb: { xs: 2, sm: 3 },
+                  borderRadius: 2,
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  border: '1px solid #e0e0e0',
+                }}
+              >
+                <iframe
+                  src={companyConfig.calendarUrl}
+                  width="100%"
+                  height={isActuallyMobile ? "600" : "800"}
+                  frameBorder="0"
+                  scrolling="auto"
+                  title="Book Your Appointment"
+                  style={{
+                    border: 'none',
+                    borderRadius: '8px',
+                  }}
+                  allow="fullscreen"
+                />
+              </Box>
+            ) : (
+              // Google Calendar Button for other URLs
+              <Box
+                ref={calendarButtonRef}
+                sx={{
+                  minHeight: { xs: '80px', sm: '100px' },
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  mb: { xs: 2, sm: 3 },
+                  width: '100%',
+                }}
+              />
+            )}
 
             {buttonLoaded && (
               <Typography
@@ -185,9 +224,13 @@ const GoogleCalendarButton = memo(
                   fontWeight: isActuallyMobile ? 500 : 400,
                 }}
               >
-                {isActuallyMobile
-                  ? 'Tap the button above to schedule'
-                  : 'Click the button above to schedule your appointment'}
+                {companyConfig.calendarUrl?.includes('/appointments/schedules/')
+                  ? isActuallyMobile
+                    ? 'Use the calendar above to book your appointment'
+                    : 'Use the calendar above to schedule your appointment'
+                  : isActuallyMobile
+                    ? 'Tap the button above to schedule'
+                    : 'Click the button above to schedule your appointment'}
               </Typography>
             )}
           </>
@@ -196,7 +239,7 @@ const GoogleCalendarButton = memo(
         {/* Enhanced Fallback with Retry Option */}
         {showFallback && (
           <Box sx={{ mb: { xs: 2, sm: 3 } }}>
-            {retryCount < 2 && (
+            {retryCount < 2 && !companyConfig.calendarUrl?.includes('/appointments/schedules/') && (
               <Alert
                 severity="warning"
                 sx={{ mb: 2 }}
