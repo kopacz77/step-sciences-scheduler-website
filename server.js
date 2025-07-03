@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// API Routes
-app.use('/api', require('./api-routes'));
+// API Routes - Using Vercel API routes in /api/ folder for deployment
+// Local development can use the Vercel dev server instead
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
