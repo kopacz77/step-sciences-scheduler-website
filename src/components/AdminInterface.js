@@ -22,7 +22,8 @@ import {
   ListItemSecondaryAction,
   CircularProgress,
   Paper,
-  Checkbox
+  Checkbox,
+  MenuItem
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -32,36 +33,7 @@ import {
   Cancel as CancelIcon,
   Visibility as PreviewIcon
 } from '@mui/icons-material';
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://cabtsqukaofxofsufaui.supabase.co';
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnRzcXVrYW9meG9mc3VmYXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0NjQwMzksImV4cCI6MjA2NzA0MDAzOX0.bjITY67lM0h4wWdpEpqvZCOhZuj-lLhF-PS65_6SyDk';
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Format database row to client format
-const formatCompanyForClient = (row) => ({
-  id: row.id,
-  name: row.name,
-  fullName: row.full_name,
-  primaryColor: row.primary_color,
-  secondaryColor: row.secondary_color,
-  logo: row.logo,
-  calendarUrl: row.calendar_url,
-  intakeFormUrl: row.intake_form_url,
-  contactEmail: row.contact_email,
-  showBranding: Boolean(row.show_branding),
-  meetingLocation: row.meeting_location,
-  scanDayLocations: {
-    monday: row.monday_location,
-    friday: row.friday_location
-  },
-  specialInstructions: row.special_instructions,
-  domain: row.domain,
-  hasScanDays: Boolean(row.has_scan_days),
-  isActive: Boolean(row.is_active)
-});
+// All database operations now go through API endpoints
 
 // Format client data for database
 const formatCompanyForDatabase = (company) => ({
@@ -96,6 +68,7 @@ const AdminInterface = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   // Company form template
   const defaultCompany = {
@@ -130,19 +103,15 @@ const AdminInterface = () => {
     try {
       setLoading(true);
       
-      // Fetch companies from Supabase
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
-
-      if (error) {
-        throw new Error(error.message);
+      // Fetch companies from API
+      const response = await fetch('/api/companies');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
-      const formattedCompanies = data.map(formatCompanyForClient);
-      setCompanies(formattedCompanies);
+      
+      const companies = await response.json();
+      setCompanies(companies);
     } catch (err) {
       console.error('Failed to load companies:', err);
       setError('Failed to load companies: ' + err.message);
@@ -185,6 +154,45 @@ const AdminInterface = () => {
     }
     
     return errors;
+  };
+
+  // Handle logo upload
+  const handleLogoUpload = async (file, companyId) => {
+    if (!file) return null;
+    
+    try {
+      setUploadingLogo(true);
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Please select an image file');
+      }
+      
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        throw new Error('Image must be smaller than 2MB');
+      }
+      
+      // Create filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${companyId}-logo.${fileExt}`;
+      
+      // For now, generate a placeholder logo path
+      // In production, you would upload to Vercel Blob Storage, AWS S3, or similar
+      const logoPath = `/logos/${fileName}`;
+      
+      // TODO: Implement actual file upload to storage service
+      console.log('Logo would be uploaded as:', logoPath);
+      console.log('File details:', { name: file.name, size: file.size, type: file.type });
+      
+      return logoPath;
+      
+    } catch (error) {
+      console.error('Logo upload error:', error);
+      throw error;
+    } finally {
+      setUploadingLogo(false);
+    }
   };
 
   const handleSave = async (company) => {
@@ -251,13 +259,17 @@ const AdminInterface = () => {
     try {
       setLoading(true);
       
-      // Soft delete - set is_active to false
-      const { error } = await supabase
-        .from('companies')
-        .update({ is_active: false })
-        .eq('id', id);
+      // Use API endpoint for delete
+      const response = await fetch('/api/companies', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
 
-      if (error) throw new Error(error.message);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
       
       await loadCompanies();
       setError(null);
@@ -353,8 +365,38 @@ const AdminInterface = () => {
           <Grid item xs={12} md={6} lg={4} key={company.id}>
             <Card>
               <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="h6">{company.name}</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="h6" sx={{ mb: 1 }}>{company.name}</Typography>
+                    {/* Logo Preview */}
+                    {company.logo && (
+                      <Box sx={{
+                        width: 80,
+                        height: 40,
+                        border: '1px solid #e0e0e0',
+                        borderRadius: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'grey.50',
+                        overflow: 'hidden',
+                        mb: 1
+                      }}>
+                        <img 
+                          src={company.logo} 
+                          alt={`${company.name} logo`}
+                          style={{ 
+                            maxWidth: '100%', 
+                            maxHeight: '100%',
+                            objectFit: 'contain'
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      </Box>
+                    )}
+                  </Box>
                   <Box>
                     <IconButton size="small" onClick={() => openDialog(company)}>
                       <EditIcon />
@@ -535,6 +577,107 @@ const AdminInterface = () => {
                   />
                 </Box>
               </Grid>
+              
+              {/* Logo Upload Section */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Company Logo
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                  {/* Current Logo Preview */}
+                  {editingCompany.logo && (
+                    <Box sx={{
+                      width: 100,
+                      height: 60,
+                      border: '2px solid #e0e0e0',
+                      borderRadius: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: 'grey.50',
+                      overflow: 'hidden'
+                    }}>
+                      <img 
+                        src={editingCompany.logo} 
+                        alt="Company logo"
+                        style={{ 
+                          maxWidth: '100%', 
+                          maxHeight: '100%',
+                          objectFit: 'contain'
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                      <Box sx={{ 
+                        display: 'none',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%'
+                      }}>
+                        <Typography variant="caption" color="text.secondary">
+                          No Logo
+                        </Typography>
+                      </Box>
+                    </Box>
+                  )}
+                  
+                  {/* Upload and Select Options */}
+                  <Box>
+                    <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="logo-upload"
+                        onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (file && editingCompany.id) {
+                            try {
+                              const logoPath = await handleLogoUpload(file, editingCompany.id);
+                              setEditingCompany({...editingCompany, logo: logoPath});
+                            } catch (error) {
+                              setError('Logo upload failed: ' + error.message);
+                            }
+                          }
+                        }}
+                      />
+                      <label htmlFor="logo-upload">
+                        <Button
+                          variant="outlined"
+                          component="span"
+                          disabled={uploadingLogo || !editingCompany.id}
+                          sx={{ textTransform: 'none' }}
+                        >
+                          {uploadingLogo ? 'Uploading...' : 'Upload New'}
+                        </Button>
+                      </label>
+                      
+                      <TextField
+                        select
+                        label="Or choose existing"
+                        value={editingCompany.logo || ''}
+                        onChange={(e) => setEditingCompany({...editingCompany, logo: e.target.value})}
+                        sx={{ minWidth: 180 }}
+                        size="small"
+                      >
+                        <MenuItem value="/logos/gm-logo.png">GM Logo</MenuItem>
+                        <MenuItem value="/logos/ford-logo.png">Ford Logo</MenuItem>
+                        <MenuItem value="/logos/stellantis-logo.png">Stellantis Logo</MenuItem>
+                        <MenuItem value="/logos/unifor-logo.png">Unifor Logo</MenuItem>
+                        <MenuItem value="/logos/copernicus-lodge.png">Copernicus Lodge</MenuItem>
+                        <MenuItem value="/logos/default-logo.png">Default Logo</MenuItem>
+                      </TextField>
+                    </Box>
+                    <Typography variant="caption" display="block" color="text.secondary">
+                      Upload: PNG, JPG up to 2MB. Recommended: 200x50px
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              
               <Grid item xs={12}>
                 <TextField
                   fullWidth
