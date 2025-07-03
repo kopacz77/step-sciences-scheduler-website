@@ -156,7 +156,7 @@ const AdminInterface = () => {
     return errors;
   };
 
-  // Handle logo upload
+  // Handle logo upload (manual process - add files to Git manually)
   const handleLogoUpload = async (file, companyId) => {
     if (!file) return null;
 
@@ -173,35 +173,16 @@ const AdminInterface = () => {
         throw new Error('Image must be smaller than 2MB');
       }
 
-      // Convert file to base64 for upload
-      const reader = new FileReader();
-      const fileData = await new Promise((resolve, reject) => {
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      // Generate the expected file path
+      const fileExt = file.name.split('.').pop().toLowerCase();
+      const safeCompanyId = companyId.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+      const expectedPath = `/logos/${safeCompanyId}-logo.${fileExt}`;
 
-      // Upload to API endpoint
-      const response = await fetch('/api/upload-logo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: file.name,
-          fileData,
-          companyId
-        })
-      });
+      // Show instructions to user
+      const fileName = `${safeCompanyId}-logo.${fileExt}`;
+      alert(`To use this logo:\n1. Save the uploaded file as: ${fileName}\n2. Add it to public/logos/ folder\n3. Commit to Git\n\nThe path ${expectedPath} will be saved to the database.`);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Upload failed' }));
-        throw new Error(errorData.error || 'Upload failed');
-      }
-
-      const result = await response.json();
-      console.log('Logo upload result:', result);
-      
-      // Return the actual file path that was saved
-      return result.logoPath;
+      return expectedPath;
 
     } catch (error) {
       console.error('Logo upload error:', error);
@@ -725,7 +706,7 @@ const AdminInterface = () => {
                       </Box>
                       <Typography variant="caption" display="block" color="text.secondary">
                         Upload: PNG, JPG up to 2MB. Recommended: 200x50px<br />
-                        <em>Note: Files saved to public/logos/. Commit to Git to persist changes.</em>
+                        <em>Note: Upload shows instructions. Manually add file to public/logos/ and commit to Git.</em>
                       </Typography>
                     </Box>
                   </Box>
