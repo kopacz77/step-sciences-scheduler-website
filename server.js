@@ -10,8 +10,20 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// API Routes - Using Vercel API routes in /api/ folder for deployment
-// Local development can use the Vercel dev server instead
+// Simple admin login endpoint
+app.post('/api/admin/login', (req, res) => {
+  const { email, password } = req.body;
+  
+  if (email === 'admin@stepsciences.com' && password === 'admin123') {
+    return res.status(200).json({
+      user: { id: 'admin-dev', email, role: 'admin' },
+      token: 'dev-token-' + Date.now(),
+      message: 'Login successful'
+    });
+  }
+  
+  res.status(401).json({ error: 'Invalid credentials' });
+});
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
