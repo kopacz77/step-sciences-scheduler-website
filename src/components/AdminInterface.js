@@ -128,11 +128,23 @@ const AdminInterface = () => {
       if (response.ok) {
         const logos = await response.json();
         setAvailableLogos(logos);
+        return;
       }
     } catch (err) {
       console.error('Failed to load available logos:', err);
-      // Don't show error to user - just fall back to empty list
     }
+    
+    // Fallback to known logos if API fails
+    const fallbackLogos = [
+      { value: '/logos/gm-logo.png', label: 'GM Logo' },
+      { value: '/logos/ford-logo.png', label: 'Ford Logo' },
+      { value: '/logos/stellantis-logo.png', label: 'Stellantis Logo' },
+      { value: '/logos/unifor-logo.png', label: 'Unifor Logo' },
+      { value: '/logos/copernicus-lodge.png', label: 'Copernicus Lodge' },
+      { value: '/logos/salerno-logo.png', label: 'Salerno Logo' },
+      { value: '/logos/apple-touch-icon.png', label: 'Apple Touch Icon' }
+    ];
+    setAvailableLogos(fallbackLogos);
   };
 
   // Validate form fields
