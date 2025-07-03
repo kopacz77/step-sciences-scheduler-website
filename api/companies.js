@@ -171,6 +171,50 @@ export default async function handler(req, res) {
         });
         break;
 
+      case 'PUT':
+        // Update existing company (requires admin access)
+        console.log('PUT request received:', req.body);
+        const { id: updateId, ...updateData } = req.body;
+        
+        if (!updateId) {
+          return res.status(400).json({ error: 'Company ID is required for updates' });
+        }
+        
+        const updatedCompany = sanitizeCompany(updateData);
+        console.log('Sanitized update data:', updatedCompany);
+        
+        const updateErrors = validateCompany({ ...updatedCompany, id: updateId });
+        console.log('Update validation errors:', updateErrors);
+        
+        if (updateErrors.length > 0) {
+          return res.status(400).json({ errors: updateErrors });
+        }
+
+        // Update company in database
+        const { data: updated, error: updateError } = await supabaseAdmin
+          .from('companies')
+          .update(updatedCompany)
+          .eq('id', updateId)
+          .select()
+          .single();
+
+        if (updateError) {
+          if (updateError.code === 'PGRST116') {
+            return res.status(404).json({ error: 'Company not found' });
+          }
+          console.error('Supabase update error:', updateError);
+          return res.status(500).json({ 
+            error: 'Database update failed', 
+            details: updateError.message 
+          });
+        }
+
+        res.status(200).json({ 
+          message: 'Company updated successfully', 
+          company: formatCompanyForClient(updated)
+        });
+        break;
+
       case 'DELETE':
         // Soft delete company (requires admin access)
         const companyId = req.query.id || req.body.id;

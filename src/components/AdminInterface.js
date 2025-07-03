@@ -218,10 +218,9 @@ const AdminInterface = () => {
 
       // Use API endpoints instead of direct Supabase calls to bypass RLS
       const isUpdate = companies.find((c) => c.id === company.id);
-      const url = isUpdate ? `/api/companies/${company.id}` : '/api/companies';
       const method = isUpdate ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
+      const response = await fetch('/api/companies', {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dbCompany),
