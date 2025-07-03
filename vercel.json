@@ -2,6 +2,11 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "build", 
   "framework": "create-react-app",
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/admin",
