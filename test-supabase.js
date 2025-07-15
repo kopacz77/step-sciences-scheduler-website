@@ -1,4 +1,5 @@
 // test-supabase.js - Quick test script for Supabase connection
+require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL || 'https://cabtsqukaofxofsufaui.supabase.co';
