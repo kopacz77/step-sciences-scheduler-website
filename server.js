@@ -11,7 +11,14 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Simple admin login endpoint
+// Import Supabase for companies endpoint
+const { createClient } = require('@supabase/supabase-js');
+
+const supabaseUrl = process.env.SUPABASE_URL || 'https://cabtsqukaofxofsufaui.supabase.co';
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Admin login endpoint
 app.post('/api/admin/login', (req, res) => {
   const { email, password } = req.body;
   
@@ -24,6 +31,56 @@ app.post('/api/admin/login', (req, res) => {
   }
   
   res.status(401).json({ error: 'Invalid credentials' });
+});
+
+// Companies endpoint
+app.get('/api/companies', async (req, res) => {
+  try {
+    const { data: companies, error } = await supabase
+      .from('companies')
+      .select('*')
+      .eq('is_active', true)
+      .order('name');
+    
+    if (error) {
+      console.error('Supabase error:', error);
+      return res.status(500).json({ error: 'Failed to fetch companies' });
+    }
+    
+    const formattedCompanies = companies.map(row => ({
+      id: row.id,
+      name: row.name,
+      fullName: row.full_name,
+      primaryColor: row.primary_color,
+      secondaryColor: row.secondary_color,
+      logo: row.logo,
+      calendarUrl: row.calendar_url,
+      intakeFormUrl: row.intake_form_url,
+      contactEmail: row.contact_email,
+      showBranding: Boolean(row.show_branding),
+      meetingLocation: row.meeting_location,
+      scanDayLocations: {
+        monday: row.monday_location,
+        tuesday: row.tuesday_location,
+        wednesday: row.wednesday_location,
+        thursday: row.thursday_location,
+        friday: row.friday_location,
+        saturday: row.saturday_location,
+        sunday: row.sunday_location
+      },
+      specialInstructions: row.special_instructions,
+      domain: row.domain,
+      hasScanDays: Boolean(row.has_scan_days),
+      isActive: Boolean(row.is_active),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
+    
+    res.json(formattedCompanies);
+  } catch (error) {
+    console.error('API error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Serve static files in production
