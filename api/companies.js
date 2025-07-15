@@ -6,6 +6,19 @@ const supabaseUrl = process.env.SUPABASE_URL || 'https://cabtsqukaofxofsufaui.su
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Use service role key for admin operations
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
+// Debug environment variables
+console.log('Environment check:', {
+  supabaseUrl: supabaseUrl,
+  hasServiceKey: !!supabaseServiceKey,
+  hasAnonKey: !!supabaseAnonKey,
+  anonKeyLength: supabaseAnonKey?.length || 0
+});
+
+// Validate environment variables
+if (!supabaseAnonKey) {
+  throw new Error('SUPABASE_ANON_KEY environment variable is missing');
+}
+
 // Create Supabase clients
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || supabaseAnonKey);
 const supabasePublic = createClient(supabaseUrl, supabaseAnonKey);
