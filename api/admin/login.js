@@ -4,19 +4,15 @@ import bcrypt from 'bcryptjs';
 
 const supabaseUrl = process.env.SUPABASE_URL || 'https://cabtsqukaofxofsufaui.supabase.co';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnRzcXVrYW9meG9mc3VmYXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0NjQwMzksImV4cCI6MjA2NzA0MDAzOX0.bjITY67lM0h4wWdpEpqvZCOhZuj-lLhF-PS65_6SyDk';
 
 // Debug environment variables
 console.log('Admin login environment check:', {
   hasServiceKey: !!supabaseServiceKey,
   hasAnonKey: !!supabaseAnonKey,
-  anonKeyLength: supabaseAnonKey?.length || 0
+  anonKeyLength: supabaseAnonKey?.length || 0,
+  availableEnvVars: Object.keys(process.env).filter(key => key.includes('SUPABASE'))
 });
-
-// Validate environment variables
-if (!supabaseAnonKey) {
-  console.error('SUPABASE_ANON_KEY environment variable is missing');
-}
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey || supabaseAnonKey);
 

@@ -4,20 +4,19 @@ import { createClient } from '@supabase/supabase-js';
 // Supabase configuration
 const supabaseUrl = process.env.SUPABASE_URL || 'https://cabtsqukaofxofsufaui.supabase.co';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Use service role key for admin operations
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnRzcXVrYW9meG9mc3VmYXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0NjQwMzksImV4cCI6MjA2NzA0MDAzOX0.bjITY67lM0h4wWdpEpqvZCOhZuj-lLhF-PS65_6SyDk';
 
 // Debug environment variables
 console.log('Environment check:', {
   supabaseUrl: supabaseUrl,
   hasServiceKey: !!supabaseServiceKey,
   hasAnonKey: !!supabaseAnonKey,
-  anonKeyLength: supabaseAnonKey?.length || 0
+  anonKeyLength: supabaseAnonKey?.length || 0,
+  envVars: Object.keys(process.env).filter(key => key.includes('SUPABASE'))
 });
 
-// Validate environment variables
-if (!supabaseAnonKey) {
-  throw new Error('SUPABASE_ANON_KEY environment variable is missing');
-}
+// Show what environment variables are actually available
+console.log('Available SUPABASE env vars:', Object.keys(process.env).filter(key => key.includes('SUPABASE')));
 
 // Create Supabase clients
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || supabaseAnonKey);
