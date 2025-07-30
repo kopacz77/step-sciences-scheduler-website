@@ -237,9 +237,9 @@ CREATE TABLE admin_users (
   last_login TIMESTAMP
 );
 
--- Insert default admin user (password: 'admin123' - change this!)
+-- Insert default admin user (secure password generated)
 INSERT INTO admin_users (email, password_hash, role) VALUES (
   'admin@stepsciences.com',
-  '$2b$10$rOTJr3WRHIGWXKjXBXaXDOyXmGQEjzGz5D.Vr/V5.7YBhA2aF4PGm',
+  '$2b$10$d5koZrC2./w.u1O8gZWDHeHgRmyINzCBVrnKuPAwidMxDyKAnbaT6',
   'admin'
 );

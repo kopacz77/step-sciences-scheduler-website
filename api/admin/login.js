@@ -39,8 +39,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // For development, use simple credentials
-    if (email === 'admin@stepsciences.com' && password === 'admin123') {
+    // For development, use secure credentials
+    if (email === 'admin@stepsciences.com' && password === '.xkz6oti063p0.PXFWFOC8JB!37') {
       const user = {
         id: 'admin-dev',
         email: 'admin@stepsciences.com',
