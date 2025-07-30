@@ -24,7 +24,7 @@ node test-supabase.js
 
 **Default admin:**
 - Email: `admin@stepsciences.com`
-- Password: `admin123`
+- Password: `.xkz6oti063p0.PXFWFOC8JB!37`
 
 ## Plant Configuration
 
