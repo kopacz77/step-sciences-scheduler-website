@@ -220,86 +220,154 @@ const StepContent = memo(
               <Box>
                 {!showIntakeForm ? (
                   <Box>
-                    <Alert severity="success" sx={{ mb: { xs: 2, sm: 3 } }}>
-                      <Typography
-                        variant="body1"
-                        sx={{ fontSize: { xs: '1rem', sm: '1.1rem' }, fontWeight: 600 }}
-                      >
-                        ✓{' '}
-                        {isMobile
-                          ? 'Appointment booked!'
-                          : 'Great! Your appointment has been booked.'}
-                      </Typography>
-                    </Alert>
+                    {/* Mobile: Put urgent action first, success message second */}
+                    {isMobile ? (
+                      <>
+                        {/* CRITICAL: Mobile-first urgent call to action */}
+                        <Alert severity="warning" sx={{ mb: 3, border: '2px solid', borderColor: 'warning.main' }}>
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.1rem', fontWeight: 700, textAlign: 'center' }}
+                          >
+                            🚨 REQUIRED: Complete Intake Form Now
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontSize: '0.95rem', fontWeight: 500, mt: 0.5, textAlign: 'center' }}
+                          >
+                            Your appointment isn't complete until this form is filled out
+                          </Typography>
+                        </Alert>
 
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        mb: { xs: 2, sm: 3 },
-                        fontSize: { xs: '1.05rem', sm: '1.2rem' },
-                        textAlign: isMobile ? 'center' : 'left',
-                        fontWeight: isMobile ? 500 : 400,
-                      }}
-                    >
-                      {isMobile
-                        ? 'Now complete the intake form:'
-                        : 'Now please complete the intake form below. This form will help us prepare for your visit.'}
-                    </Typography>
+                        {/* CRITICAL: Make this button super prominent on mobile */}
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            mb: 3,
+                          }}
+                        >
+                          <Button
+                            variant="contained"
+                            color="error"
+                            size="large"
+                            startIcon={<NoteAdd sx={{ fontSize: 24 }} />}
+                            onClick={handleIntakeFormWithLoading}
+                            disabled={isLoading}
+                            sx={{
+                              fontSize: '1.2rem',
+                              py: 2.5,
+                              px: 5,
+                              fontWeight: 'bold',
+                              minHeight: '64px',
+                              minWidth: '280px',
+                              boxShadow: '0 8px 25px rgba(211, 47, 47, 0.3)',
+                              border: '3px solid',
+                              borderColor: 'error.dark',
+                              '&:hover': {
+                                boxShadow: '0 12px 30px rgba(211, 47, 47, 0.4)',
+                                transform: 'translateY(-3px)',
+                                borderColor: 'error.dark',
+                              },
+                              '&:disabled': {
+                                backgroundColor: 'grey.400',
+                                color: 'white',
+                              },
+                              animation: 'pulse 2s infinite',
+                              '@keyframes pulse': {
+                                '0%': { transform: 'scale(1)' },
+                                '50%': { transform: 'scale(1.05)' },
+                                '100%': { transform: 'scale(1)' },
+                              },
+                            }}
+                          >
+                            {isLoading ? 'Loading...' : 'COMPLETE FORM NOW'}
+                          </Button>
+                        </Box>
 
-                    {/* CRITICAL: Make this button super prominent on mobile */}
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        mt: { xs: 2, sm: 0 },
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        startIcon={<NoteAdd sx={{ fontSize: { xs: 20, sm: 24 } }} />}
-                        onClick={handleIntakeFormWithLoading}
-                        disabled={isLoading}
-                        sx={{
-                          fontSize: { xs: '1.1rem', sm: '1.2rem' },
-                          py: { xs: 2, sm: 1.5 },
-                          px: { xs: 4, sm: 4 },
-                          fontWeight: 'bold',
-                          minHeight: { xs: '56px', sm: 'auto' },
-                          minWidth: { xs: '200px', sm: '250px' },
-                          boxShadow: isMobile ? '0 6px 20px rgba(0,0,0,0.15)' : undefined,
-                          '&:hover': {
-                            boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
-                            transform: 'translateY(-2px)',
-                          },
-                          '&:disabled': {
-                            backgroundColor: 'grey.400',
-                            color: 'white',
-                          },
-                        }}
-                      >
-                        {isLoading
-                          ? 'Loading...'
-                          : isMobile
-                            ? 'Complete Form'
-                            : 'Complete Intake Form'}
-                      </Button>
-                    </Box>
+                        {/* Success message comes after on mobile */}
+                        <Alert severity="success" sx={{ mb: 2 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontSize: '0.95rem', fontWeight: 500, textAlign: 'center' }}
+                          >
+                            ✓ Step 1 Complete: Appointment booked
+                          </Typography>
+                        </Alert>
+                      </>
+                    ) : (
+                      <>
+                        {/* Desktop: Keep original order */}
+                        <Alert severity="success" sx={{ mb: 3 }}>
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.1rem', fontWeight: 600 }}
+                          >
+                            ✓ Great! Your appointment has been booked.
+                          </Typography>
+                        </Alert>
 
-                    {/* Mobile-specific CTA reminder */}
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            mb: 3,
+                            fontSize: '1.2rem',
+                            fontWeight: 400,
+                          }}
+                        >
+                          Now please complete the intake form below. This form will help us prepare for your visit.
+                        </Typography>
+
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            startIcon={<NoteAdd sx={{ fontSize: 24 }} />}
+                            onClick={handleIntakeFormWithLoading}
+                            disabled={isLoading}
+                            sx={{
+                              fontSize: '1.2rem',
+                              py: 1.5,
+                              px: 4,
+                              fontWeight: 'bold',
+                              minWidth: '250px',
+                              '&:hover': {
+                                boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+                                transform: 'translateY(-2px)',
+                              },
+                              '&:disabled': {
+                                backgroundColor: 'grey.400',
+                                color: 'white',
+                              },
+                            }}
+                          >
+                            {isLoading ? 'Loading...' : 'Complete Intake Form'}
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+
+                    {/* Mobile-specific bottom reminder */}
                     {isMobile && (
                       <Typography
                         variant="body2"
                         sx={{
                           mt: 2,
                           textAlign: 'center',
-                          color: 'text.secondary',
-                          fontSize: '0.9rem',
-                          fontStyle: 'italic',
+                          color: 'error.main',
+                          fontSize: '0.95rem',
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
                         }}
                       >
-                        Required to complete your appointment
+                        ⚠️ Mandatory Step - Do Not Skip
                       </Typography>
                     )}
                   </Box>
@@ -354,10 +422,12 @@ const StepContent = memo(
 
                     {/* Mobile-specific reminder above iframe */}
                     {isMobile && (
-                      <Alert severity="warning" sx={{ mb: 2 }}>
-                        <Typography variant="body2" sx={{ fontSize: '0.9rem' }}>
-                          <strong>Important:</strong> Complete the form below, then tap "Form
-                          Complete ✓" above
+                      <Alert severity="error" sx={{ mb: 2, border: '2px solid', borderColor: 'error.main' }}>
+                        <Typography variant="body1" sx={{ fontSize: '1rem', fontWeight: 700, textAlign: 'center' }}>
+                          🚨 AFTER FILLING FORM: Tap "Form Complete ✓" button above!
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontSize: '0.9rem', fontWeight: 500, textAlign: 'center', mt: 0.5 }}>
+                          Don't forget this final step or your appointment won't be confirmed
                         </Typography>
                       </Alert>
                     )}

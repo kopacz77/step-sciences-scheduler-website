@@ -260,17 +260,22 @@ function App() {
 
           {/* Compact Process Flow Alert for Mobile */}
           <Alert
-            severity="info"
+            severity={isMobile ? "warning" : "info"}
             sx={{
               mb: { xs: 2, sm: 4 },
               fontSize: { xs: '0.95rem', sm: '1.1rem' },
               '& .MuiAlert-message': { fontSize: { xs: '0.95rem', sm: '1.1rem' } },
+              ...(isMobile && {
+                border: '2px solid',
+                borderColor: 'warning.main',
+                backgroundColor: 'warning.light',
+              }),
             }}
           >
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-              <strong>{isMobile ? 'Required:' : 'Important:'}</strong>{' '}
+            <Typography variant="body1" sx={{ fontWeight: isMobile ? 700 : 500, textAlign: isMobile ? 'center' : 'left' }}>
+              <strong>{isMobile ? '🚨 BOTH STEPS MANDATORY:' : 'Important:'}</strong>{' '}
               {isMobile
-                ? 'Book appointment, then complete intake form.'
+                ? '1️⃣ Book appointment → 2️⃣ Complete intake form. DO NOT STOP after step 1!'
                 : 'Please complete both steps below - first book your appointment, then fill out the intake form. Both are required for your visit.'}
             </Typography>
           </Alert>
@@ -348,13 +353,34 @@ function App() {
           {/* Compact Stepper for Mobile */}
           <Box sx={{ mb: { xs: 2, sm: 4 } }}>
             {isMobile ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'center' }}>
-                <Typography variant="h6" component="div" sx={{ mr: 1, fontSize: '1.1rem' }}>
-                  Step {activeStep + 1} of {steps.length}:
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2, justifyContent: 'center' }}>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    fontSize: '1.1rem',
+                    color: activeStep === 1 ? 'error.main' : 'text.primary',
+                    fontWeight: activeStep === 1 ? 700 : 500,
+                  }}
+                >
+                  Step {activeStep + 1} of {steps.length}: {steps[activeStep].label}
                 </Typography>
-                <Typography variant="h6" color="primary" sx={{ fontSize: '1.1rem' }}>
-                  {steps[activeStep].label}
-                </Typography>
+                {activeStep === 1 && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: '0.9rem',
+                      color: 'error.main',
+                      fontWeight: 600,
+                      textAlign: 'center',
+                      mt: 0.5,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                    }}
+                  >
+                    ⚠️ INCOMPLETE - ACTION REQUIRED
+                  </Typography>
+                )}
               </Box>
             ) : (
               <Stepper activeStep={activeStep} alternativeLabel>
