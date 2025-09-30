@@ -5,6 +5,9 @@ import {
   Edit as EditIcon,
   Save as SaveIcon,
   Visibility as PreviewIcon,
+  Home as HomeIcon,
+  Settings as SettingsIcon,
+  LocationOn as LocationIcon,
 } from '@mui/icons-material';
 import {
   Alert,
@@ -29,6 +32,8 @@ import {
   MenuItem,
   Paper,
   Switch,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -59,6 +64,15 @@ const formatCompanyForDatabase = (company) => ({
   domain: company.domain?.toLowerCase().trim(),
   has_scan_days: Boolean(company.hasScanDays),
   is_active: Boolean(company.isActive ?? true),
+  // Landing page fields
+  landing_page_enabled: Boolean(company.landingPageEnabled ?? true),
+  landing_page_title: company.landingPageTitle?.trim() || null,
+  landing_page_subtitle: company.landingPageSubtitle?.trim() || null,
+  landing_page_description: company.landingPageDescription?.trim() || null,
+  landing_page_features: JSON.stringify(company.landingPageFeatures || []),
+  landing_page_cta_text: company.landingPageCtaText?.trim() || null,
+  landing_page_background_image: company.landingPageBackgroundImage?.trim() || null,
+  landing_page_show_company_logo: Boolean(company.landingPageShowCompanyLogo ?? true),
 });
 
 const AdminInterface = () => {
@@ -70,6 +84,7 @@ const AdminInterface = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [availableLogos, setAvailableLogos] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
 
   // Company form template
   const defaultCompany = {
@@ -94,6 +109,21 @@ const AdminInterface = () => {
     domain: '',
     hasScanDays: false,
     isActive: true,
+    // Landing page fields
+    landingPageEnabled: true,
+    landingPageTitle: 'Health & Performance Solutions',
+    landingPageSubtitle: 'Professional health assessments for your workforce',
+    landingPageDescription:
+      'Step Sciences partners with leading organizations to provide comprehensive health and performance assessments. Our expert team helps identify opportunities to optimize your workforce health and productivity.',
+    landingPageFeatures: [
+      'Professional Health Assessments',
+      'Workforce Optimization',
+      'Expert Analysis',
+      'Confidential Results',
+    ],
+    landingPageCtaText: 'Schedule Your Assessment',
+    landingPageBackgroundImage: '',
+    landingPageShowCompanyLogo: true,
   };
 
   useEffect(() => {
@@ -133,7 +163,7 @@ const AdminInterface = () => {
     } catch (err) {
       console.error('Failed to load available logos:', err);
     }
-    
+
     // Fallback to known logos if API fails
     const fallbackLogos = [
       { value: '/logos/gm-logo.png', label: 'GM Logo' },
@@ -142,7 +172,7 @@ const AdminInterface = () => {
       { value: '/logos/unifor-logo.png', label: 'Unifor Logo' },
       { value: '/logos/copernicus-lodge.png', label: 'Copernicus Lodge' },
       { value: '/logos/salerno-logo.png', label: 'Salerno Logo' },
-      { value: '/logos/apple-touch-icon.png', label: 'Apple Touch Icon' }
+      { value: '/logos/apple-touch-icon.png', label: 'Apple Touch Icon' },
     ];
     setAvailableLogos(fallbackLogos);
   };
@@ -207,10 +237,11 @@ const AdminInterface = () => {
 
       // Show instructions to user
       const fileName = `${safeCompanyId}-logo.${fileExt}`;
-      alert(`To use this logo:\n1. Save the uploaded file as: ${fileName}\n2. Add it to public/logos/ folder\n3. Commit to Git\n\nThe path ${expectedPath} will be saved to the database.`);
+      alert(
+        `To use this logo:\n1. Save the uploaded file as: ${fileName}\n2. Add it to public/logos/ folder\n3. Commit to Git\n\nThe path ${expectedPath} will be saved to the database.`
+      );
 
       return expectedPath;
-
     } catch (error) {
       console.error('Logo upload error:', error);
       throw error;
@@ -311,6 +342,7 @@ const AdminInterface = () => {
   const openDialog = (company = null) => {
     setEditingCompany(company || { ...defaultCompany });
     setDialogOpen(true);
+    setActiveTab(0); // Reset to first tab
   };
 
   return (
@@ -731,8 +763,12 @@ const AdminInterface = () => {
                         </TextField>
                       </Box>
                       <Typography variant="caption" display="block" color="text.secondary">
-                        Upload: PNG, JPG up to 2MB. Recommended: 200x50px<br />
-                        <em>Note: Upload shows instructions. Manually add file to public/logos/ and commit to Git.</em>
+                        Upload: PNG, JPG up to 2MB. Recommended: 200x50px
+                        <br />
+                        <em>
+                          Note: Upload shows instructions. Manually add file to public/logos/ and
+                          commit to Git.
+                        </em>
                       </Typography>
                     </Box>
                   </Box>

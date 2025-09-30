@@ -22,7 +22,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 app.post('/api/admin/login', (req, res) => {
   const { email, password } = req.body;
   
-  if (email === 'admin@stepsciences.com' && password === 'admin123') {
+  if (email === 'admin@stepsciences.com' && password === '.xkz6oti063p0.PXFWFOC8JB!37') {
     return res.status(200).json({
       user: { id: 'admin-dev', email, role: 'admin' },
       token: 'dev-token-' + Date.now(),
@@ -73,7 +73,16 @@ app.get('/api/companies', async (req, res) => {
       hasScanDays: Boolean(row.has_scan_days),
       isActive: Boolean(row.is_active),
       createdAt: row.created_at,
-      updatedAt: row.updated_at
+      updatedAt: row.updated_at,
+      // Landing page fields
+      landingPageEnabled: Boolean(row.landing_page_enabled),
+      landingPageTitle: row.landing_page_title,
+      landingPageSubtitle: row.landing_page_subtitle,
+      landingPageDescription: row.landing_page_description,
+      landingPageFeatures: row.landing_page_features ? JSON.parse(row.landing_page_features) : [],
+      landingPageCtaText: row.landing_page_cta_text,
+      landingPageBackgroundImage: row.landing_page_background_image,
+      landingPageShowCompanyLogo: Boolean(row.landing_page_show_company_logo)
     }));
     
     res.json(formattedCompanies);

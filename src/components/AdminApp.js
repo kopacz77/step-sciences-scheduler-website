@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import AdminInterface from './AdminInterface';
+import AdminInterface from './AdminInterfaceWithTabs';
 import AdminLogin from './AdminLogin';
 
 const AdminApp = () => {

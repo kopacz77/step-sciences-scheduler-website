@@ -23,7 +23,7 @@ const GoogleCalendarButton = memo(
     useEffect(() => {
       // Check if the URL is a Google Calendar appointment URL
       const isAppointmentUrl = companyConfig.calendarUrl?.includes('/appointments/schedules/');
-      
+
       if (isAppointmentUrl) {
         // For appointment URLs, we'll embed them directly as an iframe
         setLoadingCalendar(false);
@@ -188,7 +188,7 @@ const GoogleCalendarButton = memo(
                 <iframe
                   src={companyConfig.calendarUrl}
                   width="100%"
-                  height={isActuallyMobile ? "600" : "800"}
+                  height={isActuallyMobile ? '600' : '800'}
                   frameBorder="0"
                   scrolling="auto"
                   title="Book Your Appointment"

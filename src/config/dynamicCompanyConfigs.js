@@ -24,6 +24,23 @@ const fallbackConfigs = {
     specialInstructions: 'Please Bring Health Card and Greenshield Card to the appointment.',
     domain: 'gmoshawa.stepsciences.com',
     hasScanDays: true,
+    // Landing page fields
+    landingPageEnabled: true,
+    landingPageTitle: 'GM Oshawa Health & Performance Program',
+    landingPageSubtitle: 'Comprehensive health assessments for GM team members',
+    landingPageDescription:
+      'Step Sciences proudly partners with General Motors to provide world-class health and performance assessments for all team members. Our comprehensive evaluations help identify opportunities to optimize your health, performance, and overall well-being in the workplace.',
+    landingPageFeatures: [
+      'Comprehensive Health Screening',
+      'Performance Optimization',
+      'Confidential Results',
+      'GM Benefits Coverage',
+      'Expert Medical Analysis',
+      'Workplace Wellness',
+    ],
+    landingPageCtaText: 'Book Your GM Health Assessment',
+    landingPageBackgroundImage: null,
+    landingPageShowCompanyLogo: true,
   },
 };
 
@@ -94,6 +111,15 @@ const formatCompanyForClient = (row) => ({
   domain: row.domain,
   hasScanDays: Boolean(row.has_scan_days),
   isActive: Boolean(row.is_active),
+  // Landing page fields
+  landingPageEnabled: Boolean(row.landing_page_enabled),
+  landingPageTitle: row.landing_page_title,
+  landingPageSubtitle: row.landing_page_subtitle,
+  landingPageDescription: row.landing_page_description,
+  landingPageFeatures: row.landing_page_features ? JSON.parse(row.landing_page_features) : [],
+  landingPageCtaText: row.landing_page_cta_text,
+  landingPageBackgroundImage: row.landing_page_background_image,
+  landingPageShowCompanyLogo: Boolean(row.landing_page_show_company_logo),
 });
 
 // API client for company configs
@@ -308,6 +334,11 @@ export const validateUrlParams = () => {
   const reset = urlParams.get('reset');
   if (reset) {
     validatedParams.reset = reset === 'true';
+  }
+
+  const direct = urlParams.get('direct');
+  if (direct) {
+    validatedParams.direct = direct === 'true';
   }
 
   return validatedParams;

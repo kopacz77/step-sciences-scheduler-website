@@ -204,9 +204,9 @@ const StepContent = memo(
                     <Typography
                       variant="body2"
                       color="text.primary"
-                      sx={{ 
+                      sx={{
                         fontSize: { xs: '0.95rem', sm: '1.1rem' },
-                        fontWeight: 500
+                        fontWeight: 500,
                       }}
                     >
                       <strong>Note:</strong> {companyConfig.specialInstructions}
@@ -224,7 +224,10 @@ const StepContent = memo(
                     {isMobile ? (
                       <>
                         {/* CRITICAL: Mobile-first urgent call to action */}
-                        <Alert severity="warning" sx={{ mb: 3, border: '2px solid', borderColor: 'warning.main' }}>
+                        <Alert
+                          severity="warning"
+                          sx={{ mb: 3, border: '2px solid', borderColor: 'warning.main' }}
+                        >
                           <Typography
                             variant="body1"
                             sx={{ fontSize: '1.1rem', fontWeight: 700, textAlign: 'center' }}
@@ -233,7 +236,12 @@ const StepContent = memo(
                           </Typography>
                           <Typography
                             variant="body2"
-                            sx={{ fontSize: '0.95rem', fontWeight: 500, mt: 0.5, textAlign: 'center' }}
+                            sx={{
+                              fontSize: '0.95rem',
+                              fontWeight: 500,
+                              mt: 0.5,
+                              textAlign: 'center',
+                            }}
                           >
                             Your appointment isn't complete until this form is filled out
                           </Typography>
@@ -299,10 +307,7 @@ const StepContent = memo(
                       <>
                         {/* Desktop: Keep original order */}
                         <Alert severity="success" sx={{ mb: 3 }}>
-                          <Typography
-                            variant="body1"
-                            sx={{ fontSize: '1.1rem', fontWeight: 600 }}
-                          >
+                          <Typography variant="body1" sx={{ fontSize: '1.1rem', fontWeight: 600 }}>
                             ✓ Great! Your appointment has been booked.
                           </Typography>
                         </Alert>
@@ -315,7 +320,8 @@ const StepContent = memo(
                             fontWeight: 400,
                           }}
                         >
-                          Now please complete the intake form below. This form will help us prepare for your visit.
+                          Now please complete the intake form below. This form will help us prepare
+                          for your visit.
                         </Typography>
 
                         <Box
@@ -422,11 +428,20 @@ const StepContent = memo(
 
                     {/* Mobile-specific reminder above iframe */}
                     {isMobile && (
-                      <Alert severity="error" sx={{ mb: 2, border: '2px solid', borderColor: 'error.main' }}>
-                        <Typography variant="body1" sx={{ fontSize: '1rem', fontWeight: 700, textAlign: 'center' }}>
+                      <Alert
+                        severity="error"
+                        sx={{ mb: 2, border: '2px solid', borderColor: 'error.main' }}
+                      >
+                        <Typography
+                          variant="body1"
+                          sx={{ fontSize: '1rem', fontWeight: 700, textAlign: 'center' }}
+                        >
                           🚨 AFTER FILLING FORM: Tap "Form Complete ✓" button above!
                         </Typography>
-                        <Typography variant="body2" sx={{ fontSize: '0.9rem', fontWeight: 500, textAlign: 'center', mt: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontSize: '0.9rem', fontWeight: 500, textAlign: 'center', mt: 0.5 }}
+                        >
                           Don't forget this final step or your appointment won't be confirmed
                         </Typography>
                       </Alert>

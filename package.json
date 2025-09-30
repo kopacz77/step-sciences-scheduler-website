@@ -19,13 +19,14 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:api": "node server.js",
-    "dev": "concurrently \"pnpm start:api\" \"pnpm start\"",
+    "start:api": "PORT=3003 node server.js",
+    "dev": "concurrently \"pnpm start:api\" \"PORT=3002 pnpm start\"",
     "build": "react-scripts build",
     "format": "biome format --write ./src",
     "lint": "biome lint ./src",
     "check": "biome check --apply ./src"
   },
+  "proxy": "http://localhost:3003",
   "browserslist": {
     "production": [
       ">0.2%",
