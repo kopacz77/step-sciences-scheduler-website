@@ -140,7 +140,7 @@ const AdminInterface = () => {
   const loadCompanies = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/companies`);
+      const response = await fetch('/api/companies');
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -156,7 +156,7 @@ const AdminInterface = () => {
 
   const loadAvailableLogos = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/logos`);
+      const response = await fetch('/api/logos');
       if (response.ok) {
         const logos = await response.json();
         setAvailableLogos(logos);
@@ -185,7 +185,7 @@ const AdminInterface = () => {
       setLoading(true);
       const formattedCompany = formatCompanyForDatabase(company);
 
-      const url = company.id ? `${process.env.REACT_APP_API_URL}/companies/${company.id}` : `${process.env.REACT_APP_API_URL}/companies`;
+      const url = company.id ? `/api/companies/${company.id}` : '/api/companies';
       const method = company.id ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -211,7 +211,7 @@ const AdminInterface = () => {
     if (window.confirm('Are you sure you want to delete this company?')) {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/companies/${id}`, { method: 'DELETE' });
+        const response = await fetch(`/api/companies/${id}`, { method: 'DELETE' });
 
         if (!response.ok) {
           throw new Error(`Failed to delete company: ${response.statusText}`);
