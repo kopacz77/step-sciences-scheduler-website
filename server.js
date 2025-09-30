@@ -92,6 +92,81 @@ app.get('/api/companies', async (req, res) => {
   }
 });
 
+// Logos endpoint
+app.get('/api/logos', (req, res) => {
+  const fallbackLogos = [
+    { value: '/logos/gm-logo.png', label: 'GM Logo' },
+    { value: '/logos/ford-logo.png', label: 'Ford Logo' },
+    { value: '/logos/stellantis-logo.png', label: 'Stellantis Logo' },
+    { value: '/logos/unifor-logo.png', label: 'Unifor Logo' },
+    { value: '/logos/copernicus-lodge.png', label: 'Copernicus Lodge' },
+    { value: '/logos/salerno-logo.png', label: 'Salerno Logo' },
+    { value: '/logos/apple-touch-icon.png', label: 'Apple Touch Icon' },
+  ];
+  res.json(fallbackLogos);
+});
+
+// Companies CRUD endpoints
+app.post('/api/companies', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('companies')
+      .insert([req.body])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Insert error:', error);
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.error('API error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.put('/api/companies/:id', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('companies')
+      .update(req.body)
+      .eq('id', req.params.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Update error:', error);
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.error('API error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.delete('/api/companies/:id', async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from('companies')
+      .delete()
+      .eq('id', req.params.id);
+
+    if (error) {
+      console.error('Delete error:', error);
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('API error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'build')));
