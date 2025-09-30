@@ -198,10 +198,11 @@ const AdminInterface = () => {
         }
       });
 
-      // Check if this is an existing company (from the companies list) vs a new one
-      const isExistingCompany = companies.find(c => c.id === company.id);
-      const url = isExistingCompany ? `/api/companies/${company.id}` : '/api/companies';
-      const method = isExistingCompany ? 'PUT' : 'POST';
+      // For new companies, always use POST to /api/companies
+      // For existing companies being edited, use PUT to /api/companies/[id]
+      const isNewCompany = !companies.some(c => c.id === company.id);
+      const url = isNewCompany ? '/api/companies' : `/api/companies/${company.id}`;
+      const method = isNewCompany ? 'POST' : 'PUT';
 
       const response = await fetch(url, {
         method,
