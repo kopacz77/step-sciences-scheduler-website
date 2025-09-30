@@ -50,39 +50,47 @@ const validateCompany = (company) => {
   return errors;
 };
 
-const sanitizeCompany = (company) => ({
-  id: company.id?.toLowerCase().trim(),
-  name: company.name?.trim(),
-  full_name: company.full_name?.trim(),
-  primary_color: company.primary_color || '#000000',
-  secondary_color: company.secondary_color || '#D4AF37',
-  logo: company.logo || '/logos/default-logo.png',
-  calendar_url: company.calendar_url?.trim(),
-  intake_form_url: company.intake_form_url?.trim(),
-  contact_email: company.contact_email?.trim() || 'info@stepsciences.com',
-  show_branding: Boolean(company.show_branding ?? true),
-  meeting_location: company.meeting_location?.trim() || null,
-  monday_location: company.monday_location?.trim() || null,
-  tuesday_location: company.tuesday_location?.trim() || null,
-  wednesday_location: company.wednesday_location?.trim() || null,
-  thursday_location: company.thursday_location?.trim() || null,
-  friday_location: company.friday_location?.trim() || null,
-  saturday_location: company.saturday_location?.trim() || null,
-  sunday_location: company.sunday_location?.trim() || null,
-  special_instructions: company.special_instructions?.trim() || null,
-  domain: company.domain?.toLowerCase().trim(),
-  has_scan_days: Boolean(company.has_scan_days),
-  is_active: Boolean(company.is_active ?? true),
-  // Landing page fields
-  landing_page_enabled: Boolean(company.landing_page_enabled ?? true),
-  landing_page_title: company.landing_page_title?.trim() || null,
-  landing_page_subtitle: company.landing_page_subtitle?.trim() || null,
-  landing_page_description: company.landing_page_description?.trim() || null,
-  landing_page_features: company.landing_page_features || '[]',
-  landing_page_cta_text: company.landing_page_cta_text?.trim() || null,
-  landing_page_background_image: company.landing_page_background_image?.trim() || null,
-  landing_page_show_company_logo: Boolean(company.landing_page_show_company_logo ?? true),
-});
+const sanitizeCompany = (company) => {
+  const baseFields = {
+    id: company.id?.toLowerCase().trim(),
+    name: company.name?.trim(),
+    full_name: company.full_name?.trim(),
+    primary_color: company.primary_color || '#000000',
+    secondary_color: company.secondary_color || '#D4AF37',
+    logo: company.logo || '/logos/default-logo.png',
+    calendar_url: company.calendar_url?.trim(),
+    intake_form_url: company.intake_form_url?.trim(),
+    contact_email: company.contact_email?.trim() || 'info@stepsciences.com',
+    show_branding: Boolean(company.show_branding ?? true),
+    meeting_location: company.meeting_location?.trim() || null,
+    monday_location: company.monday_location?.trim() || null,
+    tuesday_location: company.tuesday_location?.trim() || null,
+    wednesday_location: company.wednesday_location?.trim() || null,
+    thursday_location: company.thursday_location?.trim() || null,
+    friday_location: company.friday_location?.trim() || null,
+    saturday_location: company.saturday_location?.trim() || null,
+    sunday_location: company.sunday_location?.trim() || null,
+    special_instructions: company.special_instructions?.trim() || null,
+    domain: company.domain?.toLowerCase().trim(),
+    has_scan_days: Boolean(company.has_scan_days),
+    is_active: Boolean(company.is_active ?? true),
+  };
+
+  // Only add landing page fields if they exist in the request
+  // This allows the API to work whether or not the database has these columns
+  if (company.landing_page_enabled !== undefined) {
+    baseFields.landing_page_enabled = Boolean(company.landing_page_enabled ?? true);
+    baseFields.landing_page_title = company.landing_page_title?.trim() || null;
+    baseFields.landing_page_subtitle = company.landing_page_subtitle?.trim() || null;
+    baseFields.landing_page_description = company.landing_page_description?.trim() || null;
+    baseFields.landing_page_features = company.landing_page_features || '[]';
+    baseFields.landing_page_cta_text = company.landing_page_cta_text?.trim() || null;
+    baseFields.landing_page_background_image = company.landing_page_background_image?.trim() || null;
+    baseFields.landing_page_show_company_logo = Boolean(company.landing_page_show_company_logo ?? true);
+  }
+
+  return baseFields;
+};
 
 const formatCompanyForClient = (row) => {
   const scanDayLocations = {};
