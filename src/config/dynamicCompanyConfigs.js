@@ -75,7 +75,8 @@ const isValidIntakeFormUrl = (url) => {
 const isValidCalendarUrl = (url) => {
   try {
     const parsedUrl = new URL(url);
-    return parsedUrl.hostname === 'calendar.google.com' && parsedUrl.protocol === 'https:';
+    const validHosts = ['calendar.google.com', 'calendar.app.google'];
+    return validHosts.includes(parsedUrl.hostname) && parsedUrl.protocol === 'https:';
   } catch {
     return false;
   }
