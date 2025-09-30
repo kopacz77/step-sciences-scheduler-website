@@ -185,6 +185,19 @@ const AdminInterface = () => {
       setLoading(true);
       const formattedCompany = formatCompanyForDatabase(company);
 
+      // Debug logging
+      console.log('Saving company data:', {
+        original: company,
+        formatted: formattedCompany,
+        landingPageFields: {
+          enabled: formattedCompany.landing_page_enabled,
+          title: formattedCompany.landing_page_title,
+          subtitle: formattedCompany.landing_page_subtitle,
+          description: formattedCompany.landing_page_description,
+          features: formattedCompany.landing_page_features,
+        }
+      });
+
       const url = company.id ? `/api/companies/${company.id}` : '/api/companies';
       const method = company.id ? 'PUT' : 'POST';
 
@@ -398,37 +411,210 @@ const AdminInterface = () => {
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Primary Color"
-                        type="color"
-                        value={editingCompany.primaryColor}
-                        onChange={(e) =>
-                          setEditingCompany({ ...editingCompany, primaryColor: e.target.value })
-                        }
-                      />
+                      <Typography variant="subtitle1" gutterBottom>
+                        Primary Color
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <TextField
+                          type="color"
+                          value={editingCompany.primaryColor}
+                          onChange={(e) =>
+                            setEditingCompany({ ...editingCompany, primaryColor: e.target.value })
+                          }
+                          sx={{ width: 80 }}
+                        />
+                        <Box
+                          sx={{
+                            width: 120,
+                            height: 50,
+                            backgroundColor: editingCompany.primaryColor,
+                            border: '2px solid #ccc',
+                            borderRadius: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: editingCompany.primaryColor === '#000000' ? 'white' : 'black',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            PRIMARY
+                          </Typography>
+                        </Box>
+                        <TextField
+                          value={editingCompany.primaryColor}
+                          onChange={(e) =>
+                            setEditingCompany({ ...editingCompany, primaryColor: e.target.value })
+                          }
+                          placeholder="#000000"
+                          sx={{ flex: 1 }}
+                        />
+                      </Box>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Secondary Color"
-                        type="color"
-                        value={editingCompany.secondaryColor}
-                        onChange={(e) =>
-                          setEditingCompany({ ...editingCompany, secondaryColor: e.target.value })
-                        }
-                      />
+                      <Typography variant="subtitle1" gutterBottom>
+                        Secondary Color
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <TextField
+                          type="color"
+                          value={editingCompany.secondaryColor}
+                          onChange={(e) =>
+                            setEditingCompany({ ...editingCompany, secondaryColor: e.target.value })
+                          }
+                          sx={{ width: 80 }}
+                        />
+                        <Box
+                          sx={{
+                            width: 120,
+                            height: 50,
+                            backgroundColor: editingCompany.secondaryColor,
+                            border: '2px solid #ccc',
+                            borderRadius: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: editingCompany.secondaryColor === '#000000' ? 'white' : 'black',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            SECONDARY
+                          </Typography>
+                        </Box>
+                        <TextField
+                          value={editingCompany.secondaryColor}
+                          onChange={(e) =>
+                            setEditingCompany({ ...editingCompany, secondaryColor: e.target.value })
+                          }
+                          placeholder="#D4AF37"
+                          sx={{ flex: 1 }}
+                        />
+                      </Box>
                     </Grid>
+                    {/* Logo Upload Section */}
                     <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        label="Logo URL"
-                        value={editingCompany.logo}
-                        onChange={(e) =>
-                          setEditingCompany({ ...editingCompany, logo: e.target.value })
-                        }
-                        helperText="Path to company logo image"
-                      />
+                      <Typography variant="subtitle1" gutterBottom>
+                        Company Logo
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        {/* Current Logo Preview */}
+                        {editingCompany.logo && (
+                          <Box
+                            sx={{
+                              width: 100,
+                              height: 60,
+                              border: '2px solid #e0e0e0',
+                              borderRadius: 2,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              bgcolor: 'grey.50',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            <img
+                              src={editingCompany.logo}
+                              alt="Company logo"
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                objectFit: 'contain',
+                              }}
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                              }}
+                            />
+                          </Box>
+                        )}
+
+                        {/* Upload and Select Options */}
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: 'none' }}
+                              id="logo-upload"
+                              onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (file && editingCompany.id) {
+                                  try {
+                                    // Generate the expected file path
+                                    const fileExt = file.name.split('.').pop().toLowerCase();
+                                    const safeCompanyId = editingCompany.id.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+                                    const expectedPath = `/logos/${safeCompanyId}-logo.${fileExt}`;
+
+                                    // Show instructions to user
+                                    const fileName = `${safeCompanyId}-logo.${fileExt}`;
+                                    alert(
+                                      `To use this logo:\n1. Save the uploaded file as: ${fileName}\n2. Add it to public/logos/ folder\n3. Commit to Git\n\nThe path ${expectedPath} will be saved to the database.`
+                                    );
+
+                                    setEditingCompany({ ...editingCompany, logo: expectedPath });
+                                  } catch (error) {
+                                    alert('Logo upload failed: ' + error.message);
+                                  }
+                                }
+                              }}
+                            />
+                            <label htmlFor="logo-upload">
+                              <Button
+                                variant="outlined"
+                                component="span"
+                                disabled={!editingCompany.id}
+                                sx={{ textTransform: 'none' }}
+                              >
+                                Upload New Logo
+                              </Button>
+                            </label>
+
+                            <TextField
+                              select
+                              label="Or choose existing"
+                              value={editingCompany.logo || ''}
+                              onChange={(e) =>
+                                setEditingCompany({ ...editingCompany, logo: e.target.value })
+                              }
+                              sx={{ minWidth: 180 }}
+                              size="small"
+                            >
+                              {availableLogos.map((logo) => (
+                                <MenuItem key={logo.value} value={logo.value}>
+                                  {logo.label}
+                                </MenuItem>
+                              ))}
+                            </TextField>
+                          </Box>
+
+                          <TextField
+                            fullWidth
+                            label="Logo URL (manual entry)"
+                            value={editingCompany.logo}
+                            onChange={(e) =>
+                              setEditingCompany({ ...editingCompany, logo: e.target.value })
+                            }
+                            placeholder="/logos/company-logo.png"
+                            size="small"
+                          />
+
+                          <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 1 }}>
+                            Upload: PNG, JPG up to 2MB. Recommended: 200x50px
+                            <br />
+                            <em>
+                              Note: Upload shows instructions. Manually add file to public/logos/ and commit to Git.
+                            </em>
+                          </Typography>
+                        </Box>
+                      </Box>
                     </Grid>
                     <Grid item xs={12}>
                       <FormControlLabel
