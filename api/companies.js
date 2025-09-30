@@ -72,7 +72,16 @@ const sanitizeCompany = (company) => ({
   special_instructions: company.special_instructions?.trim() || null,
   domain: company.domain?.toLowerCase().trim(),
   has_scan_days: Boolean(company.has_scan_days),
-  is_active: Boolean(company.is_active ?? true)
+  is_active: Boolean(company.is_active ?? true),
+  // Landing page fields
+  landing_page_enabled: Boolean(company.landing_page_enabled ?? true),
+  landing_page_title: company.landing_page_title?.trim() || null,
+  landing_page_subtitle: company.landing_page_subtitle?.trim() || null,
+  landing_page_description: company.landing_page_description?.trim() || null,
+  landing_page_features: company.landing_page_features || '[]',
+  landing_page_cta_text: company.landing_page_cta_text?.trim() || null,
+  landing_page_background_image: company.landing_page_background_image?.trim() || null,
+  landing_page_show_company_logo: Boolean(company.landing_page_show_company_logo ?? true),
 });
 
 const formatCompanyForClient = (row) => {
@@ -103,7 +112,16 @@ const formatCompanyForClient = (row) => {
     hasScanDays: Boolean(row.has_scan_days),
     isActive: Boolean(row.is_active),
     createdAt: row.created_at,
-    updatedAt: row.updated_at
+    updatedAt: row.updated_at,
+    // Landing page fields
+    landingPageEnabled: Boolean(row.landing_page_enabled),
+    landingPageTitle: row.landing_page_title,
+    landingPageSubtitle: row.landing_page_subtitle,
+    landingPageDescription: row.landing_page_description,
+    landingPageFeatures: row.landing_page_features ? JSON.parse(row.landing_page_features) : [],
+    landingPageCtaText: row.landing_page_cta_text,
+    landingPageBackgroundImage: row.landing_page_background_image,
+    landingPageShowCompanyLogo: Boolean(row.landing_page_show_company_logo),
   };
 };
 

@@ -198,8 +198,10 @@ const AdminInterface = () => {
         }
       });
 
-      const url = company.id ? `/api/companies/${company.id}` : '/api/companies';
-      const method = company.id ? 'PUT' : 'POST';
+      // Check if this is an existing company (from the companies list) vs a new one
+      const isExistingCompany = companies.find(c => c.id === company.id);
+      const url = isExistingCompany ? `/api/companies/${company.id}` : '/api/companies';
+      const method = isExistingCompany ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
