@@ -198,10 +198,9 @@ const AdminInterface = () => {
         }
       });
 
-      // For new companies, always use POST to /api/companies
-      // For existing companies being edited, use PUT to /api/companies/[id]
+      // Use main companies endpoint for all operations
       const isNewCompany = !companies.some(c => c.id === company.id);
-      const url = isNewCompany ? '/api/companies' : `/api/companies/${company.id}`;
+      const url = '/api/companies';
       const method = isNewCompany ? 'POST' : 'PUT';
 
       const response = await fetch(url, {
