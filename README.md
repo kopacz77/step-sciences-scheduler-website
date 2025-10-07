@@ -16,11 +16,13 @@ A scalable React application serving Canadian automotive plants with custom-bran
 - **🏭 Automotive Plant Focus**: Specialized for Canadian auto manufacturers (GM, Stellantis, Ford, etc.)
 - **🗄️ Database-Driven**: Supabase PostgreSQL with admin interface - no code changes for new plants
 - **🌐 Custom Subdomains**: Each plant gets professional URL (e.g., `gmoshawa.stepsciences.com`)
+- **🎨 Custom Landing Pages**: Company-branded landing pages with editable content, features, and messaging
 - **📅 Google Calendar Integration**: Direct booking through plant-specific appointment calendars
 - **🎨 Dynamic Branding**: Plant-specific colors, logos, locations, and custom messaging
 - **⚖️ Dual-Location Support**: Handle scan days (Monday/Friday different locations)
-- **🔐 Admin Interface**: Web-based plant management with authentication
-- **📱 Mobile Optimized**: Works on plant floor tablets and mobile devices
+- **🔐 Tabbed Admin Interface**: Web-based plant management with organized sections for all settings
+- **📱 Enhanced Mobile UX**: Optimized intake form flow with urgent messaging and prominent CTAs
+- **🎯 Landing Page Controls**: Toggle landing pages on/off, edit content through admin interface
 
 ## 🌐 Live Client Sites
 
@@ -30,6 +32,7 @@ A scalable React application serving Canadian automotive plants with custom-bran
 | **GM CAMI** | [gmcami.stepsciences.com](https://gmcami.stepsciences.com) | Automotive |
 | **Stellantis Windsor** | [stellantiswindsor.stepsciences.com](https://stellantiswindsor.stepsciences.com) | Automotive |
 | **Stellantis Brampton** | [stellantisbrampton.stepsciences.com](https://stellantisbrampton.stepsciences.com) | Automotive |
+| **Linamar Service** | [linamar-service.stepsciences.com](https://linamar-service.stepsciences.com) | Automotive |
 | **Unifor Windsor** | [uniforwindsor.stepsciences.com](https://uniforwindsor.stepsciences.com) | Labor Union |
 | **Copernicus Lodge** | [copernicus-lodge.stepsciences.com](https://copernicus-lodge.stepsciences.com) | Hospitality |
 | **Main Portal** | [appointments.stepsciences.com](https://appointments.stepsciences.com) | Default/Fallback |

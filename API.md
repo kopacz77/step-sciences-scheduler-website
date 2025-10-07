@@ -108,7 +108,15 @@ Authorization: Bearer {admin-token}
   "special_instructions": "Bring required documentation.",
   "domain": "newplant.stepsciences.com",
   "has_scan_days": false,
-  "is_active": true
+  "is_active": true,
+  "landing_page_enabled": true,
+  "landing_page_title": "New Plant Health & Performance Program",
+  "landing_page_subtitle": "Professional health assessments for our workforce",
+  "landing_page_description": "Step Sciences partners with New Plant to provide comprehensive health and performance assessments for all team members.",
+  "landing_page_features": "[\"Professional Health Assessments\", \"Workforce Optimization\", \"Expert Analysis\", \"Confidential Results\"]",
+  "landing_page_cta_text": "Schedule Your Assessment",
+  "landing_page_background_image": null,
+  "landing_page_show_company_logo": true
 }
 ```
 

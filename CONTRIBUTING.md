@@ -116,8 +116,18 @@ All plant configurations are stored in Supabase. **No code changes needed** for 
 - `name`: Display name
 - `domain`: Full domain (subdomain.stepsciences.com)
 - `primary_color`: Hex color for branding
-- `calendar_url`: Google Calendar booking URL
+- `calendar_url`: Google Calendar booking URL (supports calendar.google.com and calendar.app.google)
 - `meeting_location`: Physical location for appointments
+
+### Landing Page Fields (Optional)
+- `landing_page_enabled`: Boolean to enable/disable landing pages
+- `landing_page_title`: Custom title for the landing page
+- `landing_page_subtitle`: Subtitle text
+- `landing_page_description`: Company-specific description text
+- `landing_page_features`: JSON array of feature bullet points
+- `landing_page_cta_text`: Call-to-action button text
+- `landing_page_background_image`: Optional background image URL
+- `landing_page_show_company_logo`: Boolean to show/hide company logo
 
 ## 🎨 Theming and Branding
 

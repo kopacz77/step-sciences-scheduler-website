@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Custom Landing Pages**: Company-branded landing pages with editable content, features, and CTAs
+- **Enhanced Mobile UX**: Optimized intake form flow with urgent messaging and prominent call-to-action buttons
+- **Tabbed Admin Interface**: Organized admin panel with tabs for Basic Info, Landing Page, Locations, and URLs & Settings
+- **Landing Page Controls**: Toggle to enable/disable landing pages per company
+- **Color Preview**: Large color preview boxes in admin interface for better brand management
+- **Logo Management**: Upload workflow and existing logo selection in admin interface
+- **Linamar Service**: Added new automotive client with custom landing page
+
+### Enhanced
+- **Google Calendar Support**: Extended URL validation to support both `calendar.google.com` and `calendar.app.google` domains
+- **Database Schema**: Added landing page columns with automotive industry-specific default content
+- **API Endpoints**: Enhanced company CRUD operations to support landing page fields
+- **Domain Routing**: Improved company detection and fallback handling
+
 ### Security
 - Enhanced admin password security with bcrypt hashing
 - Updated default admin password from weak "admin123" to cryptographically secure password
