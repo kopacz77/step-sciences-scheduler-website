@@ -222,12 +222,11 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
           </Grid>
 
           {/* Product Showcase - Right Side */}
-          <Grid item xs={12} md={7}>
-            <Fade in timeout={1200} style={{ transitionDelay: '600ms' }}>
+          <Grid item xs={12} md={7} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Fade in timeout={1200} style={{ transitionDelay: '600ms', width: '100%' }}>
               <Card
                 elevation={0}
                 sx={{
-                  height: '100%',
                   backgroundColor: 'rgba(255,255,255,0.95)',
                   backdropFilter: 'blur(10px)',
                   borderRadius: 3,
@@ -236,9 +235,10 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  p: { xs: 2, sm: 3 },
+                  p: { xs: 1.5, sm: 2 },
                   position: 'relative',
                   overflow: 'hidden',
+                  width: '100%',
                 }}
               >
                 {/* Background Gradient Circle */}
@@ -246,7 +246,7 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                   sx={{
                     position: 'absolute',
                     width: '70%',
-                    height: '70%',
+                    height: '80%',
                     borderRadius: '50%',
                     background: `radial-gradient(circle, ${companyConfig.primaryColor}10 0%, transparent 70%)`,
                     animation: 'float 6s ease-in-out infinite',
@@ -264,8 +264,8 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                   alt="3D Printed Custom Insole Technology"
                   sx={{
                     position: 'relative',
-                    width: '100%',
-                    maxWidth: '500px',
+                    width: '98%',
+                    maxWidth: '700px',
                     height: 'auto',
                     filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))',
                     animation: 'floatImage 6s ease-in-out infinite',
@@ -280,8 +280,8 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                 <Box
                   sx={{
                     position: 'absolute',
-                    top: '10%',
-                    right: '10%',
+                    top: '8%',
+                    right: '8%',
                     width: 50,
                     height: 50,
                     borderRadius: '50%',
@@ -292,8 +292,8 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                 <Box
                   sx={{
                     position: 'absolute',
-                    bottom: '15%',
-                    left: '8%',
+                    bottom: '12%',
+                    left: '6%',
                     width: 35,
                     height: 35,
                     borderRadius: '50%',
