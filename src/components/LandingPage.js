@@ -38,179 +38,101 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
         flexDirection: 'column',
       }}
     >
-      <Container maxWidth="xl" sx={{ py: { xs: 4, sm: 6 }, flexGrow: 1 }}>
-        {/* Hero Section - Split Screen Layout */}
+      <Container maxWidth="lg" sx={{ py: { xs: 4, sm: 6 }, flexGrow: 1 }}>
+        {/* Header Section */}
         <Fade in timeout={800}>
-          <Grid container spacing={{ xs: 3, sm: 4, md: 6 }} alignItems="center" sx={{ mb: { xs: 4, sm: 6, md: 8 } }}>
-            {/* Left Side - Content */}
-            <Grid item xs={12} md={6}>
-              <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-                {/* Company Logo */}
-                {companyConfig.landingPageShowCompanyLogo && companyConfig.logo && (
-                  <Box
-                    component="img"
-                    src={companyConfig.logo}
-                    alt={`${companyConfig.name} logo`}
-                    sx={{
-                      height: { xs: 50, sm: 70, md: 90 },
-                      mb: { xs: 2, sm: 3 },
-                      filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
-                    }}
-                  />
-                )}
-
-                {/* Main Title */}
-                <Typography
-                  variant="h1"
-                  component="h1"
-                  sx={{
-                    fontSize: { xs: '2rem', sm: '2.8rem', md: '3.5rem' },
-                    fontWeight: 700,
-                    color: 'text.primary',
-                    mb: { xs: 2, sm: 2.5 },
-                    lineHeight: 1.2,
-                    textShadow: companyConfig.landingPageBackgroundImage
-                      ? '2px 2px 4px rgba(0,0,0,0.3)'
-                      : 'none',
-                  }}
-                >
-                  {companyConfig.landingPageTitle}
-                </Typography>
-
-                {/* Subtitle */}
-                <Typography
-                  variant="h4"
-                  component="h2"
-                  sx={{
-                    fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.7rem' },
-                    fontWeight: 500,
-                    color: 'text.secondary',
-                    mb: { xs: 3, sm: 4 },
-                    lineHeight: 1.5,
-                    textShadow: companyConfig.landingPageBackgroundImage
-                      ? '1px 1px 2px rgba(0,0,0,0.3)'
-                      : 'none',
-                  }}
-                >
-                  {companyConfig.landingPageSubtitle}
-                </Typography>
-
-                {/* Primary CTA Button */}
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={onNavigateToScheduler}
-                  startIcon={<Schedule sx={{ fontSize: { xs: 22, sm: 26 } }} />}
-                  endIcon={<ArrowForward sx={{ fontSize: { xs: 18, sm: 22 } }} />}
-                  sx={{
-                    fontSize: { xs: '1rem', sm: '1.2rem' },
-                    py: { xs: 1.8, sm: 2.2 },
-                    px: { xs: 3.5, sm: 5 },
-                    fontWeight: 700,
-                    borderRadius: 4,
-                    boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
-                    background: `linear-gradient(45deg, ${companyConfig.primaryColor}, ${companyConfig.secondaryColor})`,
-                    '&:hover': {
-                      boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
-                      transform: 'translateY(-2px)',
-                    },
-                    animation: 'pulse 3s infinite',
-                    '@keyframes pulse': {
-                      '0%': { transform: 'scale(1)' },
-                      '50%': { transform: 'scale(1.05)' },
-                      '100%': { transform: 'scale(1)' },
-                    },
-                  }}
-                >
-                  {companyConfig.landingPageCtaText}
-                </Button>
-              </Box>
-            </Grid>
-
-            {/* Right Side - Product Showcase */}
-            <Grid item xs={12} md={6}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 4, sm: 6 } }}>
+            {/* Company Logo */}
+            {companyConfig.landingPageShowCompanyLogo && companyConfig.logo && (
               <Box
+                component="img"
+                src={companyConfig.logo}
+                alt={`${companyConfig.name} logo`}
                 sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  minHeight: { xs: 300, sm: 400, md: 500 },
+                  height: { xs: 60, sm: 80, md: 100 },
+                  mb: { xs: 3, sm: 4 },
+                  filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
                 }}
-              >
-                {/* Background Gradient Circle */}
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    width: { xs: '80%', md: '90%' },
-                    height: { xs: '80%', md: '90%' },
-                    borderRadius: '50%',
-                    background: `radial-gradient(circle, ${companyConfig.primaryColor}15 0%, transparent 70%)`,
-                    animation: 'float 6s ease-in-out infinite',
-                    '@keyframes float': {
-                      '0%, 100%': { transform: 'translateY(0px)' },
-                      '50%': { transform: 'translateY(-20px)' },
-                    },
-                  }}
-                />
+              />
+            )}
 
-                {/* Insole Image */}
-                <Box
-                  component="img"
-                  src="/insole-showcase.png"
-                  alt="3D Printed Custom Insole Technology"
-                  sx={{
-                    position: 'relative',
-                    width: { xs: '85%', sm: '75%', md: '85%' },
-                    height: 'auto',
-                    filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.2))',
-                    animation: 'floatImage 6s ease-in-out infinite',
-                    '@keyframes floatImage': {
-                      '0%, 100%': { transform: 'translateY(0px) rotate(-5deg)' },
-                      '50%': { transform: 'translateY(-20px) rotate(-5deg)' },
-                    },
-                  }}
-                />
+            {/* Main Title */}
+            <Typography
+              variant="h1"
+              component="h1"
+              sx={{
+                fontSize: { xs: '2.2rem', sm: '3rem', md: '3.5rem' },
+                fontWeight: 700,
+                color: 'text.primary',
+                mb: { xs: 2, sm: 3 },
+                lineHeight: 1.2,
+                textShadow: companyConfig.landingPageBackgroundImage
+                  ? '2px 2px 4px rgba(0,0,0,0.3)'
+                  : 'none',
+              }}
+            >
+              {companyConfig.landingPageTitle}
+            </Typography>
 
-                {/* Decorative Elements */}
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: '10%',
-                    right: '10%',
-                    width: 60,
-                    height: 60,
-                    borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${companyConfig.secondaryColor}40, transparent)`,
-                    animation: 'pulse 4s ease-in-out infinite',
-                  }}
-                />
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    bottom: '15%',
-                    left: '5%',
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${companyConfig.primaryColor}40, transparent)`,
-                    animation: 'pulse 5s ease-in-out infinite',
-                  }}
-                />
-              </Box>
-            </Grid>
-          </Grid>
+            {/* Subtitle */}
+            <Typography
+              variant="h4"
+              component="h2"
+              sx={{
+                fontSize: { xs: '1.3rem', sm: '1.6rem', md: '1.8rem' },
+                fontWeight: 500,
+                color: 'text.secondary',
+                mb: { xs: 3, sm: 4 },
+                maxWidth: '800px',
+                mx: 'auto',
+                textShadow: companyConfig.landingPageBackgroundImage
+                  ? '1px 1px 2px rgba(0,0,0,0.3)'
+                  : 'none',
+              }}
+            >
+              {companyConfig.landingPageSubtitle}
+            </Typography>
+
+            {/* Primary CTA Button */}
+            <Button
+              variant="contained"
+              size="large"
+              onClick={onNavigateToScheduler}
+              startIcon={<Schedule sx={{ fontSize: { xs: 24, sm: 28 } }} />}
+              endIcon={<ArrowForward sx={{ fontSize: { xs: 20, sm: 24 } }} />}
+              sx={{
+                fontSize: { xs: '1.1rem', sm: '1.3rem' },
+                py: { xs: 2, sm: 2.5 },
+                px: { xs: 4, sm: 6 },
+                fontWeight: 700,
+                borderRadius: 4,
+                boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                background: `linear-gradient(45deg, ${companyConfig.primaryColor}, ${companyConfig.secondaryColor})`,
+                '&:hover': {
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
+                  transform: 'translateY(-2px)',
+                },
+                animation: 'pulse 3s infinite',
+                '@keyframes pulse': {
+                  '0%': { transform: 'scale(1)' },
+                  '50%': { transform: 'scale(1.05)' },
+                  '100%': { transform: 'scale(1)' },
+                },
+              }}
+            >
+              {companyConfig.landingPageCtaText}
+            </Button>
+          </Box>
         </Fade>
 
         {/* Content Section */}
         <Grid container spacing={{ xs: 3, sm: 4 }} sx={{ mb: { xs: 4, sm: 6 } }}>
-          {/* Description Card */}
-          <Grid item xs={12} md={8}>
+          {/* Description Card - Full Width */}
+          <Grid item xs={12}>
             <Fade in timeout={1000} style={{ transitionDelay: '200ms' }}>
               <Card
                 elevation={0}
                 sx={{
-                  height: '100%',
                   backgroundColor: 'rgba(255,255,255,0.95)',
                   backdropFilter: 'blur(10px)',
                   borderRadius: 3,
@@ -246,8 +168,8 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
             </Fade>
           </Grid>
 
-          {/* Features Card */}
-          <Grid item xs={12} md={4}>
+          {/* Features Card - Left Side */}
+          <Grid item xs={12} md={5}>
             <Fade in timeout={1000} style={{ transitionDelay: '400ms' }}>
               <Card
                 elevation={0}
@@ -295,6 +217,90 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                     ))}
                   </List>
                 </CardContent>
+              </Card>
+            </Fade>
+          </Grid>
+
+          {/* Product Showcase - Right Side */}
+          <Grid item xs={12} md={7}>
+            <Fade in timeout={1200} style={{ transitionDelay: '600ms' }}>
+              <Card
+                elevation={0}
+                sx={{
+                  height: '100%',
+                  backgroundColor: 'rgba(255,255,255,0.95)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: 3,
+                  border: '1px solid',
+                  borderColor: 'grey.200',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: { xs: 2, sm: 3 },
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* Background Gradient Circle */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    width: '70%',
+                    height: '70%',
+                    borderRadius: '50%',
+                    background: `radial-gradient(circle, ${companyConfig.primaryColor}10 0%, transparent 70%)`,
+                    animation: 'float 6s ease-in-out infinite',
+                    '@keyframes float': {
+                      '0%, 100%': { transform: 'translateY(0px)' },
+                      '50%': { transform: 'translateY(-15px)' },
+                    },
+                  }}
+                />
+
+                {/* Insole Image */}
+                <Box
+                  component="img"
+                  src="/insole-showcase.png"
+                  alt="3D Printed Custom Insole Technology"
+                  sx={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '500px',
+                    height: 'auto',
+                    filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))',
+                    animation: 'floatImage 6s ease-in-out infinite',
+                    '@keyframes floatImage': {
+                      '0%, 100%': { transform: 'translateY(0px) rotate(-3deg)' },
+                      '50%': { transform: 'translateY(-15px) rotate(-3deg)' },
+                    },
+                  }}
+                />
+
+                {/* Decorative Elements */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '10%',
+                    right: '10%',
+                    width: 50,
+                    height: 50,
+                    borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${companyConfig.secondaryColor}30, transparent)`,
+                    animation: 'pulse 4s ease-in-out infinite',
+                  }}
+                />
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    bottom: '15%',
+                    left: '8%',
+                    width: 35,
+                    height: 35,
+                    borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${companyConfig.primaryColor}30, transparent)`,
+                    animation: 'pulse 5s ease-in-out infinite',
+                  }}
+                />
               </Card>
             </Fade>
           </Grid>
