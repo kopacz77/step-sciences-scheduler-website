@@ -74,6 +74,11 @@ const formatCompanyForDatabase = (company) => ({
   landing_page_cta_text: company.landingPageCtaText?.trim() || null,
   landing_page_background_image: company.landingPageBackgroundImage?.trim() || null,
   landing_page_show_company_logo: Boolean(company.landingPageShowCompanyLogo ?? true),
+  // Booking page customization
+  google_scheduling_enabled: Boolean(company.googleSchedulingEnabled ?? true),
+  booking_page_instructions_mobile: company.bookingPageInstructionsMobile?.trim() || null,
+  booking_page_instructions_desktop: company.bookingPageInstructionsDesktop?.trim() || null,
+  booking_page_alternative_message: company.bookingPageAlternativeMessage?.trim() || null,
 });
 
 const TabPanel = ({ children, value, index }) => {
@@ -130,6 +135,11 @@ const AdminInterface = () => {
     landingPageCtaText: 'Schedule Your Assessment',
     landingPageBackgroundImage: '',
     landingPageShowCompanyLogo: true,
+    // Booking page customization
+    googleSchedulingEnabled: true,
+    bookingPageInstructionsMobile: 'Tap to book your appointment:',
+    bookingPageInstructionsDesktop: 'Click the booking button below to schedule your appointment:',
+    bookingPageAlternativeMessage: 'Please contact your local organizer to schedule your appointment.',
   };
 
   useEffect(() => {
@@ -953,6 +963,84 @@ const AdminInterface = () => {
                           />
                         }
                         label="Show Step Sciences Branding"
+                      />
+                    </Grid>
+
+                    {/* Booking Page Customization Section */}
+                    <Grid item xs={12}>
+                      <Typography variant="h6" gutterBottom sx={{ mt: 3, mb: 2, fontWeight: 600 }}>
+                        Booking Page Customization
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={editingCompany.googleSchedulingEnabled}
+                            onChange={(e) =>
+                              setEditingCompany({
+                                ...editingCompany,
+                                googleSchedulingEnabled: e.target.checked,
+                              })
+                            }
+                            color="primary"
+                          />
+                        }
+                        label="Enable Google Scheduling"
+                      />
+                      <Typography variant="caption" display="block" color="text.secondary" sx={{ ml: 4, mt: 0.5 }}>
+                        When disabled, shows alternative message instead of Google Calendar
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Booking Instructions (Mobile)"
+                        value={editingCompany.bookingPageInstructionsMobile || ''}
+                        onChange={(e) =>
+                          setEditingCompany({
+                            ...editingCompany,
+                            bookingPageInstructionsMobile: e.target.value,
+                          })
+                        }
+                        helperText="Instructions shown on mobile devices"
+                        placeholder="Tap to book your appointment:"
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Booking Instructions (Desktop)"
+                        value={editingCompany.bookingPageInstructionsDesktop || ''}
+                        onChange={(e) =>
+                          setEditingCompany({
+                            ...editingCompany,
+                            bookingPageInstructionsDesktop: e.target.value,
+                          })
+                        }
+                        helperText="Instructions shown on desktop"
+                        placeholder="Click the booking button below to schedule your appointment:"
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={3}
+                        label="Alternative Message (when Google scheduling disabled)"
+                        value={editingCompany.bookingPageAlternativeMessage || ''}
+                        onChange={(e) =>
+                          setEditingCompany({
+                            ...editingCompany,
+                            bookingPageAlternativeMessage: e.target.value,
+                          })
+                        }
+                        helperText="Message displayed when Google scheduling is turned off"
+                        placeholder="Please contact your local organizer to schedule your appointment."
                       />
                     </Grid>
                   </Grid>

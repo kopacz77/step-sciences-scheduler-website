@@ -174,18 +174,42 @@ const StepContent = memo(
                   }}
                 >
                   {isMobile
-                    ? 'Tap to book your appointment:'
-                    : 'Click the booking button below to schedule your appointment:'}
+                    ? (companyConfig.bookingPageInstructionsMobile || 'Tap to book your appointment:')
+                    : (companyConfig.bookingPageInstructionsDesktop || 'Click the booking button below to schedule your appointment:')}
                 </Typography>
 
-                <GoogleCalendarButton
-                  companyConfig={companyConfig}
-                  onAppointmentBooked={handleAppointmentBookedWithLoading}
-                  isMobile={isMobile}
-                  isLoading={isLoading}
-                  error={error}
-                  setError={setError}
-                />
+                {companyConfig.googleSchedulingEnabled !== false ? (
+                  <GoogleCalendarButton
+                    companyConfig={companyConfig}
+                    onAppointmentBooked={handleAppointmentBookedWithLoading}
+                    isMobile={isMobile}
+                    isLoading={isLoading}
+                    error={error}
+                    setError={setError}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      p: { xs: 3, sm: 4 },
+                      bgcolor: 'info.light',
+                      borderRadius: 2,
+                      border: '2px solid',
+                      borderColor: 'info.main',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontSize: { xs: '1.1rem', sm: '1.2rem' },
+                        fontWeight: 500,
+                        color: 'info.dark',
+                      }}
+                    >
+                      {companyConfig.bookingPageAlternativeMessage || 'Please contact your local organizer to schedule your appointment.'}
+                    </Typography>
+                  </Box>
+                )}
 
                 {companyConfig.specialInstructions && (
                   <Box

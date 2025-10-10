@@ -41,6 +41,11 @@ const fallbackConfigs = {
     landingPageCtaText: 'Book Your GM Health Assessment',
     landingPageBackgroundImage: null,
     landingPageShowCompanyLogo: true,
+    // Booking page customization
+    googleSchedulingEnabled: true,
+    bookingPageInstructionsMobile: 'Tap to book your appointment:',
+    bookingPageInstructionsDesktop: 'Click the booking button below to schedule your appointment:',
+    bookingPageAlternativeMessage: 'Please contact your local organizer to schedule your appointment.',
   },
 };
 
@@ -121,6 +126,11 @@ const formatCompanyForClient = (row) => ({
   landingPageCtaText: row.landing_page_cta_text,
   landingPageBackgroundImage: row.landing_page_background_image,
   landingPageShowCompanyLogo: Boolean(row.landing_page_show_company_logo),
+  // Booking page customization fields
+  googleSchedulingEnabled: Boolean(row.google_scheduling_enabled ?? true),
+  bookingPageInstructionsMobile: row.booking_page_instructions_mobile || 'Tap to book your appointment:',
+  bookingPageInstructionsDesktop: row.booking_page_instructions_desktop || 'Click the booking button below to schedule your appointment:',
+  bookingPageAlternativeMessage: row.booking_page_alternative_message || 'Please contact your local organizer to schedule your appointment.',
 });
 
 // API client for company configs
