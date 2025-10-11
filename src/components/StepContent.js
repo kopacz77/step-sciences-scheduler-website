@@ -155,8 +155,8 @@ const StepContent = memo(
 
           {/* Step Content with Loading States */}
           <Box sx={{ p: { xs: 2, sm: 3 } }}>
-            {/* Reduced description on mobile */}
-            {!isMobile && (
+            {/* Reduced description on mobile - hide when Google scheduling is off */}
+            {!isMobile && companyConfig.googleSchedulingEnabled !== false && (
               <Typography variant="body1" sx={{ mb: 3, fontSize: '1.2rem' }}>
                 {steps[activeStep].description}
               </Typography>
@@ -164,19 +164,22 @@ const StepContent = memo(
 
             {activeStep === 0 && (
               <Box>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    mb: { xs: 2, sm: 3 },
-                    fontSize: { xs: '1rem', sm: '1.1rem' },
-                    textAlign: 'center',
-                    fontWeight: isMobile ? 600 : 400,
-                  }}
-                >
-                  {isMobile
-                    ? (companyConfig.bookingPageInstructionsMobile || 'Tap to book your appointment:')
-                    : (companyConfig.bookingPageInstructionsDesktop || 'Click the booking button below to schedule your appointment:')}
-                </Typography>
+                {/* Only show booking instructions when Google scheduling is enabled */}
+                {companyConfig.googleSchedulingEnabled !== false && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      mb: { xs: 2, sm: 3 },
+                      fontSize: { xs: '1rem', sm: '1.1rem' },
+                      textAlign: 'center',
+                      fontWeight: isMobile ? 600 : 400,
+                    }}
+                  >
+                    {isMobile
+                      ? (companyConfig.bookingPageInstructionsMobile || 'Tap to book your appointment:')
+                      : (companyConfig.bookingPageInstructionsDesktop || 'Click the booking button below to schedule your appointment:')}
+                  </Typography>
+                )}
 
                 {companyConfig.googleSchedulingEnabled !== false ? (
                   <GoogleCalendarButton
@@ -188,26 +191,75 @@ const StepContent = memo(
                     setError={setError}
                   />
                 ) : (
-                  <Box
-                    sx={{
-                      p: { xs: 3, sm: 4 },
-                      bgcolor: 'info.light',
-                      borderRadius: 2,
-                      border: '2px solid',
-                      borderColor: 'info.main',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <Typography
-                      variant="body1"
+                  <Box>
+                    <Box
                       sx={{
-                        fontSize: { xs: '1.1rem', sm: '1.2rem' },
-                        fontWeight: 500,
-                        color: 'info.dark',
+                        p: { xs: 3, sm: 4 },
+                        bgcolor: 'info.light',
+                        borderRadius: 2,
+                        border: '2px solid',
+                        borderColor: 'info.main',
+                        textAlign: 'center',
+                        mb: 3,
                       }}
                     >
-                      {companyConfig.bookingPageAlternativeMessage || 'Please contact your local organizer to schedule your appointment.'}
-                    </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontSize: { xs: '1.1rem', sm: '1.2rem' },
+                          fontWeight: 500,
+                          color: 'info.dark',
+                        }}
+                      >
+                        {companyConfig.bookingPageAlternativeMessage || 'Please contact your local organizer to schedule your appointment.'}
+                      </Typography>
+                    </Box>
+
+                    {/* Button to proceed to intake form */}
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="large"
+                        onClick={handleAppointmentBookedWithLoading}
+                        disabled={isLoading}
+                        startIcon={<CheckCircle />}
+                        sx={{
+                          fontSize: { xs: '1.1rem', sm: '1.2rem' },
+                          py: { xs: 2, sm: 2 },
+                          px: { xs: 4, sm: 5 },
+                          minHeight: { xs: '56px', sm: '60px' },
+                          minWidth: { xs: '260px', sm: 'auto' },
+                          maxWidth: { xs: '90vw', sm: 'none' },
+                          borderRadius: { xs: 3, sm: 3 },
+                          boxShadow: {
+                            xs: '0 6px 20px rgba(76, 175, 80, 0.3)',
+                            sm: '0 4px 12px rgba(0,0,0,0.15)',
+                          },
+                          fontWeight: 'bold',
+                          width: { xs: '100%', sm: 'auto' },
+                          '&:hover': {
+                            boxShadow: {
+                              xs: '0 8px 25px rgba(76, 175, 80, 0.4)',
+                              sm: '0 6px 16px rgba(0,0,0,0.2)',
+                            },
+                            transform: 'translateY(-2px)',
+                          },
+                        }}
+                      >
+                        {isMobile ? 'Continue to Intake Form' : 'Proceed to Intake Form'}
+                      </Button>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mt: 2,
+                          color: 'text.secondary',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
+                        {isMobile ? 'After scheduling, tap to continue' : 'After scheduling your appointment, click to continue to the intake form'}
+                      </Typography>
+                    </Box>
                   </Box>
                 )}
 
