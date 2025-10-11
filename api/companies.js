@@ -89,6 +89,14 @@ const sanitizeCompany = (company) => {
     baseFields.landing_page_show_company_logo = Boolean(company.landing_page_show_company_logo ?? true);
   }
 
+  // Add booking page customization fields if they exist
+  if (company.google_scheduling_enabled !== undefined) {
+    baseFields.google_scheduling_enabled = Boolean(company.google_scheduling_enabled ?? true);
+    baseFields.booking_page_instructions_mobile = company.booking_page_instructions_mobile?.trim() || null;
+    baseFields.booking_page_instructions_desktop = company.booking_page_instructions_desktop?.trim() || null;
+    baseFields.booking_page_alternative_message = company.booking_page_alternative_message?.trim() || null;
+  }
+
   return baseFields;
 };
 
@@ -130,6 +138,11 @@ const formatCompanyForClient = (row) => {
     landingPageCtaText: row.landing_page_cta_text,
     landingPageBackgroundImage: row.landing_page_background_image,
     landingPageShowCompanyLogo: Boolean(row.landing_page_show_company_logo),
+    // Booking page customization fields
+    googleSchedulingEnabled: Boolean(row.google_scheduling_enabled ?? true),
+    bookingPageInstructionsMobile: row.booking_page_instructions_mobile || 'Tap to book your appointment:',
+    bookingPageInstructionsDesktop: row.booking_page_instructions_desktop || 'Click the booking button below to schedule your appointment:',
+    bookingPageAlternativeMessage: row.booking_page_alternative_message || 'Please contact your local organizer to schedule your appointment.',
   };
 };
 
