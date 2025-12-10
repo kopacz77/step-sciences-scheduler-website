@@ -47,7 +47,6 @@ const formatCompanyForDatabase = (company) => ({
   name: company.name?.trim(),
   full_name: company.fullName?.trim(),
   primary_color: company.primaryColor || '#000000',
-  secondary_color: company.secondaryColor || '#D4AF37',
   logo: company.logo || '/logos/default-logo.png',
   calendar_url: company.calendarUrl?.trim(),
   intake_form_url: company.intakeFormUrl?.trim(),
@@ -103,7 +102,6 @@ const AdminInterface = () => {
     name: '',
     fullName: '',
     primaryColor: '#1976d2',
-    secondaryColor: '#ffc107',
     logo: '/logos/default-logo.png',
     calendarUrl: '',
     intakeFormUrl: '',
@@ -281,16 +279,50 @@ const AdminInterface = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5', p: 3 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: '#f5f5f5',
+        p: { xs: 2, sm: 3 },
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)',
+      }}
+    >
       <Box sx={{ maxWidth: 1400, mx: 'auto' }}>
         {error && (
-          <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>
+          <Alert
+            severity="error"
+            onClose={() => setError(null)}
+            sx={{
+              mb: 3,
+              border: '2px solid',
+              borderColor: 'error.main',
+              fontWeight: 600,
+              boxShadow: '0 2px 8px rgba(211, 47, 47, 0.2)',
+            }}
+          >
             {error}
           </Alert>
         )}
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 4,
+            flexWrap: 'wrap',
+            gap: 2,
+          }}
+        >
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              color: 'primary.dark',
+              fontSize: { xs: '1.5rem', sm: '2rem' },
+            }}
+          >
             Company Management
           </Typography>
           <Button
@@ -299,6 +331,20 @@ const AdminInterface = () => {
             onClick={() => openDialog()}
             disabled={loading}
             size="large"
+            sx={{
+              py: { xs: 1.25, sm: 1.5 },
+              px: { xs: 2.5, sm: 3 },
+              fontSize: { xs: '0.95rem', sm: '1.05rem' },
+              fontWeight: 700,
+              borderRadius: 3,
+              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+              textTransform: 'none',
+              '&:hover': {
+                boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)',
+                transform: 'translateY(-2px)',
+              },
+              transition: 'all 0.2s ease-in-out',
+            }}
           >
             Add Company
           </Button>
@@ -313,36 +359,77 @@ const AdminInterface = () => {
         <Grid container spacing={3}>
           {companies.map((company) => (
             <Grid item xs={12} sm={6} md={4} key={company.id}>
-              <Card elevation={2}>
-                <CardContent>
+              <Card
+                sx={{
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                  border: '2px solid',
+                  borderColor: company.isActive ? 'primary.light' : 'grey.300',
+                  borderRadius: 3,
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                    transform: 'translateY(-4px)',
+                  },
+                }}
+              >
+                <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                    <Typography variant="h6" component="h2">
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      sx={{ fontWeight: 700, color: 'primary.dark' }}
+                    >
                       {company.name}
                     </Typography>
                     <Box>
-                      <IconButton size="small" onClick={() => openDialog(company)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => openDialog(company)}
+                        sx={{
+                          '&:hover': { backgroundColor: 'primary.light', color: 'primary.main' },
+                        }}
+                      >
                         <EditIcon />
                       </IconButton>
-                      <IconButton size="small" onClick={() => handleDelete(company.id)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(company.id)}
+                        sx={{
+                          '&:hover': { backgroundColor: 'error.light', color: 'error.main' },
+                        }}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </Box>
                   </Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    gutterBottom
+                    sx={{ fontWeight: 500 }}
+                  >
                     {company.fullName}
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 1 }}>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
                     Domain: {company.domain}
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                  <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
                     <Chip
                       label={company.isActive ? 'Active' : 'Inactive'}
                       color={company.isActive ? 'success' : 'default'}
                       size="small"
+                      sx={{ fontWeight: 600 }}
                     />
-                    {company.hasScanDays && <Chip label="Scan Days" color="info" size="small" />}
+                    {company.hasScanDays && (
+                      <Chip label="Scan Days" color="info" size="small" sx={{ fontWeight: 600 }} />
+                    )}
                     {company.landingPageEnabled && (
-                      <Chip label="Landing Page" color="secondary" size="small" />
+                      <Chip
+                        label="Landing Page"
+                        color="secondary"
+                        size="small"
+                        sx={{ fontWeight: 600 }}
+                      />
                     )}
                   </Box>
                   <Button
@@ -352,6 +439,15 @@ const AdminInterface = () => {
                     href={`https://${company.domain}`}
                     target="_blank"
                     size="small"
+                    sx={{
+                      borderRadius: 2,
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      '&:hover': {
+                        backgroundColor: 'primary.light',
+                        borderColor: 'primary.main',
+                      },
+                    }}
                   >
                     Preview Portal
                   </Button>
@@ -463,51 +559,6 @@ const AdminInterface = () => {
                             setEditingCompany({ ...editingCompany, primaryColor: e.target.value })
                           }
                           placeholder="#000000"
-                          sx={{ flex: 1 }}
-                        />
-                      </Box>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Secondary Color
-                      </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <TextField
-                          type="color"
-                          value={editingCompany.secondaryColor}
-                          onChange={(e) =>
-                            setEditingCompany({ ...editingCompany, secondaryColor: e.target.value })
-                          }
-                          sx={{ width: 80 }}
-                        />
-                        <Box
-                          sx={{
-                            width: 120,
-                            height: 50,
-                            backgroundColor: editingCompany.secondaryColor,
-                            border: '2px solid #ccc',
-                            borderRadius: 2,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: editingCompany.secondaryColor === '#000000' ? 'white' : 'black',
-                              fontWeight: 'bold',
-                            }}
-                          >
-                            SECONDARY
-                          </Typography>
-                        </Box>
-                        <TextField
-                          value={editingCompany.secondaryColor}
-                          onChange={(e) =>
-                            setEditingCompany({ ...editingCompany, secondaryColor: e.target.value })
-                          }
-                          placeholder="#D4AF37"
                           sx={{ flex: 1 }}
                         />
                       </Box>

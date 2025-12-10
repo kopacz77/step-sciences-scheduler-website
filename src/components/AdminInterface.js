@@ -46,7 +46,6 @@ const formatCompanyForDatabase = (company) => ({
   name: company.name?.trim(),
   full_name: company.fullName?.trim(),
   primary_color: company.primaryColor || '#000000',
-  secondary_color: company.secondaryColor || '#D4AF37',
   logo: company.logo || '/logos/default-logo.png',
   calendar_url: company.calendarUrl?.trim(),
   intake_form_url: company.intakeFormUrl?.trim(),
@@ -92,7 +91,6 @@ const AdminInterface = () => {
     name: '',
     fullName: '',
     primaryColor: '#1976d2',
-    secondaryColor: '#ffc107',
     logo: '/logos/default-logo.png',
     calendarUrl: '',
     intakeFormUrl: '',
@@ -614,51 +612,6 @@ const AdminInterface = () => {
                         setEditingCompany({ ...editingCompany, primaryColor: e.target.value })
                       }
                       placeholder="#000000"
-                      sx={{ flex: 1 }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Secondary Color
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <TextField
-                      type="color"
-                      value={editingCompany.secondaryColor}
-                      onChange={(e) =>
-                        setEditingCompany({ ...editingCompany, secondaryColor: e.target.value })
-                      }
-                      sx={{ width: 80 }}
-                    />
-                    <Box
-                      sx={{
-                        width: 120,
-                        height: 50,
-                        backgroundColor: editingCompany.secondaryColor,
-                        border: '2px solid #ccc',
-                        borderRadius: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: editingCompany.secondaryColor === '#000000' ? 'white' : 'black',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        SECONDARY
-                      </Typography>
-                    </Box>
-                    <TextField
-                      value={editingCompany.secondaryColor}
-                      onChange={(e) =>
-                        setEditingCompany({ ...editingCompany, secondaryColor: e.target.value })
-                      }
-                      placeholder="#D4AF37"
                       sx={{ flex: 1 }}
                     />
                   </Box>

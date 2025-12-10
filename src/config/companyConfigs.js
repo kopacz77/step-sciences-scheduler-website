@@ -4,7 +4,6 @@ const companyConfigs = {
     name: 'GM Oshawa',
     fullName: 'General Motors Oshawa Assembly',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/gm-logo.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ13iuKCFJo-LEdLYI0xL61iPO3DA4XB5di_P9b7NQ05dR2qYKjYKjCu9hzYaBn3G2-p8o2qDoE9',
@@ -26,7 +25,6 @@ const companyConfigs = {
     name: 'GM CAMI',
     fullName: 'General Motors CAMI Assembly',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/gm-logo.png', // Can use same logo for both GM plants
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1Qf9K1O090x0jfhUtHXSjuqYWoMPt-qnoOprYgAFZ6t4YTono4Vu2wzhrZyCzP4VaPsQe8z7oW',
@@ -42,7 +40,6 @@ const companyConfigs = {
     name: 'Stellantis Windsor',
     fullName: 'Stellantis Windsor Assembly Plant',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/stellantis-logo.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1kC5ubA-6Nc_ZIYopLxcxhZf27MKHL2DKtEWo12EK8jJ3Bs-mUJiDlFSNPht7VZjW0I24hyLcX',
@@ -58,7 +55,6 @@ const companyConfigs = {
     name: 'Ford Windsor',
     fullName: 'Ford Windsor Engine Plant',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/ford-logo.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/YOUR_FORD_WINDSOR_CALENDAR_ID_HERE',
@@ -74,7 +70,6 @@ const companyConfigs = {
     name: 'Unifor 200/444',
     fullName: 'Unifor Windsor Local 200/444',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/unifor-logo.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2voIAfvaNtU0C0SdpmkJSv9vpM_fEjYXYab4XVbAwAiNA2J5OCRVNmHvfSIvbFSMItsNzMr8Vs',
@@ -90,7 +85,6 @@ const companyConfigs = {
     name: 'Stellantis Brampton',
     fullName: 'Stellantis Brampton Assembly Plant',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/stellantis-logo.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ352MeLCrtbXyHXmoAj_vQQMaF1Kc7xnGw6ozocHElXDtmxIUVHCad0CEPuXfY9u6JzDFXDcryD',
@@ -107,7 +101,6 @@ const companyConfigs = {
     name: 'Ford Oakville',
     fullName: 'Ford Oakville Assembly Complex',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/ford-logo.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/YOUR_FORD_OAKVILLE_CALENDAR_ID_HERE',
@@ -122,8 +115,7 @@ const companyConfigs = {
   'copernicus-lodge': {
     name: 'Copernicus Lodge',
     fullName: 'Copernicus Lodge Toronto',
-    primaryColor: '#000000', // Standard black (same as other clients)
-    secondaryColor: '#D4AF37', // Standard gold (same as other clients)
+    primaryColor: '#000000',
     logo: '/logos/copernicus-lodge.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0f5-nJpsx_uNkfZjXbvtQ1sQRCtWNEV64db7YUkMM1i-_sgf9hjajZB6z-a0iCKU7qbnsNNWaK',

@@ -57,22 +57,64 @@ const AdminLogin = ({ onLogin }) => {
         justifyContent: 'center',
         bgcolor: 'grey.100',
         p: 2,
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)',
       }}
     >
-      <Card sx={{ maxWidth: 400, width: '100%' }}>
-        <CardContent sx={{ p: 4 }}>
+      <Card
+        sx={{
+          maxWidth: 420,
+          width: '100%',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+          border: '2px solid',
+          borderColor: 'primary.light',
+          borderRadius: 3,
+        }}
+      >
+        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
           <Box sx={{ textAlign: 'center', mb: 3 }}>
-            <AdminPanelSettings sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
-            <Typography variant="h4" gutterBottom>
+            <AdminPanelSettings
+              sx={{
+                fontSize: { xs: 56, sm: 64 },
+                color: 'primary.main',
+                mb: 2,
+                filter: 'drop-shadow(0 4px 8px rgba(25, 118, 210, 0.3))',
+              }}
+            />
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{
+                fontWeight: 700,
+                fontSize: { xs: '1.75rem', sm: '2rem' },
+                color: 'primary.dark',
+              }}
+            >
               Admin Login
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                fontWeight: 500,
+              }}
+            >
               Step Sciences Scheduler Management
             </Typography>
           </Box>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <Alert
+              severity="error"
+              sx={{
+                mb: 2,
+                border: '2px solid',
+                borderColor: 'error.main',
+                fontWeight: 600,
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                boxShadow: '0 2px 8px rgba(211, 47, 47, 0.2)',
+              }}
+            >
               {error}
             </Alert>
           )}
@@ -114,7 +156,25 @@ const AdminLogin = ({ onLogin }) => {
               variant="contained"
               size="large"
               disabled={loading}
-              sx={{ mt: 3, mb: 2 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                py: { xs: 1.5, sm: 2 },
+                fontSize: { xs: '1.1rem', sm: '1.2rem' },
+                fontWeight: 700,
+                borderRadius: 3,
+                boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+                textTransform: 'none',
+                '&:hover': {
+                  boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)',
+                  transform: 'translateY(-2px)',
+                },
+                '&:disabled': {
+                  backgroundColor: 'grey.400',
+                  boxShadow: 'none',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }}
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </Button>

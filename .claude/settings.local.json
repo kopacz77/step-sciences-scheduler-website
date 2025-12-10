@@ -4,7 +4,11 @@
       "Bash(find:*)",
       "Bash(node:*)",
       "Bash(tree:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(mkdir:*)",
+      "Bash(curl:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(ls:*)"
     ],
     "deny": []
   }

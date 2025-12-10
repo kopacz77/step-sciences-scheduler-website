@@ -31,7 +31,7 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
         minHeight: '100vh',
         background: companyConfig.landingPageBackgroundImage
           ? `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${companyConfig.landingPageBackgroundImage})`
-          : `linear-gradient(135deg, ${companyConfig.primaryColor}15 0%, ${companyConfig.secondaryColor}15 100%)`,
+          : `linear-gradient(135deg, ${companyConfig.primaryColor}08 0%, ${companyConfig.primaryColor}15 100%)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         display: 'flex',
@@ -106,8 +106,8 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                 px: { xs: 4, sm: 6 },
                 fontWeight: 700,
                 borderRadius: 4,
-                boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
-                background: `linear-gradient(45deg, ${companyConfig.primaryColor}, ${companyConfig.secondaryColor})`,
+                boxShadow: `0 8px 25px ${companyConfig.primaryColor}40`,
+                backgroundColor: companyConfig.primaryColor,
                 '&:hover': {
                   boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
                   transform: 'translateY(-2px)',
@@ -133,11 +133,17 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
               <Card
                 elevation={0}
                 sx={{
-                  backgroundColor: 'rgba(255,255,255,0.95)',
+                  backgroundColor: 'rgba(255,255,255,0.98)',
                   backdropFilter: 'blur(10px)',
                   borderRadius: 3,
-                  border: '1px solid',
-                  borderColor: 'grey.200',
+                  border: '2px solid',
+                  borderColor: `${companyConfig.primaryColor}30`,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+                    transform: 'translateY(-4px)',
+                  },
                 }}
               >
                 <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
@@ -146,9 +152,9 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                     component="h3"
                     gutterBottom
                     sx={{
-                      fontWeight: 600,
+                      fontWeight: 700,
                       color: companyConfig.primaryColor,
-                      fontSize: { xs: '1.3rem', sm: '1.5rem' },
+                      fontSize: { xs: '1.4rem', sm: '1.6rem' },
                     }}
                   >
                     About Our Services
@@ -156,9 +162,10 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                   <Typography
                     variant="body1"
                     sx={{
-                      fontSize: { xs: '1rem', sm: '1.1rem' },
-                      lineHeight: 1.7,
+                      fontSize: { xs: '1.05rem', sm: '1.15rem' },
+                      lineHeight: 1.8,
                       color: 'text.primary',
+                      fontWeight: 500,
                     }}
                   >
                     {companyConfig.landingPageDescription}
@@ -175,11 +182,17 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                 elevation={0}
                 sx={{
                   height: '100%',
-                  backgroundColor: 'rgba(255,255,255,0.95)',
+                  backgroundColor: 'rgba(255,255,255,0.98)',
                   backdropFilter: 'blur(10px)',
                   borderRadius: 3,
-                  border: '1px solid',
-                  borderColor: 'grey.200',
+                  border: '2px solid',
+                  borderColor: `${companyConfig.primaryColor}25`,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+                    transform: 'translateY(-4px)',
+                  },
                 }}
               >
                 <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
@@ -188,29 +201,30 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                     component="h3"
                     gutterBottom
                     sx={{
-                      fontWeight: 600,
+                      fontWeight: 700,
                       color: companyConfig.primaryColor,
-                      fontSize: { xs: '1.3rem', sm: '1.5rem' },
+                      fontSize: { xs: '1.4rem', sm: '1.6rem' },
                     }}
                   >
                     What We Offer
                   </Typography>
-                  <List dense sx={{ pt: 0 }}>
+                  <List dense sx={{ pt: 1 }}>
                     {companyConfig.landingPageFeatures?.map((feature) => (
-                      <ListItem key={feature} sx={{ px: 0, py: 0.5 }}>
-                        <ListItemIcon sx={{ minWidth: 32 }}>
+                      <ListItem key={feature} sx={{ px: 0, py: { xs: 0.75, sm: 1 } }}>
+                        <ListItemIcon sx={{ minWidth: { xs: 36, sm: 40 } }}>
                           <CheckCircle
                             sx={{
-                              color: companyConfig.secondaryColor,
-                              fontSize: { xs: 20, sm: 22 },
+                              color: companyConfig.primaryColor,
+                              fontSize: { xs: 24, sm: 28 },
+                              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
                             }}
                           />
                         </ListItemIcon>
                         <ListItemText
                           primary={feature}
                           primaryTypographyProps={{
-                            fontSize: { xs: '0.95rem', sm: '1rem' },
-                            fontWeight: 500,
+                            fontSize: { xs: '1rem', sm: '1.1rem' },
+                            fontWeight: 600,
                           }}
                         />
                       </ListItem>
@@ -227,11 +241,12 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
               <Card
                 elevation={0}
                 sx={{
-                  backgroundColor: 'rgba(255,255,255,0.95)',
+                  backgroundColor: 'rgba(255,255,255,0.98)',
                   backdropFilter: 'blur(10px)',
                   borderRadius: 3,
-                  border: '1px solid',
-                  borderColor: 'grey.200',
+                  border: '2px solid',
+                  borderColor: `${companyConfig.primaryColor}20`,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -239,6 +254,10 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                   position: 'relative',
                   overflow: 'hidden',
                   width: '100%',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+                  },
                 }}
               >
                 {/* Background Gradient Circle */}
@@ -285,7 +304,7 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                     width: 50,
                     height: 50,
                     borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${companyConfig.secondaryColor}30, transparent)`,
+                    background: `linear-gradient(135deg, ${companyConfig.primaryColor}20, transparent)`,
                     animation: 'pulse 4s ease-in-out infinite',
                   }}
                 />
@@ -312,19 +331,25 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
             elevation={0}
             sx={{
               textAlign: 'center',
-              py: { xs: 4, sm: 5 },
-              px: { xs: 3, sm: 4 },
+              py: { xs: 4, sm: 6 },
+              px: { xs: 3, sm: 5 },
               backgroundColor: `${companyConfig.primaryColor}08`,
-              border: '2px solid',
-              borderColor: `${companyConfig.primaryColor}20`,
+              border: '3px solid',
+              borderColor: `${companyConfig.primaryColor}30`,
               borderRadius: 4,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': {
+                boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+                borderColor: `${companyConfig.primaryColor}50`,
+              },
             }}
           >
             <Typography
               variant="h4"
               component="h3"
               sx={{
-                fontSize: { xs: '1.5rem', sm: '2rem' },
+                fontSize: { xs: '1.6rem', sm: '2.2rem' },
                 fontWeight: 700,
                 color: companyConfig.primaryColor,
                 mb: { xs: 2, sm: 3 },
@@ -335,11 +360,13 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
             <Typography
               variant="body1"
               sx={{
-                fontSize: { xs: '1.1rem', sm: '1.2rem' },
+                fontSize: { xs: '1.1rem', sm: '1.25rem' },
                 mb: { xs: 3, sm: 4 },
                 color: 'text.secondary',
-                maxWidth: '600px',
+                maxWidth: '650px',
                 mx: 'auto',
+                fontWeight: 500,
+                lineHeight: 1.6,
               }}
             >
               {isMobile
@@ -350,18 +377,22 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
               variant="contained"
               size="large"
               onClick={onNavigateToScheduler}
-              startIcon={<Launch sx={{ fontSize: { xs: 22, sm: 26 } }} />}
+              startIcon={<Launch sx={{ fontSize: { xs: 24, sm: 28 } }} />}
               sx={{
-                fontSize: { xs: '1.1rem', sm: '1.2rem' },
-                py: { xs: 1.5, sm: 2 },
-                px: { xs: 3, sm: 5 },
-                fontWeight: 600,
+                fontSize: { xs: '1.15rem', sm: '1.3rem' },
+                py: { xs: 2, sm: 2.5 },
+                px: { xs: 4, sm: 6 },
+                fontWeight: 700,
                 borderRadius: 3,
-                backgroundColor: companyConfig.secondaryColor,
+                backgroundColor: companyConfig.primaryColor,
+                boxShadow: `0 6px 20px ${companyConfig.primaryColor}40`,
+                textTransform: 'none',
                 '&:hover': {
-                  backgroundColor: companyConfig.primaryColor,
-                  transform: 'translateY(-1px)',
+                  filter: 'brightness(1.1)',
+                  transform: 'translateY(-3px)',
+                  boxShadow: `0 8px 25px ${companyConfig.primaryColor}50`,
                 },
+                transition: 'all 0.3s ease-in-out',
               }}
             >
               {isMobile ? 'Start Booking' : 'Begin Scheduling Process'}
@@ -373,12 +404,13 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
       {/* Footer */}
       <Box
         sx={{
-          py: { xs: 2, sm: 3 },
+          py: { xs: 2.5, sm: 3 },
           px: 2,
-          backgroundColor: 'rgba(255,255,255,0.9)',
+          backgroundColor: 'rgba(255,255,255,0.95)',
           backdropFilter: 'blur(10px)',
-          borderTop: '1px solid',
-          borderColor: 'grey.200',
+          borderTop: '2px solid',
+          borderColor: `${companyConfig.primaryColor}20`,
+          boxShadow: '0 -4px 12px rgba(0,0,0,0.05)',
         }}
       >
         <Container maxWidth="lg">
@@ -397,18 +429,28 @@ const LandingPage = memo(({ companyConfig, onNavigateToScheduler }) => {
                 component="img"
                 src="/favicon.ico"
                 alt="Step Sciences logo"
-                sx={{ height: { xs: 30, sm: 40 } }}
+                sx={{
+                  height: { xs: 32, sm: 40 },
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+                }}
               />
               <Typography
                 variant="body2"
                 color="text.secondary"
-                sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+                sx={{
+                  fontSize: { xs: '0.95rem', sm: '1rem' },
+                  fontWeight: 500,
+                }}
               >
                 &copy; {new Date().getFullYear()} Step Sciences
               </Typography>
             </Box>
             {companyConfig.showBranding && !isMobile && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ fontWeight: 500 }}
+              >
                 Professional Health & Performance Solutions
               </Typography>
             )}

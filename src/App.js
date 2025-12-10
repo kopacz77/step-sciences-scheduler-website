@@ -130,10 +130,15 @@ function App() {
       return createTheme();
     }
 
+    // Compute a lighter version of primary color for secondary palette
+    const primaryColor = companyConfig.primaryColor;
+    // Create a light background variant of the primary color
+    const lightPrimaryBg = `${primaryColor}15`; // 15% opacity for backgrounds
+
     return createTheme({
       palette: {
-        primary: { main: companyConfig.primaryColor },
-        secondary: { main: companyConfig.secondaryColor },
+        primary: { main: primaryColor },
+        secondary: { main: primaryColor, light: lightPrimaryBg },
         background: { default: '#f9f9f9', paper: '#ffffff' },
       },
       typography: {

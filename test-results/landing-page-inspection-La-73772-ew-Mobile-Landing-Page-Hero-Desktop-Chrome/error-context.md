@@ -1,0 +1,49 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - img "GM Oshawa logo" [ref=e6]
+      - heading "GM Oshawa Health & Performance Program" [level=1] [ref=e7]
+      - heading "Comprehensive health assessments for GM team members" [level=2] [ref=e8]
+      - button "Book Your GM Health Assessment" [ref=e9] [cursor=pointer]:
+        - img [ref=e11]
+        - text: Book Your GM Health Assessment
+        - img [ref=e15]
+    - generic [ref=e17]:
+      - generic [ref=e20]:
+        - heading "About Our Services" [level=3] [ref=e21]
+        - paragraph [ref=e22]: Step Sciences proudly partners with General Motors to provide world-class health and performance assessments for all team members. Our comprehensive evaluations help identify opportunities to optimize your health, performance, and overall well-being in the workplace.
+      - generic [ref=e25]:
+        - heading "What We Offer" [level=3] [ref=e26]
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - img [ref=e30]
+            - generic [ref=e33]: Comprehensive Health Screening
+          - listitem [ref=e34]:
+            - img [ref=e36]
+            - generic [ref=e39]: Performance Optimization
+          - listitem [ref=e40]:
+            - img [ref=e42]
+            - generic [ref=e45]: Confidential Results
+          - listitem [ref=e46]:
+            - img [ref=e48]
+            - generic [ref=e51]: GM Benefits Coverage
+          - listitem [ref=e52]:
+            - img [ref=e54]
+            - generic [ref=e57]: Expert Medical Analysis
+          - listitem [ref=e58]:
+            - img [ref=e60]
+            - generic [ref=e63]: Workplace Wellness
+      - img "3D Printed Custom Insole Technology" [ref=e67]
+    - generic [ref=e70]:
+      - heading "Ready to Get Started?" [level=3] [ref=e71]
+      - paragraph [ref=e72]: Book your assessment in just 2 steps.
+      - button "Start Booking" [ref=e73] [cursor=pointer]:
+        - img [ref=e75]
+        - text: Start Booking
+  - generic [ref=e80]:
+    - img "Step Sciences logo" [ref=e81]
+    - paragraph [ref=e82]: © 2025 Step Sciences
+```

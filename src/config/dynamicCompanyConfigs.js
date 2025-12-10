@@ -10,7 +10,6 @@ const fallbackConfigs = {
     name: 'GM Oshawa',
     fullName: 'General Motors Oshawa Assembly',
     primaryColor: '#000000',
-    secondaryColor: '#D4AF37',
     logo: '/logos/gm-logo.png',
     calendarUrl:
       'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ13iuKCFJo-LEdLYI0xL61iPO3DA4XB5di_P9b7NQ05dR2qYKjYKjCu9hzYaBn3G2-p8o2qDoE9',
@@ -102,7 +101,6 @@ const formatCompanyForClient = (row) => ({
   name: row.name,
   fullName: row.full_name,
   primaryColor: row.primary_color,
-  secondaryColor: row.secondary_color,
   logo: row.logo,
   calendarUrl: row.calendar_url,
   intakeFormUrl: row.intake_form_url,
