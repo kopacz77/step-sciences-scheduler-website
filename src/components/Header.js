@@ -5,11 +5,20 @@ import { memo } from 'react';
 const Header = memo(
   ({ companyConfig, showBackButton = false, onBackClick, currentStep = 0, totalSteps = 3 }) => {
     return (
-      <AppBar position="static" color="primary" elevation={3}>
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{
+          backgroundColor: 'white',
+          borderBottom: '2px solid',
+          borderColor: 'grey.200',
+          color: 'text.primary',
+        }}
+      >
         <Toolbar
           sx={{
-            minHeight: { xs: 70, sm: 80 },
-            py: 1,
+            minHeight: { xs: 56, sm: 64 },
+            py: { xs: 0.5, sm: 1 },
             px: { xs: 2, sm: 3 },
           }}
         >
@@ -19,11 +28,12 @@ const Header = memo(
               onClick={onBackClick}
               sx={{
                 mr: 2,
-                color: 'white',
+                color: 'primary.main',
                 minWidth: 44,
                 minHeight: 44,
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark',
                 },
               }}
               aria-label="Go back to previous step"
@@ -52,11 +62,12 @@ const Header = memo(
               variant="h6"
               component="div"
               sx={{
-                fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.6rem' },
-                fontWeight: 500,
+                fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
+                fontWeight: 600,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                color: 'text.primary',
               }}
             >
               {companyConfig.name} Scheduling
@@ -68,8 +79,9 @@ const Header = memo(
                 variant="caption"
                 sx={{
                   display: { xs: 'block', sm: 'none' },
-                  fontSize: '0.75rem',
-                  opacity: 0.9,
+                  fontSize: '0.7rem',
+                  color: 'text.secondary',
+                  opacity: 0.8,
                 }}
               >
                 Step {currentStep} of {totalSteps}
@@ -84,13 +96,14 @@ const Header = memo(
                 component="a"
                 href={`mailto:${companyConfig.contactEmail}`}
                 sx={{
-                  color: 'white',
+                  color: 'primary.main',
                   minWidth: 44,
                   minHeight: 44,
                   mr: 1,
                   display: { xs: 'none', sm: 'flex' },
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    backgroundColor: 'primary.light',
+                    color: 'primary.dark',
                   },
                 }}
                 aria-label={`Contact ${companyConfig.name}`}
@@ -100,24 +113,25 @@ const Header = memo(
             </Tooltip>
           )}
 
-          {/* Step Sciences Branding */}
+          {/* Step Sciences Branding - Minimized */}
           <Box sx={{ display: 'flex', alignItems: 'center', ml: { xs: 1, sm: 2 } }}>
             <Box
               component="img"
               src="/favicon.ico"
               alt="Step Sciences logo"
               sx={{
-                height: { xs: 32, sm: 40, md: 50 },
-                mr: { xs: 0.5, md: 1.5 },
+                height: { xs: 28, sm: 32, md: 36 },
+                mr: { xs: 0.5, md: 1 },
+                opacity: 0.7,
               }}
             />
             <Typography
               variant="h6"
               sx={{
                 display: { xs: 'none', md: 'block' },
-                fontSize: '1.75rem',
+                fontSize: '1.1rem',
                 fontWeight: 500,
-                color: '#F0B537',
+                color: 'text.secondary',
               }}
             >
               Step Sciences

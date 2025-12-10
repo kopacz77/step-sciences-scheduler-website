@@ -3,7 +3,8 @@
     "allow": [
       "Bash(find:*)",
       "Bash(node:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

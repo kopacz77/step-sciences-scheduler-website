@@ -299,8 +299,41 @@ const GoogleCalendarButton = memo(
           </Box>
         )}
 
-        {/* Enhanced Confirmation Button with Better UX */}
-        <Box sx={{ mt: { xs: 3, sm: 4 } }}>
+        {/* Enhanced Confirmation Button with Sticky Footer on Mobile */}
+        <Box
+          sx={{
+            mt: { xs: 3, sm: 4 },
+            ...(isActuallyMobile && {
+              position: 'sticky',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              bgcolor: 'background.paper',
+              borderTop: '3px solid',
+              borderColor: 'success.main',
+              p: 2,
+              mx: -2,
+              boxShadow: '0 -4px 12px rgba(0,0,0,0.15)',
+              zIndex: 1000,
+            }),
+          }}
+        >
+          {/* Instruction Alert - Always Visible */}
+          <Alert
+            severity="info"
+            sx={{
+              mb: 2,
+              fontSize: { xs: '0.95rem', sm: '1rem' },
+              fontWeight: 600,
+            }}
+          >
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {isActuallyMobile
+                ? '✓ After booking your time slot above, tap the button below'
+                : '✓ After booking your time slot in the calendar above, click the button below to continue'}
+            </Typography>
+          </Alert>
+
           <Tooltip
             title={
               isActuallyMobile
@@ -316,61 +349,69 @@ const GoogleCalendarButton = memo(
                 size="large"
                 onClick={onAppointmentBooked}
                 disabled={isLoading}
+                fullWidth={isActuallyMobile}
                 startIcon={
                   isLoading ? <CircularProgress size={20} color="inherit" /> : <CheckCircle />
                 }
                 sx={{
-                  fontSize: { xs: '1.1rem', sm: '1.2rem' },
-                  py: { xs: 2, sm: 2 },
+                  fontSize: { xs: '1.3rem', sm: '1.2rem' },
+                  py: { xs: 2.5, sm: 2 },
                   px: { xs: 4, sm: 5 },
-                  minHeight: { xs: '56px', sm: '60px' },
-                  minWidth: { xs: '260px', sm: 'auto' },
-                  maxWidth: { xs: '90vw', sm: 'none' },
+                  minHeight: { xs: '64px', sm: '60px' },
+                  minWidth: { xs: '280px', sm: 'auto' },
+                  maxWidth: { xs: '100%', sm: 'none' },
                   borderRadius: { xs: 3, sm: 3 },
                   boxShadow: {
-                    xs: '0 6px 20px rgba(76, 175, 80, 0.3)',
+                    xs: '0 6px 20px rgba(76, 175, 80, 0.4)',
                     sm: '0 4px 12px rgba(0,0,0,0.15)',
                   },
-                  fontWeight: 'bold',
+                  fontWeight: 700,
                   width: { xs: '100%', sm: 'auto' },
+                  animation: isLoading ? 'none' : 'pulse 2s ease-in-out infinite',
+                  '@keyframes pulse': {
+                    '0%': { boxShadow: '0 6px 20px rgba(76, 175, 80, 0.4)' },
+                    '50%': { boxShadow: '0 8px 30px rgba(76, 175, 80, 0.6)' },
+                    '100%': { boxShadow: '0 6px 20px rgba(76, 175, 80, 0.4)' },
+                  },
                   '&:hover': {
                     boxShadow: {
-                      xs: '0 8px 25px rgba(76, 175, 80, 0.4)',
+                      xs: '0 8px 25px rgba(76, 175, 80, 0.5)',
                       sm: '0 6px 16px rgba(0,0,0,0.2)',
                     },
                     transform: 'translateY(-2px)',
+                    animation: 'none',
                   },
                   '&:disabled': {
                     backgroundColor: 'grey.400',
                     color: 'white',
                     boxShadow: 'none',
+                    animation: 'none',
                   },
                 }}
               >
                 {isLoading
                   ? 'Processing...'
                   : isActuallyMobile
-                    ? 'Appointment Booked!'
-                    : "I've Successfully Booked My Appointment"}
+                    ? '✓ I\'ve Booked - Continue →'
+                    : "✓ I've Successfully Booked My Appointment"}
               </Button>
             </span>
           </Tooltip>
 
-          <Typography
-            variant="body2"
-            sx={{
-              mt: 2,
-              color: 'text.secondary',
-              fontSize: { xs: '0.9rem', sm: '1rem' },
-              fontWeight: isActuallyMobile ? 500 : 400,
-              textAlign: 'center',
-              px: { xs: 2, sm: 0 },
-            }}
-          >
-            {isActuallyMobile
-              ? 'Tap after booking to continue'
-              : 'Click after completing your booking to continue to the intake form'}
-          </Typography>
+          {!isActuallyMobile && (
+            <Typography
+              variant="body2"
+              sx={{
+                mt: 2,
+                color: 'text.secondary',
+                fontSize: '1rem',
+                fontWeight: 400,
+                textAlign: 'center',
+              }}
+            >
+              Click after completing your booking to continue
+            </Typography>
+          )}
         </Box>
       </Box>
     );
