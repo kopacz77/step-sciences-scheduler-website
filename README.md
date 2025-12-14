@@ -18,7 +18,7 @@ A scalable React application serving Canadian automotive plants with custom-bran
 - **🌐 Custom Subdomains**: Each plant gets professional URL (e.g., `gmoshawa.stepsciences.com`)
 - **🎨 Custom Landing Pages**: Company-branded landing pages with editable content, features, and messaging
 - **📅 Google Calendar Integration**: Direct booking through plant-specific appointment calendars
-- **🎨 Dynamic Branding**: Plant-specific colors, logos, locations, and custom messaging
+- **🎨 Dynamic Branding**: Plant-specific primary color (with computed variants), logos, locations, and custom messaging
 - **⚖️ Dual-Location Support**: Handle scan days (Monday/Friday different locations)
 - **🔐 Tabbed Admin Interface**: Web-based plant management with organized sections for all settings
 - **📱 Enhanced Mobile UX**: Optimized intake form flow with urgent messaging and prominent CTAs
@@ -90,7 +90,7 @@ companies (
   id TEXT PRIMARY KEY,           -- 'gm-oshawa'
   name TEXT,                     -- 'GM Oshawa'
   domain TEXT,                   -- 'gmoshawa.stepsciences.com'
-  primary_color TEXT,            -- '#000000'
+  primary_color TEXT,            -- '#000000' (opacity variants computed automatically)
   calendar_url TEXT,             -- Google Calendar booking URL
   meeting_location TEXT,         -- Plant address
   has_scan_days BOOLEAN,         -- Monday/Friday locations
@@ -98,6 +98,8 @@ companies (
   is_active BOOLEAN DEFAULT true
 );
 ```
+
+> **Note:** The system uses a single primary color with computed opacity variants (08%, 15%, 20%, 25%, 30%, 40%, 50%) for backgrounds, borders, and accents. This provides consistent, professional branding while simplifying configuration.
 
 ### File Structure
 ```

@@ -15,12 +15,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Color Preview**: Large color preview boxes in admin interface for better brand management
 - **Logo Management**: Upload workflow and existing logo selection in admin interface
 - **Linamar Service**: Added new automotive client with custom landing page
+- **Playwright Testing**: Automated visual testing for UI/UX verification
+- **UI/UX Quick Wins**: 5 critical improvements to reduce user drop-off:
+  - Fallback "Continue" button after 15 seconds for intake form
+  - Sticky booking confirmation button with pulsing animation on mobile
+  - Enhanced "Both Steps Mandatory" alert with pulsing border
+  - Visual progress bar showing 0%/50%/100% completion
+  - Location always visible on mobile devices
+
+### Changed
+- **Single-Color Design System**: Removed secondary color in favor of primary color with opacity variants
+  - Improved readability and professional appearance
+  - Simplified admin interface (one color picker instead of two)
+  - Landing pages now use computed opacity variants (`primaryColor + 08`, `15`, `20`, `25`, `30`, `40`, `50`)
+  - Theme now derives secondary palette from primary color automatically
+- **Enhanced Card Styling**: Improved hover effects, borders, and shadows across all components
+- **Better Typography**: Increased font weights and sizes for better hierarchy
 
 ### Enhanced
 - **Google Calendar Support**: Extended URL validation to support both `calendar.google.com` and `calendar.app.google` domains
 - **Database Schema**: Added landing page columns with automotive industry-specific default content
 - **API Endpoints**: Enhanced company CRUD operations to support landing page fields
 - **Domain Routing**: Improved company detection and fallback handling
+- **Admin Interface Styling**: Gradient backgrounds, enhanced cards, improved button effects
+
+### Removed
+- **Secondary Color Field**: Removed from admin interface, config files, and all components
+  - `secondaryColor` no longer used in company configurations
+  - Landing pages use primary color opacity variants for consistent branding
+  - Reduces complexity while improving visual consistency
 
 ### Security
 - Enhanced admin password security with bcrypt hashing
@@ -257,4 +280,4 @@ Features marked for removal will be:
 ---
 
 **Maintained by**: Step Sciences Development Team
-**Last Updated**: January 30, 2025
+**Last Updated**: December 14, 2025
